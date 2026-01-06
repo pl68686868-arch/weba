@@ -1,0 +1,45 @@
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Sensitive configuration
+/config/config.php
+
+# User uploads
+/uploads/*
+!/uploads/.gitkeep
+
+# Cache files
+/cache/*
+!/cache/.gitkeep
+
+# Log files
+/logs/*
+!/logs/.gitkeep
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# Environment files
+.env
+.env.local
+
+# Composer (if used)
+/vendor/
+
+# Node modules (if used)
+node_modules/
+
+# Database backups
+*.sql.gz
+*.sql.zip
+backup/

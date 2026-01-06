@@ -1,0 +1,27 @@
+{
+  "name": "Dương Trần Minh Đoan",
+  "short_name": "DTMD",
+  "description": "Không gian chia sẻ về tâm lý học, chánh niệm và phát triển con người",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF9F6",
+  "theme_color": "#2C5F4F",
+  "icons": [
+    {
+      "src": "/assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "lifestyle", "psychology"],
+  "lang": "vi",
+  "dir": "ltr"
+}
