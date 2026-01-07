@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Authentication class for user login and session management
@@ -35,10 +34,10 @@ class Auth {
         try {
             $sql = "SELECT id, username, email, password_hash, role, full_name 
                     FROM users 
-                    WHERE (username = :login OR email = :login) 
+                    WHERE (username = :username OR email = :email) 
                     LIMIT 1";
             
-            $user = $this->db->fetchOne($sql, ['login' => $usernameOrEmail]);
+            $user = $this->db->fetchOne($sql, ['username' => $usernameOrEmail, 'email' => $usernameOrEmail]);
 
             if (!$user) {
                 return false;

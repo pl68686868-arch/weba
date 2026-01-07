@@ -1,39 +1,33 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Shared Header Template
- * 
- * @package Weba
- * @author Danny Duong
- */
+echo "<!-- DEBUG: Header check 1 - Start -->\n";
 
 // Ensure config is loaded
 if (!defined('SITE_NAME')) {
+    echo "<!-- DEBUG: Loading config -->\n";
     require_once __DIR__ . '/../config/config.php';
 }
 
-// Prevent aggressive caching
-header("Cache-Control: no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+echo "<!-- DEBUG: Header check 2 - Defined check passed -->\n";
 
 // Get current page for active navigation
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 
 // SEO object should be passed from parent page
 global $seo;
+
+echo "<!-- DEBUG: Header check 3 - Before HTML -->\n";
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <!-- DEBUG: Header check 4 - After viewport -->
     
     <?php if (isset($seo)): ?>
+        <?php echo "<!-- DEBUG: Rendering Meta -->"; ?>
         <?= $seo->renderMetaTags() ?>
         <?= $seo->renderSchema() ?>
     <?php else: ?>
@@ -49,7 +43,7 @@ global $seo;
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/style.css?v=<?= filemtime(__DIR__ . '/../assets/css/style.css') ?>">
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/style.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= ASSETS_URL ?>/images/favicon.png">
@@ -67,9 +61,11 @@ global $seo;
         gtag('config', '<?= GOOGLE_ANALYTICS_ID ?>');
     </script>
     <?php endif; ?>
+    <!-- DEBUG: Header check 5 - End Head -->
 </head>
-<body class="<?= $currentPage === 'index' ? 'page-home' : 'page-subpage page-' . $currentPage ?>">
-    <!-- Skip to content link removed as per request -->
+<body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Chuyển đến nội dung chính</a>
     
     <!-- Header -->
     <header class="site-header">
@@ -125,6 +121,8 @@ global $seo;
             </div>
         </div>
     </header>
+    <!-- DEBUG: Header check 6 - End Header -->
     
     <!-- Main Content -->
     <main id="main-content" class="main-content">
+<?php echo "<!-- DEBUG: Header check 7 - End File -->\n"; ?>

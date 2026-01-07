@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Rate limiting
     $ip = getClientIP();
     if (!checkRateLimit($ip, 'contact_form', 3, 3600)) { // 3 messages per hour
-        $error = 'Bạn đã gửi quá nhiều tin nhắn. Vui lòng thử lại sau 1 giờ.';
+        $error = 'Cảm ơn bạn đã quan tâm. Để tôi có thể phản hồi tốt nhất, xin vui lòng đợi một chút trước khi gửi tin nhắn tiếp nhé.';
     } else {
         // Validate CSRF token
         $token = $_POST[CSRF_TOKEN_NAME] ?? '';
@@ -79,218 +79,118 @@ include __DIR__ . '/includes/header.php';
 ?>
 
 <div class="contact-page">
-    <div class="container">
-        <div class="content-width">
-            <header class="page-header">
-                <h1>Liên hệ</h1>
-                <p class="page-intro">
-                    Dành cho các trao đổi về giảng dạy, đào tạo, hợp tác học thuật và những kết nối chuyên môn 
-                    cùng quan tâm đến chiều sâu nội tâm và phát triển bền vững.
-                </p>
-            </header>
-            
-            <div class="contact-content">
-                <!-- Contact Info -->
-                <div class="contact-info">
-                    <h2>Thông tin liên hệ</h2>
-                    <div class="contact-item">
-                        <strong>Email:</strong>
-                        <a href="mailto:<?= htmlspecialchars(FROM_EMAIL) ?>">
-                            <?= htmlspecialchars(FROM_EMAIL) ?>
-                        </a>
-                    </div>
-                    <p class="contact-note">
-                        Tôi thường phản hồi email trong vòng 2-3 ngày làm việc.
+    <div class="container container--narrow">
+        <div class="contact-grid">
+            <!-- Left Column: Visual & Info -->
+            <div class="contact-info">
+                <h1 class="page-title">Kết nối &<br>Trò chuyện</h1>
+                <div class="contact-intro">
+                    <p>
+                        Cảm ơn bạn đã ghé thăm. Tôi luôn trân trọng những cơ hội được lắng nghe 
+                        và chia sẻ về hành trình thực hành tâm lý, giáo dục và chánh niệm.
+                    </p>
+                    <p>
+                        Nếu bạn có lời mời hợp tác, thắc mắc chuyên môn, hoặc đơn giản là muốn gửi một lời chào, 
+                        đừng ngần ngại để lại tin nhắn.
                     </p>
                 </div>
                 
-                <!-- Contact Form -->
-                <div class="contact-form-section">
-                    <h2>Gửi tin nhắn</h2>
+                <div class="contact-methods">
+                    <div class="method-item">
+                        <span class="method-label">Email trực tiếp</span>
+                        <a href="mailto:<?= htmlspecialchars(FROM_EMAIL) ?>" class="method-link link-underline">
+                            <?= htmlspecialchars(FROM_EMAIL) ?>
+                        </a>
+                    </div>
                     
-                    <?php if ($error): ?>
-                        <div class="alert alert-error">
-                            <?= htmlspecialchars($error) ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($success): ?>
-                        <div class="alert alert-success">
-                            <?= htmlspecialchars($success) ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <form method="POST" action="" class="contact-form">
-                        <?= $auth->getCSRFInput() ?>
-                        
-                        <div class="form-group">
-                            <label for="name" class="form-label">Tên của bạn *</label>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                name="name" 
-                                class="form-input"
-                                required
-                                value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
-                            >
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email *</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-input"
-                                required
-                                value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                            >
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="purpose" class="form-label">Mục đích liên hệ</label>
-                            <select id="purpose" name="purpose" class="form-select">
-                                <option value="">-- Chọn mục đích --</option>
-                                <option value="teaching" <?= ($_POST['purpose'] ?? '') === 'teaching' ? 'selected' : '' ?>>
-                                    Mời giảng
-                                </option>
-                                <option value="collaboration" <?= ($_POST['purpose'] ?? '') === 'collaboration' ? 'selected' : '' ?>>
-                                    Hợp tác
-                                </option>
-                                <option value="academic" <?= ($_POST['purpose'] ?? '') === 'academic' ? 'selected' : '' ?>>
-                                    Trao đổi học thuật
-                                </option>
-                                <option value="other" <?= ($_POST['purpose'] ?? '') === 'other' ? 'selected' : '' ?>>
-                                    Khác
-                                </option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message" class="form-label">Tin nhắn *</label>
-                            <textarea 
-                                id="message" 
-                                name="message" 
-                                class="form-textarea"
-                                required
-                                rows="8"
-                                placeholder="Vui lòng chia sẻ chi tiết về nội dung bạn muốn trao đổi..."
-                            ><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
-                            <small class="form-hint">Tối thiểu 20 ký tự</small>
-                        </div>
-                        
-                        <div class="gdpr-notice">
-                            <p>
-                                <small>
-                                    Bằng việc gửi form này, bạn đồng ý với việc thông tin cá nhân của bạn 
-                                    được sử dụng để phản hồi yêu cầu của bạn. Thông tin sẽ không được chia sẻ 
-                                    với bên thứ ba.
-                                </small>
-                            </p>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            Gửi tin nhắn
-                        </button>
-                    </form>
+                    <div class="method-item">
+                        <span class="method-label">Thời gian phản hồi</span>
+                        <p class="method-desc">Tôi thường kiểm tra email vào buổi sáng và sẽ phản hồi trong vòng 2-3 ngày làm việc.</p>
+                    </div>
                 </div>
+            </div>
+            
+            <!-- Right Column: Form -->
+            <div class="contact-form-wrapper">
+                <?php if ($error): ?>
+                    <div class="alert alert-error">
+                        <?= htmlspecialchars($error) ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($success): ?>
+                    <div class="alert alert-success">
+                        <?= htmlspecialchars($success) ?>
+                    </div>
+                <?php endif; ?>
+                
+                <form method="POST" action="" class="premium-form">
+                    <?= $auth->getCSRFInput() ?>
+                    
+                    <div class="form-group floating">
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            class="form-input"
+                            placeholder=" "
+                            required
+                            value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
+                        >
+                        <label for="name" class="form-label">Tên của bạn</label>
+                    </div>
+                    
+                    <div class="form-group floating">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input"
+                            placeholder=" "
+                            required
+                            value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                        >
+                        <label for="email" class="form-label">Địa chỉ Email</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="purpose" name="purpose" class="form-select">
+                            <option value="" disabled selected>Mục đích liên hệ</option>
+                            <option value="teaching" <?= ($_POST['purpose'] ?? '') === 'teaching' ? 'selected' : '' ?>>Mời giảng dạy / Workshop</option>
+                            <option value="collaboration" <?= ($_POST['purpose'] ?? '') === 'collaboration' ? 'selected' : '' ?>>Hợp tác chuyên môn</option>
+                            <option value="academic" <?= ($_POST['purpose'] ?? '') === 'academic' ? 'selected' : '' ?>>Trao đổi học thuật</option>
+                            <option value="other" <?= ($_POST['purpose'] ?? '') === 'other' ? 'selected' : '' ?>>Khác</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group floating">
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            class="form-textarea"
+                            placeholder=" "
+                            required
+                            rows="5"
+                        ><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
+                        <label for="message" class="form-label">Nội dung tin nhắn</label>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        <span class="btn-submit-text">Gửi lời chào</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                    
+                    <p class="form-privacy">
+                        Thông tin của bạn được bảo mật an toàn.
+                    </p>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.contact-page {
-    padding: var(--space-4xl) 0;
-}
-
-.page-header {
-    text-align: center;
-    margin-bottom: var(--space-5xl);
-}
-
-.contact-content {
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.contact-info {
-    background: var(--color-bg-secondary);
-    padding: var(--space-3xl);
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--space-4xl);
-}
-
-.contact-info h2 {
-    font-size: 1.5rem;
-    margin-bottom: var(--space-lg);
-}
-
-.contact-item {
-    margin-bottom: var(--space-md);
-}
-
-.contact-item strong {
-    display: block;
-    font-family: var(--font-ui);
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-xs);
-}
-
-.contact-item a {
-    font-size: 1.125rem;
-}
-
-.contact-note {
-    margin-top: var(--space-lg);
-    font-size: 0.9375rem;
-    color: var(--color-text-secondary);
-    font-style: italic;
-}
-
-.contact-form-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: var(--space-xl);
-}
-
-.form-hint {
-    display: block;
-    margin-top: var(--space-xs);
-    font-family: var(--font-ui);
-    font-size: 0.875rem;
-    color: var(--color-text-tertiary);
-}
-
-.gdpr-notice {
-    background: var(--color-bg-secondary);
-    padding: var(--space-lg);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--space-xl);
-}
-
-.gdpr-notice p {
-    margin: 0;
-}
-
-.alert {
-    padding: var(--space-lg);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--space-xl);
-}
-
-.alert-error {
-    background: #FEE;
-    color: #C33;
-    border: 1px solid #FCC;
-}
-
-.alert-success {
-    background: #EFE;
-    color: #3A3;
-    border: 1px solid #CFC;
-}
-</style>
 
 <?php
 // Include footer

@@ -1,5 +1,5 @@
 {
-  "name": "Dương Trần Minh Đoan",
+  "name": "Dương Trần Minh Đoàn",
   "short_name": "DTMD",
   "description": "Không gian chia sẻ về tâm lý học, chánh niệm và phát triển con người",
   "start_url": "/",
@@ -21,7 +21,11 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "lifestyle", "psychology"],
+  "categories": [
+    "education",
+    "lifestyle",
+    "psychology"
+  ],
   "lang": "vi",
   "dir": "ltr"
 }

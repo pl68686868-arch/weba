@@ -268,18 +268,21 @@ include __DIR__ . '/includes/header.php';
     }
 }
 
-/* Post Header */
 .post-header {
-    margin-bottom: var(--space-4xl);
+    text-align: center;
+    margin-bottom: var(--space-xl);
+    max-width: var(--container-narrow);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .post-category {
     font-family: var(--font-ui);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--color-accent-medium);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     margin-bottom: var(--space-md);
     display: inline-block;
 }
@@ -292,12 +295,15 @@ include __DIR__ . '/includes/header.php';
 
 .post-meta {
     display: flex;
+    justify-content: center; /* Center align */
     flex-wrap: wrap;
     gap: var(--space-lg);
     font-family: var(--font-ui);
-    font-size: 0.9375rem;
+    font-size: 1rem;
     color: var(--color-text-tertiary);
-    margin-bottom: var(--space-3xl);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .post-featured-image {
@@ -312,9 +318,35 @@ include __DIR__ . '/includes/header.php';
 
 /* Article Content */
 .article-content {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     line-height: 1.8;
     max-width: var(--reading-max);
+    margin: 0 auto; /* Center the reading column */
+}
+
+/* Drop Cap for first paragraph */
+.article-content > p:first-of-type::first-letter {
+    float: left;
+    font-size: 5rem;
+    line-height: 0.8;
+    font-weight: 700;
+    margin-right: 1rem;
+    margin-top: 0.2rem;
+    color: var(--color-accent-dark);
+    font-family: var(--font-heading);
+}
+
+.article-content h2 {
+    font-size: 2rem;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    color: var(--color-text-primary);
+}
+
+.article-content h3 {
+    font-size: 1.5rem;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
 }
 
 .article-content h2,

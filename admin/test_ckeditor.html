@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKEditor Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 CKEditor Debug Test</h1>
+
+    <div id="cdn-status" class="status info">⏳ Đang kiểm tra CKEditor CDN...</div>
+    <div id="init-status" class="status info">⏳ Chờ khởi tạo...</div>
+
+    <h2>Test Editor:</h2>
+    <textarea id="test-editor" name="test-editor" rows="10" cols="80">
+        <p>Đây là nội dung test. Nếu CKEditor load được, bạn sẽ thấy thanh công cụ phía trên.</p>
+    </textarea>
+
+    <hr>
+    <h3>Debug Info:</h3>
+    <div id="debug-info" style="background: #f5f5f5; padding: 15px; font-family: monospace; font-size: 12px;"></div>
+
+    <!-- CKEditor 4 Full - Version 4.25.1-lts -->
+    <script src="https://cdn.ckeditor.com/4.25.1-lts/full/ckeditor.js"></script>
+    <script>
+        const debugLog = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            debugLog.push(`[${timestamp}] ${message}`);
+            updateDebugInfo();
+        }
+
+        function updateDebugInfo() {
+            document.getElementById('debug-info').innerHTML = debugLog.join('<br>');
+        }
+
+        // Check if CKEDITOR loaded
+        log('Checking if CKEDITOR object exists...');
+
+        if (typeof CKEDITOR === 'undefined') {
+            document.getElementById('cdn-status').className = 'status error';
+            document.getElementById('cdn-status').innerHTML = '❌ CKEDITOR object NOT FOUND! CDN failed to load.';
+            log('ERROR: CKEDITOR object is undefined', 'error');
+            log('Possible causes: CDN blocked, network issue, or wrong URL');
+        } else {
+            document.getElementById('cdn-status').className = 'status success';
+            document.getElementById('cdn-status').innerHTML = '✅ CKEditor CDN loaded successfully!';
+            log('✓ CKEDITOR object found');
+            log('Version: ' + (CKEDITOR.version || 'Unknown'));
+            log('Revision: ' + (CKEDITOR.revision || 'Unknown'));
+
+            // Try to initialize
+            try {
+                log('Attempting to initialize CKEditor...');
+
+                CKEDITOR.replace('test-editor', {
+                    // GPL license key (free for open source projects)
+                    licenseKey: '',
+                    height: 400,
+                    removePlugins: 'exportpdf',
+                    on: {
+                        instanceReady: function (evt) {
+                            log('✓ CKEditor initialized successfully!');
+                            document.getElementById('init-status').className = 'status success';
+                            document.getElementById('init-status').innerHTML = '✅ Editor khởi tạo thành công!';
+                        }
+                    }
+                });
+
+                log('CKEDITOR.replace() called without errors');
+
+            } catch (error) {
+                log('ERROR during initialization: ' + error.message, 'error');
+                document.getElementById('init-status').className = 'status error';
+                document.getElementById('init-status').innerHTML = '❌ Lỗi khởi tạo: ' + error.message;
+            }
+        }
+
+        // Additional environment checks
+        log('Browser: ' + navigator.userAgent);
+        log('Page URL: ' + window.location.href);
+    </script>
+</body>
+
+</html>

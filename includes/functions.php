@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Helper functions for common operations
@@ -456,5 +455,73 @@ function checkRateLimit(string $identifier, string $action, int $maxRequests = 6
     } catch (Exception $e) {
         error_log('Rate limit check error: ' . $e->getMessage());
         return true; // Fail open
+    }
+}
+
+/**
+ * Create URL-friendly slug from text
+ * Wrapper for SEO::createSlug()
+ * 
+ * @param string $text Text to convert to slug
+ * @return string URL-friendly slug
+ */
+function createSlug(string $text): string {
+    require_once __DIR__ . '/SEO.php';
+    return SEO::createSlug($text);
+}
+
+/**
+ * Get site setting value
+ * 
+ * @param string $key Setting key
+ * @param mixed $default Default value if not found
+ * @return mixed Setting value
+ */
+function get_setting(string $key, $default = '') {
+    try {
+        $db = Database::getInstance();
+        $value = $db->fetchColumn(
+            "SELECT setting_value FROM site_settings WHERE setting_key = :key LIMIT 1",
+            ['key' => $key]
+        );
+        return $value !== false ? $value : $default;
+    } catch (Exception $e) {
+        return $default;
+    }
+}
+
+/**
+ * Set site setting value
+ * 
+ * @param string $key Setting key
+ * @param string $value Setting value
+ * @return bool Success
+ */
+function set_setting(string $key, string $value): bool {
+    try {
+        $db = Database::getInstance();
+        
+        // Check if exists
+        $exists = $db->fetchOne(
+            "SELECT id FROM site_settings WHERE setting_key = :key LIMIT 1",
+            ['key' => $key]
+        );
+        
+        if ($exists) {
+            return $db->update(
+                'site_settings',
+                ['setting_value' => $value],
+                'setting_key = :key',
+                ['key' => $key]
+            );
+        } else {
+            return (bool)$db->insert('site_settings', [
+                'setting_key' => $key,
+                'setting_value' => $value
+            ]);
+        }
+    } catch (Exception $e) {
+        error_log("Error setting {$key}: " . $e->getMessage());
+        return false;
     }
 }

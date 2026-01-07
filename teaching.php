@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Teaching & Training Page - Giảng dạy & Đào tạo
@@ -11,6 +10,7 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/includes/Database.php';
 require_once __DIR__ . '/includes/SEO.php';
 require_once __DIR__ . '/includes/functions.php';
 
@@ -29,156 +29,132 @@ trackPageView(null, '/teaching.php');
 include __DIR__ . '/includes/header.php';
 ?>
 
-<div class="teaching-page">
+<!-- Section 1: Hero (Refined) -->
+<section class="teaching-hero section-spacing">
     <div class="container">
-        <div class="content-width">
-            <header class="page-header">
-                <h1>Giảng dạy & Đào tạo</h1>
-                <p class="page-intro">
-                    Phần Giảng dạy & Đào tạo giới thiệu các hoạt động giảng dạy và huấn luyện mà tôi đã và đang tham gia 
-                    trong bối cảnh đại học, đào tạo chuyên môn và phát triển con người. Công việc của tôi tập trung vào 
-                    việc kết nối kiến thức tâm lý học với trải nghiệm thực tế của người học, đặc biệt là người trưởng thành 
-                    đang làm việc và học tập trong các môi trường đa dạng.
-                </p>
-            </header>
+        <div class="about-hero__grid">
+            <div class="about-hero__content">
+                <span class="eyebrow">Giảng dạy & Đào tạo</span>
+                <h1 class="about-hero__title">
+                    Khai phóng<br>
+                    Tiềm năng<br>
+                    <span class="text-accent" style="color: var(--color-accent-medium);">Con người</span>
+                </h1>
+                <div class="about-hero__desc">
+                    <p>
+                        Tôi tin rằng giáo dục không chỉ là truyền tải kiến thức, mà là quá trình khơi gợi sự chuyển hóa 
+                        từ bên trong. Hành trình học tập của người trưởng thành cần sự kết hợp giữa hiểu biết khoa học 
+                        và trải nghiệm thực chứng.
+                    </p>
+                </div>
+                <div class="hero-actions" style="margin-top: 2rem;">
+                    <a href="#areas" class="btn btn-primary" style="background: var(--color-text-primary); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                        Khám phá lĩnh vực
+                    </a>
+                </div>
+            </div>
             
-            <div class="teaching-content">
-                <section class="teaching-section">
-                    <h2>Phương pháp giảng dạy</h2>
-                    <p>
-                        Các chương trình giảng dạy và đào tạo được thiết kế dựa trên nền tảng tâm lý học ứng dụng và chánh niệm, 
-                        với mục tiêu hỗ trợ người học hiểu rõ hơn trải nghiệm của chính mình, phát triển năng lực tự học, 
-                        tự điều chỉnh và làm việc có ý nghĩa trong đời sống và nghề nghiệp.
-                    </p>
-                </section>
-                
-                <section class="teaching-section">
-                    <h2>Lĩnh vực giảng dạy</h2>
-                    <div class="teaching-areas">
-                        <div class="teaching-area">
-                            <h3>Tâm lý học ứng dụng</h3>
-                            <p>
-                                Giảng dạy các môn học về tâm lý học cơ bản, tâm lý học phát triển, tâm lý học xã hội 
-                                và ứng dụng tâm lý học trong đời sống và công việc.
-                            </p>
-                        </div>
-                        
-                        <div class="teaching-area">
-                            <h3>Chánh niệm & Mindfulness</h3>
-                            <p>
-                                Workshop và khóa đào tạo về chánh niệm trong bối cảnh tâm lý học, hướng dẫn thực hành 
-                                chánh niệm cho người trưởng thành và ứng dụng vào công việc.
-                            </p>
-                        </div>
-                        
-                        <div class="teaching-area">
-                            <h3>Giáo dục người lớn</h3>
-                            <p>
-                                Đào tạo về phương pháp giảng dạy người trưởng thành, adult learning, experiential learning 
-                                và reflective practice trong giáo dục và phát triển con người.
-                            </p>
-                        </div>
-                        
-                        <div class="teaching-area">
-                            <h3>Phát triển nghề nghiệp</h3>
-                            <p>
-                                Coaching và mentoring cho giảng viên, chuyên gia tâm lý, và những người làm việc 
-                                trong lĩnh vực giáo dục - đào tạo.
-                            </p>
-                        </div>
+            <div class="teaching-hero__visual">
+                <?php 
+                $heroImage = get_setting('teaching_hero_image');
+                if ($heroImage): 
+                ?>
+                    <img src="<?= UPLOAD_URL . '/' . escape($heroImage) ?>" alt="Giảng dạy & Đào tạo">
+                <?php else: ?>
+                    <!-- Minimalist Placeholder -->
+                    <div style="background: #EBE8E0; width: 100%; aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); font-family: var(--font-ui);">
+                        [Teaching Image Placeholder]
                     </div>
-                </section>
-                
-                <section class="teaching-section">
-                    <h2>Hợp tác & Dự án</h2>
-                    <p>
-                        Tôi mở cho các cơ hội hợp tác trong:
-                    </p>
-                    <ul>
-                        <li>Giảng dạy tại các trường đại học và tổ chức giáo dục</li>
-                        <li>Đào tạo doanh nghiệp về mindfulness, wellbeing và phát triển con người</li>
-                        <li>Workshop và seminar về tâm lý học ứng dụng</li>
-                        <li>Tư vấn chương trình đào tạo cho tổ chức</li>
-                        <li>Hợp tác nghiên cứu trong lĩnh vực tâm lý học và giáo dục người lớn</li>
-                    </ul>
-                </section>
-                
-                <section class="teaching-section">
-                    <h2>Liên hệ hợp tác</h2>
-                    <p>
-                        Nếu bạn quan tâm đến việc mời giảng, tổ chức workshop, hoặc hợp tác về đào tạo, 
-                        vui lòng liên hệ qua <a href="/contact.php">trang liên hệ</a> hoặc email trực tiếp: 
-                        <a href="mailto:<?= htmlspecialchars(FROM_EMAIL) ?>"><?= htmlspecialchars(FROM_EMAIL) ?></a>
-                    </p>
-                </section>
+                <?php endif; ?>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<style>
-.teaching-page {
-    padding: var(--space-4xl) 0;
-}
+<!-- Section 2: Methodology (Clean Grid) -->
+<section class="teaching-methodology section-spacing">
+    <div class="container container--narrow">
+        <div class="text-center">
+            <h2 class="section-title">Phương pháp tiếp cận</h2>
+            <p class="section-desc" style="max-width: 600px; margin: 1.5rem auto 0;">
+                Các chương trình được thiết kế dựa trên nền tảng <strong>Tâm lý học ứng dụng</strong> kết hợp với 
+                <strong>Chánh niệm (Mindfulness)</strong>, hướng đến ba mục tiêu cốt lõi:
+            </p>
+        </div>
+        
+        <div class="method-grid">
+            <div class="method-card">
+                <span class="method-icon">🧠</span>
+                <h3>Hiểu mình</h3>
+                <p>Nhận diện cảm xúc, mô thức tư duy và động lực bên trong thông qua kiến thức tâm lý học.</p>
+            </div>
+            <div class="method-card">
+                <span class="method-icon">🧘</span>
+                <h3>An trú</h3>
+                <p>Khả năng quay về thực tại, giảm căng thẳng và tái tạo năng lượng nhờ thực hành chánh niệm.</p>
+            </div>
+            <div class="method-card">
+                <span class="method-icon">🌱</span>
+                <h3>Chuyển hóa</h3>
+                <p>Ứng dụng bài học vào công việc và đời sống để tạo ra những thay đổi bền vững.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-.page-header {
-    text-align: center;
-    margin-bottom: var(--space-5xl);
-}
+<!-- Section 3: Areas Grid (Polished) -->
+<section id="areas" class="teaching-areas-section section-spacing" style="background: white;">
+    <div class="container">
+        <div class="section-header text-center" style="margin-bottom: 4rem;">
+            <span class="eyebrow" style="color: var(--color-gold); font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem;">Chuyên môn</span>
+            <h2 class="section-title" style="margin-top: 0.5rem;">Lĩnh vực giảng dạy</h2>
+        </div>
+        
+        <div class="pillars-grid">
+            <!-- Area 1 -->
+            <div class="pillar-card-minimal">
+                <span class="pillar-num">01</span>
+                <h3>Tâm lý học<br>Ứng dụng</h3>
+                <p>Các môn học nền tảng về tâm lý phát triển, tâm lý học xã hội và hành vi con người trong tổ chức.</p>
+            </div>
+            
+            <!-- Area 2 -->
+            <div class="pillar-card-minimal">
+                <span class="pillar-num">02</span>
+                <h3>Mindfulness<br>At Work</h3>
+                <p>Mang chánh niệm vào môi trường công sở: Giảm burnout, tăng tập trung và trí tuệ cảm xúc (EQ).</p>
+            </div>
+            
+            <!-- Area 3 -->
+            <div class="pillar-card-minimal">
+                <span class="pillar-num">03</span>
+                <h3>Adult<br>Education</h3>
+                <p>Phương pháp sư phạm cho người trưởng thành (Andragogy) và học tập qua trải nghiệm.</p>
+            </div>
+            
+            <!-- Area 4 -->
+            <div class="pillar-card-minimal">
+                <span class="pillar-num">04</span>
+                <h3>Career<br>Development</h3>
+                <p>Mentoring và Coaching định hướng phát triển nghề nghiệp cho giảng viên và chuyên gia L&D.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-.teaching-content {
-    max-width: var(--content-max);
-    margin: 0 auto;
-}
-
-.teaching-section {
-    margin-bottom: var(--space-5xl);
-}
-
-.teaching-section:last-child {
-    margin-bottom: 0;
-}
-
-.teaching-section ul {
-    list-style-position: outside;
-    padding-left: var(--space-xl);
-}
-
-.teaching-section li {
-    margin-bottom: var(--space-md);
-}
-
-.teaching-areas {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-2xl);
-    margin-top: var(--space-xl);
-}
-
-@media (min-width: 768px) {
-    .teaching-areas {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-.teaching-area {
-    padding: var(--space-xl);
-    background: var(--color-bg-tertiary);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-}
-
-.teaching-area h3 {
-    color: var(--color-accent-dark);
-    font-size: 1.25rem;
-    margin-bottom: var(--space-md);
-}
-
-.teaching-area p {
-    margin: 0;
-    color: var(--color-text-secondary);
-}
-</style>
+<!-- Section 4: CTA (Minimal) -->
+<section class="teaching-cta section-spacing text-center" style="padding-bottom: 8rem;">
+    <div class="container container--narrow">
+        <h2 class="section-title">Hợp tác Đào tạo</h2>
+        <p class="section-desc" style="margin-bottom: 2rem;">
+            Tôi luôn sẵn sàng cho các cơ hội hợp tác giảng dạy tại trường Đại học, 
+            Doanh nghiệp hoặc các dự án cộng đồng.
+        </p>
+        <a href="/contact.php?purpose=teaching" class="btn btn-outline" style="border: 1px solid var(--color-text-primary); color: var(--color-text-primary); padding: 1rem 2.5rem; text-decoration: none; border-radius: 50px; font-weight: 500; transition: all 0.3s ease; display: inline-block;">
+            Cùng trò chuyện
+        </a>
+    </div>
+</section>
 
 <?php
 // Include footer

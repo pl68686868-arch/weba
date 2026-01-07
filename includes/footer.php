@@ -3,45 +3,42 @@
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
-            <div class="footer__content">
-                <div class="footer__text">
-                    <p>
-                        Website này là một không gian chia sẻ được hình thành từ việc giảng dạy, thực hành tâm lý và chánh niệm. 
-                        Mỗi bài viết là một lời mời dừng lại, quan sát và hiểu mình sâu hơn trong đời sống và công việc. 
-                        Nếu bạn đang ở trong hành trình tìm kiếm ý nghĩa và sự hồi phục thân–tâm, 
-                        mong rằng bạn sẽ tìm thấy ở đây một điểm tựa nhẹ nhàng.
+            <div class="footer__grid">
+                <!-- Column 1: Brand & Intro -->
+                <div class="footer__brand-col">
+                    <h2 class="footer__logo"><?= htmlspecialchars(SITE_NAME) ?></h2>
+                    <p class="footer__desc">
+                        Website này là không gian chia sẻ những suy tư, kiến thức và trải nghiệm thực hành 
+                        dựa trên nền tảng tâm lý học và chánh niệm.
+                    </p>
+                    <p class="footer__copyright">
+                        &copy; 2026 Dương Trần Minh Đoàn. <br>Mọi quyền được bảo lưu.
                     </p>
                 </div>
-                
-                <div class="footer__newsletter">
-                    <h3 class="footer__newsletter-title">Nhận bài viết mới qua email</h3>
-                    <form class="newsletter-form" id="newsletter-form">
-                        <input 
-                            type="email" 
-                            name="email" 
-                            placeholder="Email của bạn" 
-                            required
-                            class="newsletter-input"
-                        >
-                        <button type="submit" class="newsletter-button">Đăng ký</button>
-                    </form>
-                    <p class="newsletter-note">Không spam. Chỉ những chia sẻ ý nghĩa.</p>
-                </div>
-                
-                <nav class="footer__nav" aria-label="Footer Navigation">
-                    <ul class="footer-nav-list">
+
+                <!-- Column 2: Quick Links -->
+                <div class="footer__nav-col">
+                    <h3 class="footer__heading">Điều hướng</h3>
+                    <ul class="footer__nav-list">
                         <li><a href="/">Trang chủ</a></li>
                         <li><a href="/about.php">Giới thiệu</a></li>
                         <li><a href="/writing.php">Viết & Chia sẻ</a></li>
+                        <li><a href="/teaching.php">Giảng dạy</a></li>
+                        <li><a href="/podcast.php">Podcast</a></li>
                         <li><a href="/contact.php">Liên hệ</a></li>
-                        <li><a href="/rss.php">RSS</a></li>
                     </ul>
-                </nav>
-                
-                <div class="footer__bottom">
-                    <p class="copyright">
-                        © <?= date('Y') ?> <?= htmlspecialchars(SITE_NAME) ?>. Mọi quyền được bảo lưu.
+                </div>
+
+                <!-- Column 3: Newsletter -->
+                <div class="footer__newsletter-col">
+                    <h3 class="footer__heading">Kết nối</h3>
+                    <p class="footer__newsletter-desc">
+                        Nhận bài viết mới nhất qua email. Không spam, chỉ có sự chia sẻ.
                     </p>
+                    <form action="/subscribe.php" method="POST" class="newsletter-form">
+                        <input type="email" name="email" placeholder="Email của bạn" required class="newsletter-input">
+                        <button type="submit" class="newsletter-button">Đăng ký</button>
+                    </form>
                 </div>
             </div>
         </div>

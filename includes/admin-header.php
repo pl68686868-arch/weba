@@ -41,6 +41,9 @@
                 <a href="/admin/settings.php" class="admin-nav__link <?= basename($_SERVER['PHP_SELF']) === 'settings.php' ? 'active' : '' ?>">
                     ⚙️ Cài đặt
                 </a>
+                <a href="/admin/appearance.php" class="admin-nav__link <?= basename($_SERVER['PHP_SELF']) === 'appearance.php' ? 'active' : '' ?>">
+                    🎨 Giao diện
+                </a>
                 
                 <hr class="admin-nav__divider">
                 

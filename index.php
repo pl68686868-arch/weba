@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Homepage - Trang chủ
@@ -62,43 +61,133 @@ trackPageView(null, '/');
 include __DIR__ . '/includes/header.php';
 ?>
 
-<!-- Hero Section -->
+<!-- Hero Section - Magazine Split Layout -->
 <section class="hero">
-    <div class="container">
+    <div class="container hero__container">
+        <!-- Text Content (Left) -->
         <div class="hero__content">
+            <h1 class="hero__title">
+                Dương Trần Minh Đoàn
+                <span class="hero__subtitle">Giảng viên, người thực hành tâm lý và chánh niệm</span>
+            </h1>
             <p class="hero__text">
                 Tôi là giảng viên và người thực hành tâm lý, thực hành và giảng dạy dựa trên nền tảng chánh niệm. 
-                Công việc của tôi gắn liền với việc quan sát, lắng nghe và đồng hành cùng đời sống nội tâm của con người 
-                trong bối cảnh học tập, làm việc và trưởng thành.
+                Công việc của tôi gắn liền với việc quan sát, lắng nghe và đồng hành cùng đời sống nội tâm.
             </p>
-            <p class="hero__text">
+        </div>
+        
+        <!-- Hero Visual (Right) - Auto-fading Gallery -->
+        <div class="hero__visual">
+            <div class="hero__gallery">
+                <!-- Image 1 -->
+                <img src="uploads/portrait-1.jpg" 
+                     alt="Portrait 1" 
+                     class="hero__img active">
+                <!-- Image 2 -->
+                <img src="uploads/portrait-2.jpg" 
+                     alt="Portrait 2" 
+                     class="hero__img">
+                <!-- Image 3 -->
+                <img src="uploads/portrait-3.jpg" 
+                     alt="Portrait 3" 
+                     class="hero__img">
+                
+                <!-- Fallback to placeholder if uploads not found (JS will handle logic or CSS fallback) -->
+                <img src="https://images.unsplash.com/photo-1515023115689-589c33041697?q=80&w=2400" 
+                     alt="Fallback" 
+                     class="hero__img fallback" style="display:none;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Introduction - Fade-In Experience -->
+<section class="intro">
+    <div class="intro__parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1499244571948-7ccddb30d331?q=80&w=2800&auto=format&fit=crop');"></div>
+    <div class="intro__overlay"></div>
+    <div class="container intro__container">
+        <div class="intro__text-wrapper">
+            <p class="intro__text">
                 Website này là không gian tôi viết và chia sẻ những suy tư, kiến thức và trải nghiệm thực hành 
                 dành cho người trưởng thành đang ở trong hành trình tìm kiếm chiều sâu nội tâm, ý nghĩa trong công việc 
-                và sự hồi phục thân–tâm. Các nội dung được tiếp cận từ góc nhìn tâm lý học ứng dụng, chánh niệm 
-                và phản tư nghề nghiệp, với mong muốn góp phần nuôi dưỡng một đời sống tỉnh thức, bền vững và có ý nghĩa hơn.
+                và sự hồi phục thân–tâm.
+            </p>
+            <p class="intro__text">
+                Các nội dung được tiếp cận từ góc nhìn tâm lý học ứng dụng, chánh niệm và phản tư nghề nghiệp, 
+                với mong muốn góp phần nuôi dưỡng một đời sống tỉnh thức, bền vững và có ý nghĩa hơn.
             </p>
         </div>
     </div>
 </section>
 
-<!-- The 4 Pillars -->
+<!-- Testimonials Section -->
+<section class="testimonials section-spacing">
+    <div class="container container--narrow">
+        <div class="section-header text-center">
+            <span class="eyebrow" style="color: var(--color-gold);">Chia sẻ</span>
+            <h2 class="section-title">Từ những người đã đồng hành</h2>
+        </div>
+        
+        <div class="testimonials-grid" style="display: grid; gap: 2rem; margin-top: 3rem;">
+            <blockquote class="testimonial-card" style="background: white; padding: 2.5rem; border-radius: 12px; border-left: 4px solid var(--color-accent-medium); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <p style="font-style: italic; font-size: 1.125rem; line-height: 1.8; color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+                    "Thầy Đoàn đã giúp tôi nhìn nhận lại bản thân một cách nhẹ nhàng và sâu sắc. 
+                    Những buổi hướng dẫn chánh niệm thực sự mang lại sự bình an mà tôi đã tìm kiếm rất lâu."
+                </p>
+                <cite style="font-family: var(--font-ui); font-size: 0.875rem; color: var(--color-text-tertiary); font-style: normal;">
+                    — Học viên khóa Mindfulness At Work
+                </cite>
+            </blockquote>
+            
+            <blockquote class="testimonial-card" style="background: white; padding: 2.5rem; border-radius: 12px; border-left: 4px solid var(--color-gold); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <p style="font-style: italic; font-size: 1.125rem; line-height: 1.8; color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+                    "Cách tiếp cận của thầy rất khoa học nhưng đồng thời cũng rất gần gũi. 
+                    Tôi học được cách lắng nghe bản thân và không còn sợ đối diện với những cảm xúc khó khăn."
+                </p>
+                <cite style="font-family: var(--font-ui); font-size: 0.875rem; color: var(--color-text-tertiary); font-style: normal;">
+                    — Học viên khóa Tâm lý học Ứng dụng
+                </cite>
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<!-- The 4 Pillars - Visual Posters Grid -->
 <section class="pillars">
     <div class="container">
-        <h2 class="text-center">Bốn trụ cột</h2>
-        
+        <!-- No Heading -> Pure Visuals -->
         <div class="pillars__grid">
+            <?php 
+            // Define premium generated images for pillars
+            $pillarImages = [
+                'tam-ly-hoc-doi-song-truong-thanh' => 'uploads/pillar-psychology.png',
+                'chanh-niem-hoi-phuc-than-tam' => 'uploads/pillar-mindfulness.png',
+                'giao-duc-hoc-tap-nguoi-truong-thanh' => 'uploads/pillar-education.png',
+                'phan-tu-nghe-nghiep' => 'uploads/pillar-career.png'
+            ];
+            ?>
+            
             <?php foreach ($pillars as $pillar): ?>
-                <article class="pillar-card">
-                    <h3 class="pillar-card__title">
-                        <?= htmlspecialchars($pillar['name']) ?>
-                    </h3>
-                    <p class="pillar-card__description">
-                        <?= htmlspecialchars($pillar['description']) ?>
-                    </p>
-                    <a href="/category/<?= htmlspecialchars($pillar['slug']) ?>" class="pillar-card__link">
-                        Khám phá →
-                    </a>
-                </article>
+                <?php $bgImage = $pillarImages[$pillar['slug']] ?? 'https://images.unsplash.com/photo-1508672019048-805c2763d46d?q=80&w=1000'; ?>
+                
+                <a href="/category/<?= htmlspecialchars($pillar['slug']) ?>" class="pillar-card pillar-card--poster">
+                    <div class="pillar-card__bg" style="background-image: url('<?= $bgImage ?>');"></div>
+                    <div class="pillar-card__overlay"></div>
+                    
+                    <div class="pillar-card__content">
+                        <h3 class="pillar-card__title">
+                            <?= htmlspecialchars($pillar['name']) ?>
+                        </h3>
+                        <!-- Description added back for Hover Reveal -->
+                        <p class="pillar-card__reveal-text">
+                            <?= htmlspecialchars($pillar['description']) ?>
+                        </p>
+                        <div class="pillar-card__action">
+                            <span class="btn-text">Khám phá</span>
+                            <span class="btn-icon">→</span>
+                        </div>
+                    </div>
+                </a>
             <?php endforeach; ?>
         </div>
     </div>

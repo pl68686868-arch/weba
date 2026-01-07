@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Database class - PDO wrapper for secure database operations
@@ -14,7 +13,7 @@ declare(strict_types=1);
  * @author Danny Duong
  */
 class Database {
-    private static ?PDO $instance = null;
+    private static ?Database $instance = null;
     private PDO $pdo;
     private array $queryCache = [];
     private bool $inTransaction = false;
@@ -249,7 +248,7 @@ class Database {
      * @return void
      */
     private function logError(string $message): void {
-        $logFile = LOGS_PATH . '/database_errors.log';
+        $logFile = LOG_PATH . '/database_errors.log';
         $timestamp = date('Y-m-d H:i:s');
         $logMessage = "[{$timestamp}] {$message}\n";
         error_log($logMessage, 3, $logFile);

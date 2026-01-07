@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Admin Login Page
@@ -13,6 +12,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../includes/Database.php';
 require_once __DIR__ . '/../includes/Auth.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 $auth = new Auth();
 

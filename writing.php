@@ -148,8 +148,16 @@ include __DIR__ . '/includes/header.php';
         <!-- Posts Grid -->
         <?php if (empty($posts)): ?>
             <div class="no-posts">
+                <div class="no-posts__icon">
+                    <!-- Feather Icon -->
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+                        <line x1="16" y1="8" x2="2" y2="22"></line>
+                        <line x1="17.5" y1="15" x2="9" y2="15"></line>
+                    </svg>
+                </div>
                 <p>Chưa có bài viết nào trong chủ đề này.</p>
-                <a href="/writing.php" class="btn btn-secondary">← Xem tất cả bài viết</a>
+                <a href="/writing.php" class="btn btn-text">← Quay lại danh sách</a>
             </div>
  <?php else: ?>
             <div class="articles-grid">
@@ -215,108 +223,6 @@ include __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </div>
 </div>
-
-<style>
-.writing-page {
-    padding: var(--space-4xl) 0;
-}
-
-.page-header {
-    text-align: center;
-    margin-bottom: var(--space-5xl);
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.page-intro {
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-    margin-top: var(--space-lg);
-}
-
-/* Category Filter */
-.category-filter {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-4xl);
-    padding-bottom: var(--space-3xl);
-    border-bottom: 1px solid var(--color-border);
-}
-
-.filter-btn {
-    padding: var(--space-md) var(--space-xl);
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-family: var(--font-ui);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    transition: var(--transition-base);
-}
-
-.filter-btn:hover {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-accent-lighter);
-}
-
-.filter-btn.active {
-    background: var(--color-accent-dark);
-    border-color: var(--color-accent-dark);
-    color: white;
-}
-
-.filter-count {
-    font-size: 0.875rem;
-    opacity: 0.7;
-}
-
-/* No Posts */
-.no-posts {
-    text-align: center;
-    padding: var(--space-5xl) 0;
-}
-
-.no-posts p {
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-xl);
-}
-
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-xl);
-    margin-top: var(--space-5xl);
-    padding-top: var(--space-3xl);
-    border-top: 1px solid var(--color-border);
-}
-
-.pagination__btn {
-    padding: var(--space-md) var(--space-xl);
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-family: var(--font-ui);
-    font-weight: 500;
-    color: var(--color-accent-dark);
-    transition: var(--transition-base);
-}
-
-.pagination__btn:hover {
-    background: var(--color-accent-lighter);
-    border-color: var(--color-accent-medium);
-}
-
-.pagination__info {
-    font-family: var(--font-ui);
-    color: var(--color-text-secondary);
-}
-</style>
 
 <?php
 // Include footer
