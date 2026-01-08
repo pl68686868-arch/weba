@@ -80,10 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
         }
     }
     
-    // Clear hero_slides cache so homepage updates immediately
-    $cacheFile = __DIR__ . '/../cache/hero_slides.cache';
-    if (file_exists($cacheFile)) {
-        @unlink($cacheFile);
+    // Clear hero_slides cache from DATABASE
+    try {
+        $db->query("DELETE FROM cache WHERE cache_key = 'hero_slides'");
+    } catch (Exception $e) {
+        // Ignore if cache table doesn't exist
     }
     
     $success = 'Cập nhật cài đặt thành công!';
