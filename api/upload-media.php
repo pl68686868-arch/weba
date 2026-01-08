@@ -10,6 +10,7 @@
  */
 
 header('Content-Type: application/json');
+ob_start();
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
@@ -87,6 +88,9 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
         
         $mediaId = $db->lastInsertId();
         
+        // Clear any previous output (whitespace, warnings)
+        ob_clean();
+        
         echo json_encode([
             'success' => true,
             'message' => 'Upload successful',
@@ -97,15 +101,20 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
                 'url' => UPLOAD_URL . '/' . $filename
             ]
         ]);
+        exit;
         
     } catch (Exception $e) {
         // If DB fails, remove file?
         @unlink($targetPath);
+        ob_clean();
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        exit;
     }
 } else {
+    ob_clean();
     http_response_code(500);
     $error = error_get_last();
     echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file. Check permissions. ' . ($error['message'] ?? '')]);
+    exit;
 }
