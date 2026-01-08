@@ -54,6 +54,21 @@ $featuredPosts = $cache->remember('homepage_featured_posts', function() use ($db
     );
 }, 300); // Cache for 5 minutes
 
+// Get Hero Slides from Settings
+$heroSlides = $cache->remember('hero_slides', function() use ($db) {
+    $row = $db->fetchOne("SELECT setting_value FROM site_settings WHERE setting_key = 'hero_slides'");
+    return $row ? json_decode($row['setting_value'], true) : [];
+}, 3600);
+
+// Fallback images if no custom slides
+if (empty($heroSlides)) {
+    $heroSlides = [
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop'
+    ];
+}
+
 // Track page view
 trackPageView(null, '/');
 
@@ -79,18 +94,11 @@ include __DIR__ . '/includes/header.php';
         <!-- Hero Visual (Right) - Auto-fading Gallery -->
         <div class="hero__visual">
             <div class="hero__gallery">
-                <!-- Image 1 -->
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" 
-                     alt="Portrait 1" 
-                     class="hero__img active">
-                <!-- Image 2 -->
-                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop" 
-                     alt="Portrait 2" 
-                     class="hero__img">
-                <!-- Image 3 -->
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop" 
-                     alt="Portrait 3" 
-                     class="hero__img">
+                <?php foreach ($heroSlides as $index => $slide): ?>
+                    <img src="<?= htmlspecialchars($slide) ?>" 
+                         alt="Portrait <?= $index + 1 ?>" 
+                         class="hero__img <?= $index === 0 ? 'active' : '' ?>">
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
