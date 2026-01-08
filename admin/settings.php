@@ -193,6 +193,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData
             });
+            
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`Server Error (${response.status}): ${text.substring(0, 100)}`);
+            }
+
             const result = await response.json();
             
             if (result.success) {
@@ -222,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error(error);
-            alert('Lỗi kết nối');
+            alert('Lỗi: ' + error.message);
         } finally {
             uploadBtn.textContent = '+ Thêm ảnh';
             uploadBtn.disabled = false;
