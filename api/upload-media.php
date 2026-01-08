@@ -1,117 +1,109 @@
-<?php declare(strict_types=1);
-
-/**
- * Upload Media API
- * 
- * Handles file uploads via AJAX/Drag & Drop
- * 
- * @package Weba
- * @author Danny Duong
- */
-
-header('Content-Type: application/json');
+<?php
+// ULTRA MINIMAL VERSION - NO EXTRA OUTPUT
+@ob_end_clean(); // Kill any existing buffers
 ob_start();
-ini_set('display_errors', '0');
-error_reporting(E_ALL);
 
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../includes/Database.php';
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/functions.php';
+// Suppress ALL errors from displaying
+@ini_set('display_errors', '0');
+@error_reporting(0);
 
-$auth = new Auth();
-$auth->requireLogin();
+// Load dependencies silently
+@require_once __DIR__ . '/../config/config.php';
+@require_once __DIR__ . '/../includes/Database.php';
+@require_once __DIR__ . '/../includes/Auth.php';
+@require_once __DIR__ . '/../includes/functions.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+// Function to send clean JSON and die
+function sendJson($data) {
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    header('Content-Type: application/json');
+    echo json_encode($data);
     exit;
 }
 
+// Check auth
+try {
+    $auth = new Auth();
+    $auth->requireLogin();
+} catch (Exception $e) {
+    sendJson(['success' => false, 'message' => 'Authentication failed']);
+}
+
+// Check method
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendJson(['success' => false, 'message' => 'Method not allowed']);
+}
+
+// Check file
 if (!isset($_FILES['file'])) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'No file uploaded']);
-    exit;
+    sendJson(['success' => false, 'message' => 'No file uploaded']);
 }
 
 $file = $_FILES['file'];
 $uploadDir = __DIR__ . '/../assets/uploads/';
 
-// Debug paths
+// Create directory if needed
 if (!file_exists($uploadDir)) {
-    // Attempt to create
-    if (!@mkdir($uploadDir, 0755, true)) {
-        // Return 200 with error so JS handles it gracefully
-        ob_end_clean(); ob_start();
-        echo json_encode(['success' => false, 'message' => 'Cannot create upload directory (Permission Denied). Please create assets/uploads manually.']);
-        exit;
-    }
+    @mkdir($uploadDir, 0755, true);
 }
 
+// Check writable
 if (!is_writable($uploadDir)) {
-    ob_end_clean(); ob_start();
-    echo json_encode(['success' => false, 'message' => 'Upload directory is not writable. Please CHMOD 755 assets/uploads']);
-    exit;
+    sendJson(['success' => false, 'message' => 'Upload directory not writable']);
 }
 
+// Check upload error
 if ($file['error'] !== UPLOAD_ERR_OK) {
-    ob_end_clean(); ob_start();
-    echo json_encode(['success' => false, 'message' => 'Upload error code: ' . $file['error']]);
-    exit;
+    sendJson(['success' => false, 'message' => 'Upload error: ' . $file['error']]);
 }
 
+// Check file type
 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'];
 
 if (!in_array($ext, $allowed)) {
-    ob_end_clean(); ob_start();
-    echo json_encode(['success' => false, 'message' => 'File type not supported']);
-    exit;
+    sendJson(['success' => false, 'message' => 'File type not supported']);
 }
 
-// Generate safe filename
+// Generate filename
 $filename = uniqid() . '-' . createSlug(pathinfo($file['name'], PATHINFO_FILENAME)) . '.' . $ext;
 $targetPath = $uploadDir . $filename;
 
-if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+// Move file
+if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+    sendJson(['success' => false, 'message' => 'Failed to save file']);
+}
+
+// Save to database
+try {
     $db = Database::getInstance();
+    $db->insert('media', [
+        'filename' => $filename,
+        'original_filename' => $file['name'],
+        'file_path' => $filename,
+        'file_type' => $ext,
+        'file_size' => $file['size'],
+        'mime_type' => $file['type'],
+        'uploaded_by' => $auth->getUserId()
+    ]);
     
-    try {
-        $db->insert('media', [
+    $mediaId = $db->lastInsertId();
+    
+    // Success!
+    sendJson([
+        'success' => true,
+        'message' => 'Upload successful',
+        'data' => [
+            'id' => $mediaId,
             'filename' => $filename,
             'original_filename' => $file['name'],
-            'file_path' => $filename,
-            'file_type' => $ext,
-            'file_size' => $file['size'],
-            'mime_type' => $file['type'],
-            'uploaded_by' => $auth->getUserId()
-        ]);
-        
-        $mediaId = $db->lastInsertId();
-        
-        // Clear buffer and send success
-        ob_end_clean();
-        echo json_encode([
-            'success' => true,
-            'message' => 'Upload successful',
-            'data' => [
-                'id' => $mediaId,
-                'filename' => $filename,
-                'original_filename' => $file['name'],
-                'url' => UPLOAD_URL . '/' . $filename
-            ]
-        ]);
-        exit;
-        
-    } catch (Exception $e) {
-        @unlink($targetPath);
-        ob_end_clean(); ob_start();
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
-        exit;
-    }
-} else {
-    $error = error_get_last();
-    ob_end_clean(); ob_start();
-    echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file. Check permissions. ' . ($error['message'] ?? '')]);
-    exit;
+            'url' => UPLOAD_URL . '/' . $filename
+        ]
+    ]);
+    
+} catch (Exception $e) {
+    @unlink($targetPath);
+    sendJson(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 }
