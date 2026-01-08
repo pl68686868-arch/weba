@@ -36,8 +36,20 @@ if (!isset($_FILES['file'])) {
 $file = $_FILES['file'];
 $uploadDir = __DIR__ . '/../assets/uploads/';
 
+// Debug paths
 if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+    if (!@mkdir($uploadDir, 0755, true)) {
+        http_response_code(500);
+        $error = error_get_last();
+        echo json_encode(['success' => false, 'message' => 'Cannot create upload directory: ' . ($error['message'] ?? '')]);
+        exit;
+    }
+}
+
+if (!is_writable($uploadDir)) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Upload directory is not writable. Please CHMOD 755 assets/uploads']);
+    exit;
 }
 
 if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -51,7 +63,7 @@ $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'];
 
 if (!in_array($ext, $allowed)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'FileType not supported']);
+    echo json_encode(['success' => false, 'message' => 'File type not supported']);
     exit;
 }
 
@@ -70,10 +82,9 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             'file_type' => $ext,
             'file_size' => $file['size'],
             'mime_type' => $file['type'],
-            'uploaded_by' => $auth->getUserId() // using new Auth method
+            'uploaded_by' => $auth->getUserId()
         ]);
         
-        // Return full media object so UI can prepend it
         $mediaId = $db->lastInsertId();
         
         echo json_encode([
@@ -83,8 +94,7 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
                 'id' => $mediaId,
                 'filename' => $filename,
                 'original_filename' => $file['name'],
-                'url' => UPLOAD_URL . '/' . $filename,
-                'type' => $ext
+                'url' => UPLOAD_URL . '/' . $filename
             ]
         ]);
         
@@ -96,5 +106,6 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
     }
 } else {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file']);
+    $error = error_get_last();
+    echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file. Check permissions. ' . ($error['message'] ?? '')]);
 }
