@@ -9,21 +9,68 @@ $auth = new Auth();
 $auth->requireLogin();
 $db = Database::getInstance();
 
+// ============================================
+// AJAX UPLOAD HANDLER - Xử lý upload ảnh slide
+// ============================================
+if (isset($_GET['action']) && $_GET['action'] === 'upload_slide') {
+    header('Content-Type: application/json');
+    
+    if (!isset($_FILES['file'])) {
+        echo json_encode(['success' => false, 'message' => 'No file']);
+        exit;
+    }
+    
+    $file = $_FILES['file'];
+    $uploadDir = __DIR__ . '/../assets/uploads/';
+    
+    // Tạo thư mục nếu chưa có
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+    
+    // Kiểm tra file type
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    
+    if (!in_array($ext, $allowed)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid file type']);
+        exit;
+    }
+    
+    // Tạo tên file mới
+    $filename = uniqid('slide_') . '.' . $ext;
+    $targetPath = $uploadDir . $filename;
+    
+    // Move file
+    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+        // Trả về URL đầy đủ
+        $url = '/assets/uploads/' . $filename;
+        echo json_encode([
+            'success' => true,
+            'url' => $url
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Upload failed']);
+    }
+    exit;
+}
+
+// ============================================
+// NORMAL PAGE - Xử lý form và hiển thị
+// ============================================
 $success = '';
 $error = '';
 
-// Handle Save
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Handle Save Settings
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
     foreach ($_POST as $key => $value) {
         if ($key === 'csrf_token') continue;
         
-        // Check if setting exists
         $exists = $db->fetchOne("SELECT id FROM site_settings WHERE setting_key = :key", ['key' => $key]);
         
         if ($exists) {
             $db->update('site_settings', ['setting_value' => $value], 'setting_key = :key', ['key' => $key]);
         } else {
-            // Create setting if not exists
             $type = ($key === 'hero_slides') ? 'json' : 'string';
             $db->insert('site_settings', [
                 'setting_key' => $key, 
@@ -33,20 +80,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     $success = 'Cập nhật cài đặt thành công!';
-    // Refresh settings
-    $settings = $db->fetchAll("SELECT * FROM site_settings");
-    foreach ($settings as $s) {
-        $settingsMap[$s['setting_key']] = $s;
-    }
 }
 
-// Fetch Settings (if not POST)
-if (empty($settingsMap)) {
-    $settings = $db->fetchAll("SELECT * FROM site_settings");
-    $settingsMap = [];
-    foreach ($settings as $s) {
-        $settingsMap[$s['setting_key']] = $s;
-    }
+// Fetch all settings
+$settings = $db->fetchAll("SELECT * FROM site_settings");
+$settingsMap = [];
+foreach ($settings as $s) {
+    $settingsMap[$s['setting_key']] = $s;
 }
 
 require_once __DIR__ . '/../includes/admin-header.php';
@@ -56,14 +96,16 @@ require_once __DIR__ . '/../includes/admin-header.php';
     <h1>Cài đặt hệ thống</h1>
 </div>
 
-<?php if ($success): ?> <div class="alert alert-success"><?= htmlspecialchars($success) ?></div> <?php endif; ?>
+<?php if ($success): ?> 
+<div class="alert alert-success"><?= htmlspecialchars($success) ?></div> 
+<?php endif; ?>
 
 <form method="POST" action="">
     <div class="card">
         <h3>Slide ảnh Trang chủ (Hero)</h3>
         <p class="text-muted">Quản lý hình ảnh hiển thị ở slide đầu trang chủ.</p>
         
-        <input type="hidden" name="hero_slides" id="hero_slides_input" value='<?= $settingsMap['hero_slides']['setting_value'] ?? '[]' ?>'>
+        <input type="hidden" name="hero_slides" id="hero_slides_input" value='<?= htmlspecialchars($settingsMap['hero_slides']['setting_value'] ?? '[]') ?>'>
         
         <div id="slides_preview" class="slides-grid">
             <!-- JS will populate this -->
@@ -124,7 +166,6 @@ require_once __DIR__ . '/../includes/admin-header.php';
     .text-muted { color: #888; font-size: 13px; margin-top: 5px; display: block; }
     .btn-lg { padding: 15px 30px; font-size: 16px; }
     
-    /* Slideshow Styles */
     .slides-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -168,16 +209,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewGrid = document.getElementById('slides_preview');
     const heroSlidesInput = document.getElementById('hero_slides_input');
     
-    // Load initial slides
+    // Load existing slides
     let slides = [];
     try {
         slides = JSON.parse(heroSlidesInput.value || '[]');
-    } catch(e) { slides = []; }
+    } catch(e) { 
+        slides = []; 
+    }
     
     renderSlides();
     
+    // Click button to trigger file input
     uploadBtn.addEventListener('click', () => slideInput.click());
     
+    // Handle file selection
     slideInput.addEventListener('change', async function() {
         if (this.files.length === 0) return;
         
@@ -189,45 +234,31 @@ document.addEventListener('DOMContentLoaded', function() {
         uploadBtn.disabled = true;
         
         try {
-            const response = await fetch('/admin/upload-hero-slide.php', {
+            // Upload to SAME FILE with action parameter
+            const response = await fetch('settings.php?action=upload_slide', {
                 method: 'POST',
                 body: formData
             });
             
-            if (!response.ok) {
-                const text = await response.text();
-                throw new Error(`Server Error (${response.status}): ${text.substring(0, 100)}`);
+            const text = await response.text();
+            console.log('Response:', text); // Debug
+            
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch(e) {
+                throw new Error('Invalid JSON: ' + text.substring(0, 100));
             }
-
-            const result = await response.json();
             
             if (result.success) {
-                // Correctly access data structure from api/upload-media.php
-                // API returns { success: true, data: { url: '...', filename: '...' } }
-                let imageUrl = '';
-                
-                if (result.data && result.data.url) {
-                    imageUrl = result.data.url;
-                } else if (result.url) {
-                    imageUrl = result.url;
-                } else if (result.filename) {
-                    imageUrl = '/assets/uploads/' + result.filename;
-                } else if (result.data && result.data.filename) {
-                     imageUrl = '/assets/uploads/' + result.data.filename;
-                }
-                
-                if (imageUrl) {
-                    slides.push(imageUrl);
-                    renderSlides();
-                    updateInput();
-                } else {
-                    alert('Lỗi: Không nhận được đường dẫn ảnh');
-                }
+                slides.push(result.url);
+                renderSlides();
+                updateInput();
             } else {
-                alert('Lỗi: ' + result.message);
+                alert('Lỗi: ' + (result.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error(error);
+            console.error('Upload error:', error);
             alert('Lỗi: ' + error.message);
         } finally {
             uploadBtn.textContent = '+ Thêm ảnh';
@@ -241,26 +272,14 @@ document.addEventListener('DOMContentLoaded', function() {
         slides.forEach((url, index) => {
             const div = document.createElement('div');
             div.className = 'slide-item';
-            
-            // Fix display URL if it is relative 'uploads/' and we need full path for Admin preview
-            // If url starts with 'http', use it. Else prepend '/uploads/'? 
-            // Better: rely on server path.
-            // If I store "uploads/example.jpg", checking if it renders.
-            
-            // For preview, if it's local path without slash, prepend /
-            let displayUrl = url;
-            if (!url.startsWith('http') && !url.startsWith('/')) {
-                displayUrl = '/' + url;
-            }
-            
             div.innerHTML = `
-                <img src="${displayUrl}" onerror="this.src='/assets/images/placeholder.jpg'">
+                <img src="${url}" onerror="this.src='/assets/images/placeholder.jpg'">
                 <button type="button" class="slide-remove" data-index="${index}">×</button>
             `;
             previewGrid.appendChild(div);
         });
         
-        // Add delete events
+        // Add delete handlers
         document.querySelectorAll('.slide-remove').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
