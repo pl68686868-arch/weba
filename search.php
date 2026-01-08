@@ -125,7 +125,7 @@ include __DIR__ . '/includes/header.php';
                             </a>
                             
                             <h2 class="result-title">
-                                <a href="/post.php?slug=<?= escape($post['slug']) ?>">
+                                <a href="/post/<?= escape($post['slug']) ?>">
                                     <?= escape($post['title']) ?>
                                 </a>
                             </h2>

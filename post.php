@@ -235,7 +235,7 @@ include __DIR__ . '/includes/header.php';
                                 </a>
                                 
                                 <h3 class="article-card__title">
-                                    <a href="/post.php?slug=<?= escape($related['slug']) ?>">
+                                    <a href="/post/<?= escape($related['slug']) ?>">
                                         <?= escape($related['title']) ?>
                                     </a>
                                 </h3>

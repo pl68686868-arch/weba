@@ -83,7 +83,7 @@ include __DIR__ . '/includes/header.php';
                     <ul class="suggestions-list">
                         <?php foreach ($suggestions as $post): ?>
                             <li>
-                                <a href="/post.php?slug=<?= escape($post['slug']) ?>" class="suggestion-link">
+                                <a href="/post/<?= escape($post['slug']) ?>" class="suggestion-link">
                                     <span class="suggestion-title"><?= escape($post['title']) ?></span>
                                     <span class="suggestion-meta">
                                         <?= $post['reading_time'] ?> phút đọc

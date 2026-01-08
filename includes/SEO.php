@@ -292,7 +292,7 @@ class SEO {
 
         foreach ($posts as $post) {
             $urls[] = [
-                'loc' => SITE_URL . '/post.php?slug=' . urlencode($post['slug']),
+                'loc' => SITE_URL . '/post/' . urlencode($post['slug']),
                 'changefreq' => 'weekly',
                 'priority' => '0.9',
                 'lastmod' => date('Y-m-d', strtotime($post['updated_at']))
@@ -306,7 +306,7 @@ class SEO {
 
         foreach ($categories as $category) {
             $urls[] = [
-                'loc' => SITE_URL . '/writing.php?category=' . urlencode($category['slug']),
+                'loc' => SITE_URL . '/category/' . urlencode($category['slug']),
                 'changefreq' => 'weekly',
                 'priority' => '0.7',
                 'lastmod' => date('Y-m-d', strtotime($category['updated_at']))
