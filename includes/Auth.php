@@ -80,6 +80,11 @@ class Auth {
      * @return void
      */
     public function logout(): void {
+        // Ensure session is started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         $_SESSION = [];
         
         if (isset($_COOKIE[session_name()])) {
