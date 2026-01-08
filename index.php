@@ -80,22 +80,17 @@ include __DIR__ . '/includes/header.php';
         <div class="hero__visual">
             <div class="hero__gallery">
                 <!-- Image 1 -->
-                <img src="uploads/portrait-1.jpg" 
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" 
                      alt="Portrait 1" 
                      class="hero__img active">
                 <!-- Image 2 -->
-                <img src="uploads/portrait-2.jpg" 
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop" 
                      alt="Portrait 2" 
                      class="hero__img">
                 <!-- Image 3 -->
-                <img src="uploads/portrait-3.jpg" 
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop" 
                      alt="Portrait 3" 
                      class="hero__img">
-                
-                <!-- Fallback to placeholder if uploads not found (JS will handle logic or CSS fallback) -->
-                <img src="https://images.unsplash.com/photo-1515023115689-589c33041697?q=80&w=2400" 
-                     alt="Fallback" 
-                     class="hero__img fallback" style="display:none;">
             </div>
         </div>
     </div>
@@ -128,23 +123,23 @@ include __DIR__ . '/includes/header.php';
             <h2 class="section-title">Từ những người đã đồng hành</h2>
         </div>
         
-        <div class="testimonials-grid" style="display: grid; gap: 2rem; margin-top: 3rem;">
-            <blockquote class="testimonial-card" style="background: white; padding: 2.5rem; border-radius: 12px; border-left: 4px solid var(--color-accent-medium); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <p style="font-style: italic; font-size: 1.125rem; line-height: 1.8; color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+        <div class="testimonials-grid">
+            <blockquote class="testimonial-card testimonial-card--primary">
+                <p class="testimonial-quote">
                     "Thầy Đoàn đã giúp tôi nhìn nhận lại bản thân một cách nhẹ nhàng và sâu sắc. 
                     Những buổi hướng dẫn chánh niệm thực sự mang lại sự bình an mà tôi đã tìm kiếm rất lâu."
                 </p>
-                <cite style="font-family: var(--font-ui); font-size: 0.875rem; color: var(--color-text-tertiary); font-style: normal;">
+                <cite class="testimonial-author">
                     — Học viên khóa Mindfulness At Work
                 </cite>
             </blockquote>
             
-            <blockquote class="testimonial-card" style="background: white; padding: 2.5rem; border-radius: 12px; border-left: 4px solid var(--color-gold); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <p style="font-style: italic; font-size: 1.125rem; line-height: 1.8; color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+            <blockquote class="testimonial-card testimonial-card--gold">
+                <p class="testimonial-quote">
                     "Cách tiếp cận của thầy rất khoa học nhưng đồng thời cũng rất gần gũi. 
                     Tôi học được cách lắng nghe bản thân và không còn sợ đối diện với những cảm xúc khó khăn."
                 </p>
-                <cite style="font-family: var(--font-ui); font-size: 0.875rem; color: var(--color-text-tertiary); font-style: normal;">
+                <cite class="testimonial-author">
                     — Học viên khóa Tâm lý học Ứng dụng
                 </cite>
             </blockquote>
@@ -159,11 +154,12 @@ include __DIR__ . '/includes/header.php';
         <div class="pillars__grid">
             <?php 
             // Define premium generated images for pillars
+            // Define premium generated images for pillars
             $pillarImages = [
-                'tam-ly-hoc-doi-song-truong-thanh' => 'uploads/pillar-psychology.png',
-                'chanh-niem-hoi-phuc-than-tam' => 'uploads/pillar-mindfulness.png',
-                'giao-duc-hoc-tap-nguoi-truong-thanh' => 'uploads/pillar-education.png',
-                'phan-tu-nghe-nghiep' => 'uploads/pillar-career.png'
+                'tam-ly-hoc-doi-song-truong-thanh' => 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=600&auto=format&fit=crop', // Psychology (Journaling)
+                'chanh-niem-hoi-phuc-than-tam' => 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=600&auto=format&fit=crop', // Mindfulness
+                'giao-duc-hoc-tap-nguoi-truong-thanh' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=600&auto=format&fit=crop', // Education
+                'phan-tu-nghe-nghiep' => 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop' // Career
             ];
             ?>
             
@@ -217,7 +213,7 @@ include __DIR__ . '/includes/header.php';
                         </a>
                         
                         <h3 class="article-card__title">
-                            <a href="/post.php?slug=<?= htmlspecialchars($post['slug']) ?>">
+                            <a href="/post/<?= htmlspecialchars($post['slug']) ?>">
                                 <?= htmlspecialchars($post['title']) ?>
                             </a>
                         </h3>

@@ -233,38 +233,31 @@
     // ========================================================================
 
     function showMessage(message, type = 'info') {
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type}`;
-        alert.textContent = message;
-        alert.style.position = 'fixed';
-        alert.style.top = '20px';
-        alert.style.right = '20px';
-        alert.style.padding = '16px 24px';
-        alert.style.borderRadius = '8px';
-        alert.style.zIndex = '1000';
-        alert.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)';
-        alert.style.maxWidth = '400px';
+        // Remove existing toasts
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) existingToast.remove();
 
-        if (type === 'success') {
-            alert.style.background = '#EFE';
-            alert.style.color = '#3A3';
-            alert.style.border = '1px solid #CFC';
-        } else if (type === 'error') {
-            alert.style.background = '#FEE';
-            alert.style.color = '#C33';
-            alert.style.border = '1px solid #FCC';
-        } else {
-            alert.style.background = '#EEF';
-            alert.style.color = '#33C';
-            alert.style.border = '1px solid #CCF';
-        }
+        const toast = document.createElement('div');
+        // Map 'info' to default if needed, currently CSS supports toast--success, toast--error
+        // We'll add toast--info support in CSS or default to base
+        toast.className = `toast toast--${type}`;
 
-        document.body.appendChild(alert);
+        // Simple icon integration
+        let iconHtml = '';
+        if (type === 'success') iconHtml = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        else if (type === 'error') iconHtml = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+        else iconHtml = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
 
+        toast.innerHTML = `${iconHtml} <span>${message}</span>`;
+
+        document.body.appendChild(toast);
+
+        // Auto remove
         setTimeout(() => {
-            alert.style.opacity = '0';
-            alert.style.transition = 'opacity 0.3s';
-            setTimeout(() => alert.remove(), 300);
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(20px)';
+            toast.style.transition = 'all 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
         }, 5000);
     }
 
