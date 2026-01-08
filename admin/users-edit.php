@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $updateData['id'] = $userId;
                     $setSql = implode(', ', $setClauses);
                     
-                    $db->execute("UPDATE users SET $setSql WHERE id = :id", $updateData);
+                    $db->query("UPDATE users SET $setSql WHERE id = :id", $updateData);
                     $success = 'User updated successfully';
                     
                     // Refresh user data
