@@ -39,22 +39,23 @@ $uploadDir = __DIR__ . '/../assets/uploads/';
 
 // Debug paths
 if (!file_exists($uploadDir)) {
+    // Attempt to create
     if (!@mkdir($uploadDir, 0755, true)) {
-        http_response_code(500);
-        $error = error_get_last();
-        echo json_encode(['success' => false, 'message' => 'Cannot create upload directory: ' . ($error['message'] ?? '')]);
+        // Return 200 with error so JS handles it gracefully
+        ob_end_clean(); ob_start();
+        echo json_encode(['success' => false, 'message' => 'Cannot create upload directory (Permission Denied). Please create assets/uploads manually.']);
         exit;
     }
 }
 
 if (!is_writable($uploadDir)) {
-    http_response_code(500);
+    ob_end_clean(); ob_start();
     echo json_encode(['success' => false, 'message' => 'Upload directory is not writable. Please CHMOD 755 assets/uploads']);
     exit;
 }
 
 if ($file['error'] !== UPLOAD_ERR_OK) {
-    http_response_code(400);
+    ob_end_clean(); ob_start();
     echo json_encode(['success' => false, 'message' => 'Upload error code: ' . $file['error']]);
     exit;
 }
@@ -63,7 +64,7 @@ $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'];
 
 if (!in_array($ext, $allowed)) {
-    http_response_code(400);
+    ob_end_clean(); ob_start();
     echo json_encode(['success' => false, 'message' => 'File type not supported']);
     exit;
 }
@@ -88,9 +89,8 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
         
         $mediaId = $db->lastInsertId();
         
-        // Clear any previous output (whitespace, warnings)
-        ob_clean();
-        
+        // Clear buffer and send success
+        ob_end_clean();
         echo json_encode([
             'success' => true,
             'message' => 'Upload successful',
@@ -104,17 +104,14 @@ if (move_uploaded_file($file['tmp_name'], $targetPath)) {
         exit;
         
     } catch (Exception $e) {
-        // If DB fails, remove file?
         @unlink($targetPath);
-        ob_clean();
-        http_response_code(500);
+        ob_end_clean(); ob_start();
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
         exit;
     }
 } else {
-    ob_clean();
-    http_response_code(500);
     $error = error_get_last();
+    ob_end_clean(); ob_start();
     echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file. Check permissions. ' . ($error['message'] ?? '')]);
     exit;
 }
