@@ -23,19 +23,19 @@ Options -Indexes
     # /post/slug-name -> /post.php?slug=slug-name
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^post/([a-z0-9-]+)/?$ post.php?slug=$1 [L,QSA]
+    RewriteRule ^post/([^/]+)/?$ post.php?slug=$1 [L,QSA]
     
     # Clean URLs for categories
     # /category/slug-name -> /writing.php?category=slug-name
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^category/([a-z0-9-]+)/?$ writing.php?category=$1 [L,QSA]
+    RewriteRule ^category/([^/]+)/?$ writing.php?category=$1 [L,QSA]
     
     # Clean URLs for tags
     # /tag/slug-name -> /tag.php?tag=slug-name
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^tag/([a-z0-9-]+)/?$ tag.php?tag=$1 [L,QSA]
+    RewriteRule ^tag/([^/]+)/?$ tag.php?tag=$1 [L,QSA]
 </IfModule>
 
 # ============================================================================
