@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         uploadBtn.disabled = true;
         
         try {
-            const response = await fetch('/api/upload-media.php', {
+            const response = await fetch('/admin/upload-hero-slide.php', {
                 method: 'POST',
                 body: formData
             });
