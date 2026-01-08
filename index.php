@@ -58,7 +58,7 @@ $featuredPosts = $cache->remember('homepage_featured_posts', function() use ($db
 $heroSlides = $cache->remember('hero_slides', function() use ($db) {
     $row = $db->fetchOne("SELECT setting_value FROM site_settings WHERE setting_key = 'hero_slides'");
     return $row ? json_decode($row['setting_value'], true) : [];
-}, 3600);
+}, 60); // Cache for 1 minute only
 
 // Fallback images if no custom slides
 if (empty($heroSlides)) {

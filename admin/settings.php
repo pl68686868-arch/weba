@@ -79,6 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             ]);
         }
     }
+    
+    // Clear hero_slides cache so homepage updates immediately
+    $cacheFile = __DIR__ . '/../cache/hero_slides.cache';
+    if (file_exists($cacheFile)) {
+        @unlink($cacheFile);
+    }
+    
     $success = 'Cập nhật cài đặt thành công!';
 }
 
