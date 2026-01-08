@@ -211,12 +211,44 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 <h3>Ảnh đại diện</h3>
                 <div class="form-group">
                     <input type="text" id="featured_image" name="featured_image" value="<?= htmlspecialchars($_POST['featured_image'] ?? '') ?>" placeholder="Nhập URL ảnh...">
-                    <small>Hoặc <a href="/admin/media.php" target="_blank">chọn từ thư viện</a></small>
+                    <div style="display: flex; gap: 12px; margin-top: 8px;">
+                        <button type="button" id="uploadFeaturedBtn" class="btn btn-secondary" style="flex: 0;">
+                            📤 Upload ảnh
+                        </button>
+                        <small style="align-self: center;">hoặc <a href="#" id="openMediaPicker" style="color: #2563eb; text-decoration: underline;">chọn từ thư viện</a></small>
+                    </div>
+                    <input type="file" id="featuredImageFile" accept="image/*" style="display: none;">
+                    
+                    <div id="uploadProgress" style="display: none; margin-top: 10px;">
+                        <div style="background: #f0f0f0; border-radius: 4px; overflow: hidden;">
+                            <div id="progressBar" style="height: 4px; background: #2563eb; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                        <small id="progressText" style="color: #666; margin-top: 4px; display: block;"></small>
+                    </div>
+
+                    <div id="imagePreview" style="margin-top:10px; display:none;">
+                        <img id="previewImg" src="" style="max-width:100%; border-radius:4px;">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+<!-- Media Picker Modal -->
+<div id="mediaPickerModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Chọn ảnh từ thư viện</h2>
+            <button class="close-modal" onclick="closeMediaPicker()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="mediaGrid" class="media-picker-grid">
+                <div class="loading">Đang tải...</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     .grid-layout {
@@ -264,6 +296,106 @@ require_once __DIR__ . '/../includes/admin-header.php';
     .cke_notification {
         display: none !important;
     }
+    
+    /* Media Picker Modal */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 900px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #333;
+    }
+    
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 32px;
+        color: #999;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+    
+    .close-modal:hover {
+        background: #f5f5f5;
+        color: #333;
+    }
+    
+    .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+    
+    .media-picker-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+    
+    .media-picker-item {
+        border: 2px solid #e5e5e5;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #f9f9f9;
+    }
+    
+    .media-picker-item:hover {
+        border-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    
+    .media-picker-item img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+    }
 
     .btn-full {
         width: 100%;
@@ -289,7 +421,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
     // Suppress notification bar
     CKEDITOR.config.notification_aggregationTimeout = 0;
     
-    CKEDITOR.replace('content', {
+    var editor = CKEDITOR.replace('content', {
         height: 600,
         // Helper to remove branding
         removePlugins: 'exportpdf',
@@ -327,6 +459,201 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     'Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;' +
                     'Verdana/Verdana, Geneva, sans-serif'
     });
+    
+    // Auto-insert uploaded images into editor
+    editor.on('fileUploadResponse', function(evt) {
+        evt.stop();
+        var data = evt.data;
+        var xhr = data.fileLoader.xhr;
+        var response = xhr.responseText.split('|');
+        
+        if (response[1]) {
+            // Standard response format
+            data.url = response[1];
+        } else {
+            // JSON response format
+            try {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                if (jsonResponse.uploaded && jsonResponse.url) {
+                    data.url = jsonResponse.url;
+                }
+            } catch(e) {
+                console.error('Failed to parse upload response:', e);
+            }
+        }
+    });
+    
+    // ===== Media Picker Functionality =====
+    
+    // Open media picker
+    document.getElementById('openMediaPicker').addEventListener('click', function(e) {
+        e.preventDefault();
+        openMediaPicker();
+    });
+    
+    // Update preview when URL is manually entered
+    document.getElementById('featured_image').addEventListener('input', function(e) {
+        updateImagePreview(e.target.value);
+    });
+    
+    function openMediaPicker() {
+        const modal = document.getElementById('mediaPickerModal');
+        modal.style.display = 'flex';
+        loadMediaItems();
+    }
+    
+    function closeMediaPicker() {
+        const modal = document.getElementById('mediaPickerModal');
+        modal.style.display = 'none';
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('mediaPickerModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeMediaPicker();
+        }
+    });
+    
+    async function loadMediaItems() {
+        const grid = document.getElementById('mediaGrid');
+        grid.innerHTML = '<div class="loading">Đang tải...</div>';
+        
+        try {
+            const response = await fetch('/api/media-list.php?limit=50');
+            const result = await response.json();
+            
+            if (result.success && result.data.length > 0) {
+                renderMediaGrid(result.data);
+            } else {
+                grid.innerHTML = '<div class="loading">Chưa có ảnh nào trong thư viện</div>';
+            }
+        } catch (error) {
+            console.error('Failed to load media:', error);
+            grid.innerHTML = '<div class="loading">Lỗi khi tải ảnh</div>';
+        }
+    }
+    
+    function renderMediaGrid(items) {
+        const grid = document.getElementById('mediaGrid');
+        grid.innerHTML = '';
+        
+        const UPLOAD_URL = '<?= UPLOAD_URL ?>';
+        
+        items.forEach(item => {
+            // Only show images
+            if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(item.file_type)) {
+                return;
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'media-picker-item';
+            // Display with full URL but pass only filename to selectImage
+            const displayUrl = UPLOAD_URL + '/' + item.file_path;
+            div.innerHTML = `<img src="${displayUrl}" alt="${item.original_filename}" title="${item.original_filename}">`;
+            div.addEventListener('click', () => selectImage(item.file_path)); // Store only filename
+            grid.appendChild(div);
+        });
+    }
+    
+    function selectImage(url) {
+        document.getElementById('featured_image').value = url;
+        updateImagePreview(url);
+        closeMediaPicker();
+    }
+    
+    function updateImagePreview(url) {
+        const preview = document.getElementById('imagePreview');
+        const img = document.getElementById('previewImg');
+        const UPLOAD_URL = '<?= UPLOAD_URL ?>';
+        
+        if (url && url.trim() !== '') {
+            // Construct full URL if it's just a filename
+            const fullUrl = url.startsWith('http') ? url : `${UPLOAD_URL}/${url}`;
+            img.src = fullUrl;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+    
+    // Featured Image Upload Functionality
+    const uploadBtn = document.getElementById('uploadFeaturedBtn');
+    const fileInput = document.getElementById('featuredImageFile');
+    const progressDiv = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        // Validate file type
+        if (!file.type.startsWith('image')) {
+            alert('Chỉ chấp nhận file ảnh!');
+            return;
+        }
+        
+        // Validate file size (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('File quá lớn! Tối đa 10MB');
+            return;
+        }
+        
+        // Show progress
+        progressDiv.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.textContent = 'Đang upload...';
+        uploadBtn.disabled = true;
+        
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const response = await fetch('/admin/upload_featured_image.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update progress to 100%
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Upload thành công!';
+                progressText.style.color = '#28a745';
+                
+                // Update input and preview with FILENAME ONLY
+                document.getElementById('featured_image').value = data.filename;
+                updateImagePreview(data.filename);
+                
+                // Hide progress after 2s
+                setTimeout(() => {
+                    progressDiv.style.display = 'none';
+                    progressText.style.color = '#666';
+                }, 2000);
+            } else {
+                throw new Error(data.message || 'Upload thất bại');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            progressBar.style.width = '0%';
+            progressText.textContent = error.message || 'Lỗi khi upload ảnh';
+            progressText.style.color = '#dc3545';
+            
+            setTimeout(() => {
+                progressDiv.style.display = 'none';
+                progressText.style.color = '#666';
+            }, 3000);
+        } finally {
+            uploadBtn.disabled = false;
+            fileInput.value = ''; // Reset file input
+        }
+    });
+
 </script>
 
 <?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>

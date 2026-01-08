@@ -52,11 +52,43 @@ try {
          LIMIT 5"
     );
     
+    // Chart Data (Last 30 Days)
+    $chartData = $db->fetchAll(
+        "SELECT DATE(visited_at) as date, COUNT(*) as count 
+         FROM page_views 
+         WHERE visited_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) 
+         GROUP BY DATE(visited_at) 
+         ORDER BY date ASC"
+    );
+    
+    // Fill missing days
+    $dates = [];
+    $counts = [];
+    $period = new DatePeriod(
+        new DateTime('-29 days'),
+        new DateInterval('P1D'),
+        new DateTime('+1 day')
+    );
+    
+    foreach ($period as $date) {
+        $dates[] = $date->format('Y-m-d');
+        $counts[] = 0;
+    }
+    
+    foreach ($chartData as $row) {
+        $key = array_search($row['date'], $dates);
+        if ($key !== false) {
+            $counts[$key] = (int)$row['count'];
+        }
+    }
+    
 } catch (Exception $e) {
     error_log('Dashboard error: ' . $e->getMessage());
     $stats = [];
     $recentPosts = [];
     $popularPosts = [];
+    $dates = [];
+    $counts = [];
 }
 
 // Admin header
@@ -117,6 +149,14 @@ include __DIR__ . '/../includes/admin-header.php';
                 <div class="stat-card__value"><?= $stats['total_tags'] ?? 0 ?></div>
                 <div class="stat-card__label">Tags</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Analytics Chart -->
+    <div class="card mb-4" style="margin-bottom: 32px; padding: 24px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h2 style="margin: 0 0 24px;">Traffic Overview (30 Days)</h2>
+        <div style="height: 300px;">
+            <canvas id="viewsChart"></canvas>
         </div>
     </div>
     
@@ -194,3 +234,60 @@ include __DIR__ . '/../includes/admin-header.php';
 // Admin footer
 include __DIR__ . '/../includes/admin-footer.php';
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('viewsChart').getContext('2d');
+    
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: <?= json_encode($dates) ?>,
+            datasets: [{
+                label: 'Page Views',
+                data: <?= json_encode($counts) ?>,
+                borderColor: '#2C5F4F',
+                backgroundColor: 'rgba(44, 95, 79, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#f0f0f0'
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 10
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

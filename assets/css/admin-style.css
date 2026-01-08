@@ -438,20 +438,171 @@
     .admin-sidebar {
         position: fixed;
         left: -260px;
-        transition: left 0.3s;
-        z-index: 100;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     }
 
     .admin-sidebar.open {
         left: 0;
     }
 
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.open {
+        display: block;
+    }
+
+    .mobile-toggle {
+        display: flex !important;
+        /* Force show on mobile */
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 900;
+        background: #2C5F4F;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-close {
+        display: block !important;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .admin-main {
         margin-left: 0;
-        padding: 16px;
+        padding: 72px 16px 32px;
+        /* Add top padding for toggle button */
     }
 
     .stats-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Default hidden state for desktop */
+.mobile-toggle,
+.sidebar-overlay,
+.sidebar-close {
+    display: none;
+}
+
+/* ============================================================================
+   DARK MODE
+   ============================================================================ */
+:root {
+    --bg-body: #F5F5F5;
+    --bg-card: #FFFFFF;
+    --text-main: #2D2D2D;
+    --text-muted: #666666;
+    --border-color: #EEEEEE;
+    --input-bg: #FFFFFF;
+    --input-border: #DDDDDD;
+}
+
+[data-theme="dark"] {
+    --bg-body: #121212;
+    --bg-card: #1E1E1E;
+    --text-main: #E0E0E0;
+    --text-muted: #A0A0A0;
+    --border-color: #333333;
+    --input-bg: #2C2C2C;
+    --input-border: #444444;
+}
+
+/* Apply Variables to Dark Mode Context */
+[data-theme="dark"] .admin-body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .dashboard-section,
+[data-theme="dark"] .filters-card,
+[data-theme="dark"] .table-card,
+[data-theme="dark"] .media-item,
+[data-theme="dark"] .modal-content {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .admin-table th {
+    background-color: #252525;
+    color: var(--text-main);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .admin-table td {
+    border-bottom-color: var(--border-color);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .admin-table tr:hover {
+    background-color: #252525;
+}
+
+[data-theme="dark"] .form-input,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] textarea {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .form-hint,
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .stat-card__label {
+    color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .drop-zone {
+    background-color: #252525;
+    border-color: #444;
+}
+
+[data-theme="dark"] .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .admin-brand {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Charts in Dark Mode */
+[data-theme="dark"] canvas {
+    filter: invert(1) hue-rotate(180deg);
 }

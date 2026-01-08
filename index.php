@@ -217,7 +217,7 @@ include __DIR__ . '/includes/header.php';
                         </a>
                         
                         <h3 class="article-card__title">
-                            <a href="/post/<?= htmlspecialchars($post['slug']) ?>">
+                            <a href="/post.php?slug=<?= htmlspecialchars($post['slug']) ?>">
                                 <?= htmlspecialchars($post['title']) ?>
                             </a>
                         </h3>

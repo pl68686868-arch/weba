@@ -27,6 +27,7 @@ if (isset($_FILES['upload']) && $_FILES['upload']['error'] === UPLOAD_ERR_OK) {
         
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             // CKEditor 4 & 5 compatible response (mostly for CK4 now)
+            // Return full path for CKEditor to insert into content
             echo json_encode([
                 "uploaded" => 1,
                 "fileName" => $filename,
@@ -34,12 +35,14 @@ if (isset($_FILES['upload']) && $_FILES['upload']['error'] === UPLOAD_ERR_OK) {
             ]);
             
             // Optional: Insert into media table for record keeping
+            // IMPORTANT: Store ONLY filename, not full path
+            // The path will be constructed using UPLOAD_URL when rendering
             try {
                 $db = Database::getInstance();
                 $db->insert('media', [
                     'filename' => $filename,
                     'original_filename' => $file['name'],
-                    'file_path' => "/assets/uploads/" . $filename,
+                    'file_path' => $filename,  // Store only filename
                     'file_type' => $ext,
                     'file_size' => $file['size'],
                     'mime_type' => $file['type'],

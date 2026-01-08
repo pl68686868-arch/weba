@@ -235,7 +235,7 @@ include __DIR__ . '/includes/header.php';
                                 </a>
                                 
                                 <h3 class="article-card__title">
-                                    <a href="/post/<?= escape($related['slug']) ?>">
+                                    <a href="/post.php?slug=<?= escape($related['slug']) ?>">
                                         <?= escape($related['title']) ?>
                                     </a>
                                 </h3>
@@ -356,14 +356,14 @@ include __DIR__ . '/includes/header.php';
 
 /* Post Tags */
 .post-tags {
-    margin-top: var(--space-5xl);
-    padding-top: var(--space-3xl);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
     border-top: 1px solid var(--color-border);
 }
 
 .post-tags h3 {
     font-size: 1.125rem;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-sm);
 }
 
 .tag-list {
@@ -388,14 +388,14 @@ include __DIR__ . '/includes/header.php';
 
 /* Share Buttons */
 .post-share {
-    margin-top: var(--space-4xl);
-    padding-top: var(--space-3xl);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
     border-top: 1px solid var(--color-border);
 }
 
 .post-share h3 {
     font-size: 1.125rem;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-sm);
 }
 
 .share-buttons {
@@ -425,8 +425,8 @@ include __DIR__ . '/includes/header.php';
 
 /* Author Bio */
 .author-bio {
-    margin-top: var(--space-5xl);
-    padding: var(--space-3xl);
+    margin-top: var(--space-2xl);
+    padding: var(--space-xl);
     background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
 }

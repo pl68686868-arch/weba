@@ -21,6 +21,7 @@ $db = Database::getInstance();
 
 // Filters
 $status = $_GET['status'] ?? '';
+$search = trim($_GET['search'] ?? '');
 $categoryId = (int)($_GET['category'] ?? 0);
 $page = max(1, (int)($_GET['page'] ?? 1));
 $perPage = 20;
@@ -33,6 +34,11 @@ $params = [];
 if (!empty($status)) {
     $where[] = "p.status = :status";
     $params['status'] = $status;
+}
+
+if (!empty($search)) {
+    $where[] = "(p.title LIKE :search OR p.slug LIKE :search)";
+    $params['search'] = "%{$search}%";
 }
 
 if ($categoryId > 0) {
@@ -72,12 +78,20 @@ include __DIR__ . '/../includes/admin-header.php';
 <div class="admin-page">
     <div class="admin-page__header">
         <h1>Posts</h1>
-        <a href="/admin/posts-new.php" class="btn btn-primary">+ New Post</a>
+        <div style="display: flex; gap: 10px;">
+            <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">Delete Selected (<span id="selectedCount">0</span>)</button>
+            <a href="/admin/posts-new.php" class="btn btn-primary">+ New Post</a>
+        </div>
     </div>
     
     <!-- Filters -->
     <div class="filters-card">
         <form method="GET" action="" class="filters-form">
+            <div class="filter-group" style="flex: 1; min-width: 200px;">
+                <label>Search:</label>
+                <input type="text" name="search" class="form-input" placeholder="Search by title..." value="<?= htmlspecialchars($search) ?>">
+            </div>
+            
             <div class="filter-group">
                 <label>Status:</label>
                 <select name="status" class="form-select">
@@ -111,6 +125,7 @@ include __DIR__ . '/../includes/admin-header.php';
             <table class="admin-table">
                 <thead>
                     <tr>
+                        <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
                         <th>Title</th>
                         <th>Category</th>
                         <th>Author</th>
@@ -123,6 +138,7 @@ include __DIR__ . '/../includes/admin-header.php';
                 <tbody>
                     <?php foreach ($posts as $post): ?>
                         <tr>
+                            <td><input type="checkbox" class="post-checkbox" value="<?= $post['id'] ?>"></td>
                             <td>
                                 <strong><?= escape($post['title']) ?></strong>
                                 <br>
@@ -145,6 +161,13 @@ include __DIR__ . '/../includes/admin-header.php';
                                 <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" class="btn btn-small btn-secondary">
                                     Edit
                                 </a>
+                                <button 
+                                    class="btn btn-small btn-danger delete-post-btn"
+                                    data-post-id="<?= $post['id'] ?>"
+                                    data-post-title="<?= htmlspecialchars($post['title']) ?>"
+                                    title="Delete post">
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -179,6 +202,24 @@ include __DIR__ . '/../includes/admin-header.php';
         <?php endif; ?>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to delete this post?</p>
+        <p class="modal-post-title"></p>
+        <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+        <div class="modal-actions">
+            <button id="confirmDelete" class="btn btn-danger">Delete Post</button>
+            <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast" style="display: none;"></div>
 
 <style>
 .filters-card {
@@ -241,7 +282,287 @@ include __DIR__ . '/../includes/admin-header.php';
     color: #5A5A5A;
     font-size: 0.9375rem;
 }
+
+/* Delete Button */
+.btn-danger {
+    background: #DC3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #C82333;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}
+
+.modal-content h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+    color: #2D2D2D;
+}
+
+.modal-content p {
+    margin: 8px 0;
+    color: #5A5A5A;
+}
+
+.modal-post-title {
+    font-weight: 600;
+    color: #2D2D2D;
+    font-size: 1.0625rem;
+}
+
+.text-danger {
+    color: #DC3545 !important;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background: #2C5F4F;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    animation: slideIn 0.3s ease-out;
+}
+
+.toast.error {
+    background: #DC3545;
+}
+
+.toast.success {
+    background: #28A745;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 </style>
+
+<script>
+// Post deletion functionality
+(function() {
+    const modal = document.getElementById('deleteModal');
+    const confirmBtn = document.getElementById('confirmDelete');
+    const cancelBtn = document.getElementById('cancelDelete');
+    const modalOverlay = modal?.querySelector('.modal-overlay');
+    const modalPostTitle = modal?.querySelector('.modal-post-title');
+    
+    let currentPostId = null;
+    let currentPostRow = null;
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+        toast.style.display = 'block';
+        
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 4000);
+    }
+    
+    // Open modal
+    function openModal(postId, postTitle, rowElement) {
+        currentPostId = postId;
+        currentPostRow = rowElement;
+        modalPostTitle.textContent = postTitle;
+        modal.style.display = 'flex';
+    }
+    
+    // Close modal
+    function closeModal() {
+        modal.style.display = 'none';
+        currentPostId = null;
+        currentPostRow = null;
+    }
+    
+    // Delete post
+    async function deletePost() {
+        if (!currentPostId) return;
+        
+        // Disable buttons during request
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Deleting...';
+        
+        try {
+            const formData = new FormData();
+            formData.append('id', currentPostId);
+            
+            const response = await fetch('/api/delete-post.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Remove row from table with animation
+                if (currentPostRow) {
+                    currentPostRow.style.opacity = '0';
+                    currentPostRow.style.transform = 'scale(0.95)';
+                    currentPostRow.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        currentPostRow.remove();
+                        
+                        // Check if table is now empty
+                        const tbody = document.querySelector('.admin-table tbody');
+                        if (tbody && tbody.children.length === 0) {
+                            location.reload(); // Reload to show empty state
+                        }
+                    }, 300);
+                }
+                
+                closeModal();
+                showToast('Post deleted successfully', 'success');
+            } else {
+                showToast(data.message || 'Failed to delete post', 'error');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Delete Post';
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            showToast('An error occurred while deleting the post', 'error');
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Delete Post';
+        }
+    }
+    
+    // Event listeners
+    document.querySelectorAll('.delete-post-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const postTitle = this.getAttribute('data-post-title');
+            const row = this.closest('tr');
+            openModal(postId, postTitle, row);
+        });
+    });
+    
+    cancelBtn?.addEventListener('click', closeModal);
+    modalOverlay?.addEventListener('click', closeModal);
+    confirmBtn?.addEventListener('click', deletePost);
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeModal();
+        }
+    });
+
+    // Bulk Actions
+    const selectAllDetails = document.getElementById('selectAll');
+    const postCheckboxes = document.querySelectorAll('.post-checkbox');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    
+    function updateBulkUI() {
+        const checked = document.querySelectorAll('.post-checkbox:checked');
+        const count = checked.length;
+        selectedCountSpan.textContent = count;
+        if (bulkDeleteBtn) {
+            bulkDeleteBtn.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+    }
+    
+    selectAllDetails?.addEventListener('change', function() {
+        postCheckboxes.forEach(cb => cb.checked = this.checked);
+        updateBulkUI();
+    });
+    
+    postCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkUI);
+    });
+    
+    bulkDeleteBtn?.addEventListener('click', async function() {
+        const checked = document.querySelectorAll('.post-checkbox:checked');
+        const ids = Array.from(checked).map(cb => cb.value);
+        
+        if (!confirm(`Are you sure you want to delete ${ids.length} posts? This cannot be undone.`)) {
+            return;
+        }
+        
+        this.disabled = true;
+        this.textContent = 'Deleting...';
+        
+        try {
+            const res = await fetch('/api/bulk-delete-posts.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids })
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                showToast(`Deleted ${data.deleted_count} posts successfully`);
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showToast(data.message, 'error');
+                this.disabled = false; // Add reset text logic if needed
+                updateBulkUI(); 
+            }
+        } catch (e) {
+            console.error(e);
+            showToast('An error occurred', 'error');
+            this.disabled = false;
+        }
+    });
+})();
+</script>
 
 <?php
 // Include admin footer
