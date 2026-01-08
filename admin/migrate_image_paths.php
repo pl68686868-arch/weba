@@ -50,14 +50,14 @@ try {
     }
     echo "Updated " . count($posts) . " post records\n";
     
-    // Fix settings table - image paths
-    echo "\nUpdating settings table...\n";
-    $settings = $db->fetchAll("SELECT id, setting_key, setting_value FROM settings WHERE setting_value LIKE '/assets/uploads/%'");
+    // Fix site_settings table - image paths
+    echo "\nUpdating site_settings table...\n";
+    $settings = $db->fetchAll("SELECT id, setting_key, setting_value FROM site_settings WHERE setting_value LIKE '/assets/uploads/%'");
     
     foreach ($settings as $setting) {
         $filename = basename($setting['setting_value']);
         
-        $db->update('settings', 
+        $db->update('site_settings', 
             ['setting_value' => $filename], 
             'id = :id', 
             ['id' => $setting['id']]
