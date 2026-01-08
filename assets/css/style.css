@@ -1566,3 +1566,144 @@ body.page-subpage {
     color: var(--color-text-tertiary);
     text-align: center;
 }
+/* ============================================================================
+   SINGLE POST LAYOUT (FIXED)
+   ============================================================================ */
+
+.single-post {
+    padding-bottom: var(--space-5xl);
+}
+
+.post-layout {
+    display: grid;
+    grid-template-columns: 1fr; /* Default mobile stack */
+    gap: var(--space-3xl);
+}
+
+@media (min-width: 992px) {
+    .post-layout {
+        grid-template-columns: 1fr 300px; /* Main + Sidebar */
+        align-items: start;
+    }
+}
+
+/* Main Content Area */
+.post-main {
+    width: 100%;
+    min-width: 0; /* Prevent grid blowout */
+}
+
+/* Header Centering */
+.post-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    max-width: 840px; /* Optimal header width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post-category {
+    display: inline-block;
+    color: var(--color-gold);
+    font-family: var(--font-ui);
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    text-decoration: none;
+}
+
+.post-title {
+    margin-bottom: var(--space-md);
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.25;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-xl);
+}
+
+/* Featured Image */
+.post-featured-image {
+    margin: 0 auto var(--space-3xl);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Article Content - "Sửa sửa" cho nó nằm giữa */
+.article-content {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: var(--color-text-paragraph);
+    max-width: 740px; /* Khoảng trắng hai bên cho dễ đọc (Premium standard) */
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.article-content p {
+    margin-bottom: 1.5em;
+}
+
+.article-content h2, 
+.article-content h3 {
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+    color: var(--color-text-primary);
+}
+
+.article-content img {
+    margin: 2em auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.article-content blockquote {
+    border-left: 4px solid var(--color-gold);
+    padding-left: var(--space-lg);
+    margin: 2em 0;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--color-text-secondary);
+}
+
+/* Elements within content that need full width? 
+   Usually we keep everything 740px. 
+*/
+
+/* Sidebar */
+.post-sidebar {
+    display: none; /* Hide on mobile defaults */
+}
+
+@media (min-width: 992px) {
+    .post-sidebar {
+        display: block;
+        position: sticky;
+        top: 100px; /* Sticky sidebar */
+    }
+}
+
+.table-of-contents {
+    padding: var(--space-lg);
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.table-of-contents h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-tertiary);
+}
