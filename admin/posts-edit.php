@@ -240,7 +240,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     <select id="category_id" name="category_id">
                         <option value="">-- Chọn chuyên mục --</option>
                         <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>" <?= $post['category_id'] == $cat['id'] ? 'selected' : '' ?>>
+                            <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?? 'post' ?>" <?= $post['category_id'] == $cat['id'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($cat['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -652,11 +652,38 @@ require_once __DIR__ . '/../includes/admin-header.php';
         }
     });
     
-    // Toggle Spotify Field
+    // Toggle Spotify Field & Filter Categories
     function toggleSpotifyField() {
         const type = document.getElementById('post_type').value;
         const field = document.getElementById('spotifyField');
         field.style.display = type === 'podcast' ? 'block' : 'none';
+        
+        // Filter Categories
+        const categorySelect = document.getElementById('category_id');
+        const options = categorySelect.querySelectorAll('option');
+        let firstVisible = null;
+        
+        options.forEach(opt => {
+            if (!opt.value) return; // Skip default option
+            
+            const catType = opt.getAttribute('data-type') || 'post';
+            
+            if (catType === type) {
+                opt.style.display = '';
+                if (!firstVisible) firstVisible = opt;
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+        
+        // If current selection is hidden, select first visible
+        // But only if we are actually changing type? 
+        // For edit page, we want to preserve selection if it matches.
+        const currentSelected = categorySelect.options[categorySelect.selectedIndex];
+        if (currentSelected.style.display === 'none') {
+            categorySelect.value = ""; // Reset to empty or maybe firstVisible?
+            // Let's reset to empty so user is forced to choose
+        }
     }
     
     // Run on load

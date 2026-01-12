@@ -218,7 +218,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     <select id="category_id" name="category_id">
                         <option value="">-- Chọn chuyên mục --</option>
                         <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>" <?= (($_POST['category_id'] ?? 0) == $cat['id']) ? 'selected' : '' ?>>
+                            <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?? 'post' ?>" <?= (($_POST['category_id'] ?? 0) == $cat['id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($cat['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -681,11 +681,39 @@ require_once __DIR__ . '/../includes/admin-header.php';
         }
     });
 
-    // Toggle Spotify Field
+    // Toggle Spotify Field & Filter Categories
     function toggleSpotifyField() {
         const type = document.getElementById('post_type').value;
         const field = document.getElementById('spotifyField');
         field.style.display = type === 'podcast' ? 'block' : 'none';
+        
+        // Filter Categories
+        const categorySelect = document.getElementById('category_id');
+        const options = categorySelect.querySelectorAll('option');
+        let firstVisible = null;
+        
+        options.forEach(opt => {
+            if (!opt.value) return; // Skip default option
+            
+            const catType = opt.getAttribute('data-type') || 'post';
+            
+            // Logic: 
+            // If post_type is 'podcast', show ONLY 'podcast' categories
+            // If post_type is 'post', show ONLY 'post' categories
+            
+            if (catType === type) {
+                opt.style.display = '';
+                if (!firstVisible) firstVisible = opt;
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+        
+        // Reset selection if current selection is hidden
+        const currentSelected = categorySelect.options[categorySelect.selectedIndex];
+        if (currentSelected.style.display === 'none') {
+            categorySelect.value = ""; // Reset to empty
+        }
     }
     
     // Run on load

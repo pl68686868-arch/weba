@@ -32,7 +32,7 @@ include __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Section 1: Hero -->
-<section class="about-hero"> <!-- Shared Hero Style -->
+<section class="about-hero" style="padding-bottom: 2rem;"> <!-- Shared Hero Style -->
     <div class="container">
         <div class="about-hero__grid">
             <div class="about-hero__content">
@@ -74,7 +74,7 @@ include __DIR__ . '/includes/header.php';
 
 <!-- Section 2: Themes Grid (Album Style) -->
 <!-- Section 2: Podcast Episodes -->
-<section class="podcast-library" style="padding: 4rem 0;">
+<section class="podcast-library" style="padding: 1rem 0;">
     <div class="container">
         <div class="section-header text-center">
             <span class="eyebrow">Tập mới nhất</span>

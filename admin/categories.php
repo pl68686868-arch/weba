@@ -22,6 +22,16 @@ $db = Database::getInstance();
 $error = '';
 $success = '';
 
+// AUTO-MIGRATION: Ensure 'type' column exists
+try {
+    $checkCol = $db->fetchAll("SHOW COLUMNS FROM categories LIKE 'type'");
+    if (empty($checkCol)) {
+        $db->query("ALTER TABLE categories ADD COLUMN type ENUM('post', 'podcast') DEFAULT 'post' AFTER slug");
+    }
+} catch (Exception $e) {
+    // Ignore error if column exists or permission denied
+}
+
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -34,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 case 'create':
                     $name = trim($_POST['name'] ?? '');
                     $slug = trim($_POST['slug'] ?? '');
+                    $type = $_POST['type'] ?? 'post'; // New Type Field
                     $description = trim($_POST['description'] ?? '');
                     $displayOrder = (int)($_POST['display_order'] ?? 0);
                     
@@ -47,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $db->insert('categories', [
                             'name' => $name,
                             'slug' => $slug,
+                            'type' => $type,
                             'description' => $description,
                             'display_order' => $displayOrder
                         ]);
@@ -59,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $id = (int)($_POST['id'] ?? 0);
                     $name = trim($_POST['name'] ?? '');
                     $slug = trim($_POST['slug'] ?? '');
+                    $type = $_POST['type'] ?? 'post'; // New Type Field
                     $description = trim($_POST['description'] ?? '');
                     $displayOrder = (int)($_POST['display_order'] ?? 0);
                     
@@ -68,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             [
                                 'name' => $name,
                                 'slug' => $slug,
+                                'type' => $type,
                                 'description' => $description,
                                 'display_order' => $displayOrder
                             ],
@@ -110,7 +124,7 @@ $categories = $db->fetchAll(
      FROM categories c
      LEFT JOIN posts p ON c.id = p.category_id
      GROUP BY c.id
-     ORDER BY c.display_order ASC, c.name ASC"
+     ORDER BY c.type ASC, c.display_order ASC, c.name ASC"
 );
 
 // Include admin header
@@ -142,6 +156,14 @@ include __DIR__ . '/../includes/admin-header.php';
                 <label for="name" class="form-label">Name *</label>
                 <input type="text" id="name" name="name" class="form-input" required>
             </div>
+
+            <div class="form-group">
+                <label for="type" class="form-label">Type</label>
+                <select id="type" name="type" class="form-input">
+                    <option value="post">Post (Blog)</option>
+                    <option value="podcast">Podcast</option>
+                </select>
+            </div>
             
             <div class="form-group">
                 <label for="slug" class="form-label">Slug (leave empty for auto)</label>
@@ -171,6 +193,7 @@ include __DIR__ . '/../includes/admin-header.php';
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Type</th>
                     <th>Slug</th>
                     <th>Posts</th>
                     <th>Order</th>
@@ -185,6 +208,11 @@ include __DIR__ . '/../includes/admin-header.php';
                             <?php if ($cat['description']): ?>
                                 <br><small><?= escape(substr($cat['description'], 0, 100)) ?></small>
                             <?php endif; ?>
+                        </td>
+                        <td>
+                            <span class="badge badge-<?= $cat['type'] === 'podcast' ? 'purple' : 'blue' ?>">
+                                <?= ucfirst($cat['type'] ?? 'post') ?>
+                            </span>
                         </td>
                         <td><code><?= escape($cat['slug']) ?></code></td>
                         <td><?= $cat['post_count'] ?></td>
@@ -221,6 +249,14 @@ include __DIR__ . '/../includes/admin-header.php';
             <div class="form-group">
                 <label for="edit_name" class="form-label">Name *</label>
                 <input type="text" id="edit_name" name="name" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_type" class="form-label">Type</label>
+                <select id="edit_type" name="type" class="form-input">
+                    <option value="post">Post (Blog)</option>
+                    <option value="podcast">Podcast</option>
+                </select>
             </div>
             
             <div class="form-group">
@@ -290,6 +326,17 @@ include __DIR__ . '/../includes/admin-header.php';
     max-height: 90vh;
     overflow-y: auto;
 }
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.badge-blue { background: #e0f2fe; color: #0369a1; }
+.badge-purple { background: #f3e8ff; color: #7e22ce; }
 </style>
 
 <script>
@@ -304,6 +351,7 @@ function hideCreateForm() {
 function editCategory(cat) {
     document.getElementById('edit_id').value = cat.id;
     document.getElementById('edit_name').value = cat.name;
+    document.getElementById('edit_type').value = cat.type || 'post';
     document.getElementById('edit_slug').value = cat.slug;
     document.getElementById('edit_description').value = cat.description || '';
     document.getElementById('edit_display_order').value = cat.display_order;
