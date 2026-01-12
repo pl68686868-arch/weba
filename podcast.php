@@ -80,10 +80,47 @@ include __DIR__ . '/includes/header.php';
         </div>
         
         <?php
-        $podcasts = $db->fetchAll(
-            "SELECT * FROM posts WHERE post_type = 'podcast' AND status = 'published' ORDER BY published_at DESC"
+        // Get current category filter
+        $categorySlug = $_GET['category'] ?? '';
+        
+        // Build query
+        $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug 
+                FROM posts p 
+                JOIN categories c ON p.category_id = c.id
+                WHERE p.post_type = 'podcast' AND p.status = 'published'";
+        $params = [];
+        
+        if (!empty($categorySlug)) {
+            $sql .= " AND c.slug = :slug";
+            $params['slug'] = $categorySlug;
+        }
+        
+        $sql .= " ORDER BY p.published_at DESC";
+        
+        $podcasts = $db->fetchAll($sql, $params);
+        
+        // Fetch categories that have podcasts
+        $categories = $db->fetchAll(
+            "SELECT DISTINCT c.* FROM categories c 
+             JOIN posts p ON c.id = p.category_id 
+             WHERE p.post_type = 'podcast' AND p.status = 'published' 
+             ORDER BY c.name"
         );
         ?>
+        
+        <!-- Category Filter -->
+        <?php if (!empty($categories)): ?>
+            <div class="podcast-filter" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <a href="/podcast.php" class="btn btn-outline <?= empty($categorySlug) ? 'active' : '' ?>" style="border-radius: 20px;">Tất cả</a>
+                <?php foreach ($categories as $cat): ?>
+                    <a href="/podcast.php?category=<?= escape($cat['slug']) ?>" 
+                       class="btn btn-outline <?= $categorySlug === $cat['slug'] ? 'active' : '' ?>"
+                       style="border-radius: 20px;">
+                        <?= escape($cat['name']) ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
         <?php if (!empty($podcasts)): ?>
             <div class="podcast-grid">
@@ -158,6 +195,12 @@ include __DIR__ . '/includes/header.php';
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 24px;
         margin-top: 40px;
+    }
+    
+    .btn.active {
+        background-color: var(--color-accent-dark, #2C5F4F);
+        color: white;
+        border-color: var(--color-accent-dark, #2C5F4F);
     }
 </style>
 

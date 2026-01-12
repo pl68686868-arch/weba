@@ -20,6 +20,10 @@ require_once __DIR__ . '/includes/Database.php';
 require_once __DIR__ . '/includes/SEO.php';
 require_once __DIR__ . '/includes/Cache.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/Auth.php';
+
+$auth = new Auth();
+$isAdmin = $auth->isAdmin();
 
 $db = Database::getInstance();
 $cache = new Cache();
@@ -40,9 +44,9 @@ try {
          FROM posts p
          JOIN categories c ON p.category_id = c.id
          JOIN users u ON p.author_id = u.id
-         WHERE p.slug = :slug 
-         AND p.status = 'published'
-         LIMIT 1",
+         WHERE p.slug = :slug " .
+         ($isAdmin ? "" : "AND p.status = 'published'") .
+         " LIMIT 1",
         ['slug' => $slug]
     );
     
@@ -111,6 +115,12 @@ include __DIR__ . '/includes/header.php';
             ['name' => $post['category_name'], 'url' => '/category/' . $post['category_slug']],
             ['name' => $post['title'], 'url' => '']
         ]) ?>
+
+        <?php if ($post['status'] !== 'published'): ?>
+            <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 20px; text-align: center;">
+                <strong>Preview Mode:</strong> This post is currently <strong><?= ucfirst($post['status']) ?></strong>.
+            </div>
+        <?php endif; ?>
         
         <div class="post-layout">
             <!-- Main Content -->

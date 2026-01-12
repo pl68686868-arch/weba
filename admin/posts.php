@@ -106,14 +106,6 @@ include __DIR__ . '/../includes/admin-header.php';
                     <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Draft</option>
                     <option value="scheduled" <?= $status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
                 </select>
-            <div class="filter-group">
-                <label>Status:</label>
-                <select name="status" class="form-select">
-                    <option value="">All</option>
-                    <option value="published" <?= $status === 'published' ? 'selected' : '' ?>>Published</option>
-                    <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Draft</option>
-                    <option value="scheduled" <?= $status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
-                </select>
             </div>
 
             <div class="filter-group">
