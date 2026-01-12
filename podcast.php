@@ -71,60 +71,95 @@ include __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Section 2: Themes Grid (Album Style) -->
+<!-- Section 2: Podcast Episodes -->
 <section class="podcast-library section-spacing">
     <div class="container">
         <div class="section-header text-center">
-            <span class="eyebrow">Chủ đề chính</span>
-            <h2 class="section-title">Thư viện nội dung</h2>
+            <span class="eyebrow">Tập mới nhất</span>
+            <h2 class="section-title">Danh sách phát</h2>
         </div>
         
-        <div class="podcast-grid">
-            <!-- Theme 1 -->
-            <div class="podcast-card">
-                <div class="podcast-card__cover" style="background: #D4AF75;">
-                    <span class="podcast-card__icon">🧠</span>
-                </div>
-                <div class="podcast-card__content">
-                    <h3>Tâm lý học thường thức</h3>
-                    <p>Giải mã những cảm xúc phức tạp: lo âu, ghen tị, cô đơn và sự tìm kiếm ý nghĩa.</p>
-                </div>
+        <?php
+        $podcasts = $db->fetchAll(
+            "SELECT * FROM posts WHERE post_type = 'podcast' AND status = 'published' ORDER BY published_at DESC"
+        );
+        ?>
+
+        <?php if (!empty($podcasts)): ?>
+            <div class="podcast-grid">
+                <?php foreach ($podcasts as $podcast): ?>
+                    <a href="/post/<?= escape($podcast['slug']) ?>" class="podcast-card-link">
+                        <div class="podcast-card">
+                            <div class="podcast-card__cover" style="<?= $podcast['featured_image'] ? "background-image: url('" . UPLOAD_URL . '/' . escape($podcast['featured_image']) . "'); background-size: cover; background-position: center;" : "background-color: #e9ecef;" ?>">
+                                <?php if (!$podcast['featured_image']): ?>
+                                    <span class="podcast-card__icon">🎙️</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="podcast-card__content">
+                                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;"><?= escape($podcast['title']) ?></h3>
+                                <p style="font-size: 0.9rem; color: #666; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    <?= escape($podcast['excerpt'] ?? '') ?>
+                                </p>
+                                <span style="font-size: 0.8rem; color: #999; margin-top: auto; display: block; padding-top: 10px;">
+                                    <?= formatDate($podcast['published_at'], 'short') ?>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
             </div>
-            
-            <!-- Theme 2 -->
-            <div class="podcast-card">
-                <div class="podcast-card__cover" style="background: #8A9A95;">
-                    <span class="podcast-card__icon">🌿</span>
-                </div>
-                <div class="podcast-card__content">
-                    <h3>Thực hành Chánh niệm</h3>
-                    <p>Những bài tập nhỏ giúp bạn neo mình vào hiện tại giữa những xáo trộn.</p>
-                </div>
+        <?php else: ?>
+            <div class="text-center" style="padding: 40px;">
+                <p>Chưa có tập podcast nào.</p>
             </div>
-            
-            <!-- Theme 3 -->
-            <div class="podcast-card">
-                <div class="podcast-card__cover" style="background: #24332D;">
-                    <span class="podcast-card__icon">💼</span>
-                </div>
-                <div class="podcast-card__content">
-                    <h3>Công việc & Sự nghiệp</h3>
-                    <p>Làm sao để tìm thấy niềm vui và ý nghĩa trong công việc mỗi ngày?</p>
-                </div>
-            </div>
-            
-            <!-- Theme 4 -->
-            <div class="podcast-card">
-                <div class="podcast-card__cover" style="background: #C4C4C4;">
-                    <span class="podcast-card__icon">☕</span>
-                </div>
-                <div class="podcast-card__content">
-                    <h3>Trò chuyện cuối tuần</h3>
-                    <p>Những tản mạn vụn vặt nhưng sâu sắc về sách, phim và lối sống.</p>
-                </div>
-            </div>
-        </div>
+        <?php endif; ?>
     </div>
 </section>
+
+<style>
+    .podcast-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    .podcast-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        background: white;
+    }
+    .podcast-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    .podcast-card__cover {
+        aspect-ratio: 1/1;
+        background-color: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .podcast-card__icon {
+        font-size: 3rem;
+    }
+    .podcast-card__content {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .podcast-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+        margin-top: 40px;
+    }
+</style>
 
 <!-- Section 3: Subscription -->
 <section id="subscribe" class="podcast-subscribe section-spacing bg-tertiary">

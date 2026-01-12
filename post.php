@@ -139,6 +139,20 @@ include __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                 </header>
                 
+                <?php if (($post['post_type'] ?? 'post') === 'podcast' && !empty($post['spotify_url'])): ?>
+                    <?php
+                    // Convert standard Spotify URL to Embed URL if needed
+                    $spotifyUrl = $post['spotify_url'];
+                    if (strpos($spotifyUrl, 'open.spotify.com/episode') !== false && strpos($spotifyUrl, 'open.spotify.com/embed') === false) {
+                        $spotifyUrl = str_replace('open.spotify.com/episode', 'open.spotify.com/embed/episode', $spotifyUrl);
+                    }
+                    ?>
+                    <div class="podcast-player" style="margin-bottom: 2rem;">
+                        <iframe style="border-radius:12px" src="<?= escape($spotifyUrl) ?>" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                <?php endif; ?>
+                
+                
                 <div class="article-content">
                     <?= $post['content'] ?>
                 </div>

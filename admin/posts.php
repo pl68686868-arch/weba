@@ -21,6 +21,7 @@ $db = Database::getInstance();
 
 // Filters
 $status = $_GET['status'] ?? '';
+$type = $_GET['type'] ?? '';
 $search = trim($_GET['search'] ?? '');
 $categoryId = (int)($_GET['category'] ?? 0);
 $page = max(1, (int)($_GET['page'] ?? 1));
@@ -34,6 +35,11 @@ $params = [];
 if (!empty($status)) {
     $where[] = "p.status = :status";
     $params['status'] = $status;
+}
+
+if (!empty($type)) {
+    $where[] = "p.post_type = :type";
+    $params['type'] = $type;
 }
 
 if (!empty($search)) {
@@ -100,6 +106,23 @@ include __DIR__ . '/../includes/admin-header.php';
                     <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Draft</option>
                     <option value="scheduled" <?= $status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
                 </select>
+            <div class="filter-group">
+                <label>Status:</label>
+                <select name="status" class="form-select">
+                    <option value="">All</option>
+                    <option value="published" <?= $status === 'published' ? 'selected' : '' ?>>Published</option>
+                    <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Draft</option>
+                    <option value="scheduled" <?= $status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Type:</label>
+                <select name="type" class="form-select">
+                    <option value="">All</option>
+                    <option value="post" <?= $type === 'post' ? 'selected' : '' ?>>Post</option>
+                    <option value="podcast" <?= $type === 'podcast' ? 'selected' : '' ?>>Podcast</option>
+                </select>
             </div>
             
             <div class="filter-group">
@@ -127,6 +150,7 @@ include __DIR__ . '/../includes/admin-header.php';
                     <tr>
                         <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
                         <th>Title</th>
+                        <th>Type</th>
                         <th>Category</th>
                         <th>Author</th>
                         <th>Status</th>
@@ -147,6 +171,11 @@ include __DIR__ . '/../includes/admin-header.php';
                                         View →
                                     </a>
                                 </small>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: <?= $post['post_type'] === 'podcast' ? '#e9ecef' : '#fff3cd' ?>; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">
+                                    <?= ucfirst($post['post_type']) ?>
+                                </span>
                             </td>
                             <td><?= escape($post['category_name']) ?></td>
                             <td><?= escape($post['author_name']) ?></td>

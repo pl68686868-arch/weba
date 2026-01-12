@@ -46,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status = $_POST['status'] ?? 'draft';
     $tags_input = $_POST['tags'] ?? '';
     $featured_image = $_POST['featured_image'] ?? '';
+    $post_type = $_POST['post_type'] ?? 'post';
+    $spotify_url = $_POST['spotify_url'] ?? '';
     
     // SEO Fields
     $meta_title = $_POST['meta_title'] ?? '';
@@ -83,6 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'excerpt' => $excerpt,
                 'category_id' => $category_id,
                 'status' => $status,
+                'status' => $status,
+                'post_type' => $post_type,
+                'spotify_url' => $spotify_url,
                 'featured_image' => $featured_image,
                 'meta_title' => $meta_title,
                 'meta_description' => $meta_description
@@ -205,6 +210,24 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     </select>
                 </div>
                 <button type="submit" class="btn btn-full">Cập nhật</button>
+                <button type="submit" class="btn btn-full">Cập nhật</button>
+            </div>
+            
+            <div class="card">
+                <h3>Loại bài viết</h3>
+                <div class="form-group">
+                    <label for="post_type">Loại nội dung</label>
+                    <select id="post_type" name="post_type" onchange="toggleSpotifyField()">
+                        <option value="post" <?= (($post['post_type'] ?? 'post') === 'post') ? 'selected' : '' ?>>Bài viết (Blog)</option>
+                        <option value="podcast" <?= (($post['post_type'] ?? '') === 'podcast') ? 'selected' : '' ?>>Podcast</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="spotifyField" style="display: none;">
+                    <label for="spotify_url">Link Spotify</label>
+                    <input type="text" id="spotify_url" name="spotify_url" value="<?= htmlspecialchars($post['spotify_url'] ?? '') ?>" placeholder="https://open.spotify.com/episode/...">
+                    <small>Nhập link tập podcast trên Spotify.</small>
+                </div>
             </div>
 
             <div class="card">
@@ -624,6 +647,18 @@ require_once __DIR__ . '/../includes/admin-header.php';
             fileInput.value = ''; // Reset file input
         }
     });
+
+    });
+    
+    // Toggle Spotify Field
+    function toggleSpotifyField() {
+        const type = document.getElementById('post_type').value;
+        const field = document.getElementById('spotifyField');
+        field.style.display = type === 'podcast' ? 'block' : 'none';
+    }
+    
+    // Run on load
+    toggleSpotifyField();
 
 </script>
 
