@@ -38,6 +38,9 @@
                 <a href="/admin/categories.php" class="admin-nav__link <?= basename($_SERVER['PHP_SELF']) === 'categories.php' ? 'active' : '' ?>">
                     📁 Chuyên mục
                 </a>
+                <a href="/admin/posts.php?type=podcast" class="admin-nav__link <?= (isset($_GET['type']) && $_GET['type'] === 'podcast') ? 'active' : '' ?>">
+                    🎙️ Podcast/Dự án
+                </a>
                 <a href="/admin/tags.php" class="admin-nav__link <?= basename($_SERVER['PHP_SELF']) === 'tags.php' ? 'active' : '' ?>">
                     🏷️ Tags
                 </a>
