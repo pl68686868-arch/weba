@@ -37,9 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Vui lòng nhập tiêu đề bài viết.';
     } elseif (empty($content)) {
         $error = 'Nội dung bài viết không được để trống.';
-    } elseif ($category_id === 0) {
-        $error = 'Vui lòng chọn chuyên mục.';
     } else {
+        // If category is not selected, default to the first available category
+        if ($category_id === 0) {
+            $defaultCat = $db->fetchOne("SELECT id FROM categories ORDER BY id ASC LIMIT 1");
+            if ($defaultCat) {
+                $category_id = $defaultCat['id'];
+            }
+        }
         // Auto-generate slug if empty
         if (empty($slug)) {
             $slug = createSlug($title);
@@ -210,7 +215,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
             <div class="card">
                 <h3>Chuyên mục</h3>
                 <div class="form-group">
-                    <select id="category_id" name="category_id" required>
+                    <select id="category_id" name="category_id">
                         <option value="">-- Chọn chuyên mục --</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat['id'] ?>" <?= (($_POST['category_id'] ?? 0) == $cat['id']) ? 'selected' : '' ?>>
