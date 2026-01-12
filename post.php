@@ -138,12 +138,20 @@ include __DIR__ . '/includes/header.php';
                         <span class="post-meta__reading-time"><?= $post['reading_time'] ?> phút đọc</span>
                     </div>
                     
-                    <?php if ($post['featured_image']): ?>
+                    <?php if (!empty($post['featured_image'])): ?>
+                        <?php
+                            $featImg = $post['featured_image'];
+                            // Check if it's an external URL
+                            if (!preg_match("~^(?:f|ht)tps?://~i", $featImg)) {
+                                $featImg = UPLOAD_URL . '/' . $featImg;
+                            }
+                        ?>
                         <div class="post-featured-image">
                             <img 
-                                src="<?= UPLOAD_URL . '/' . escape($post['featured_image']) ?>" 
+                                src="<?= escape($featImg) ?>" 
                                 alt="<?= escape($post['title']) ?>"
                                 loading="eager"
+                                onerror="this.style.display='none'"
                             >
                         </div>
                     <?php endif; ?>
@@ -238,18 +246,28 @@ include __DIR__ . '/includes/header.php';
         </div>
         
         <!-- Related Posts -->
-        <?php if (!empty($relatedPosts)): ?>
-            <section class="related-posts">
-                <h2>Bài viết liên quan</h2>
+        <?php if (!empty($relatedPosts) && is_array($relatedPosts)): ?>
+            <section class="related-posts section-spacing">
+                <div class="section-header text-center" style="margin-bottom: 2rem;">
+                    <span class="eyebrow">Khám phá thêm</span>
+                    <h2 class="section-title">Bài viết liên quan</h2>
+                </div>
                 <div class="articles-grid">
                     <?php foreach ($relatedPosts as $related): ?>
                         <article class="article-card">
                             <?php if ($related['featured_image']): ?>
+                                <?php
+                                    $relImg = $related['featured_image'];
+                                    if (!preg_match("~^(?:f|ht)tps?://~i", $relImg)) {
+                                        $relImg = UPLOAD_URL . '/' . $relImg;
+                                    }
+                                ?>
                                 <img 
-                                    src="<?= UPLOAD_URL . '/' . escape($related['featured_image']) ?>" 
+                                    src="<?= escape($relImg) ?>" 
                                     alt="<?= escape($related['title']) ?>"
                                     class="article-card__image"
                                     loading="lazy"
+                                    onerror="this.style.display='none'"
                                 >
                             <?php endif; ?>
                             
