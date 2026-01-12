@@ -14,6 +14,8 @@ require_once __DIR__ . '/includes/Database.php';
 require_once __DIR__ . '/includes/SEO.php';
 require_once __DIR__ . '/includes/functions.php';
 
+$db = Database::getInstance();
+
 // SEO Setup
 $seo = new SEO();
 $seo->setTitle('Podcast / Dự án')

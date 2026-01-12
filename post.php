@@ -126,9 +126,7 @@ include __DIR__ . '/includes/header.php';
             <!-- Main Content -->
             <div class="post-main">
                 <header class="post-header">
-                    <a href="/category/<?= escape($post['category_slug']) ?>" class="post-category">
-                        <?= escape($post['category_name']) ?>
-                    </a>
+                    <!-- Category label removed -->
                     
                     <h1 class="post-title"><?= escape($post['title']) ?></h1>
                     
