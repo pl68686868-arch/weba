@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = 'Category name is required';
                     } else {
                         if (empty($slug)) {
-                            $slug = SEO::createSlug($name);
+                            $slug = createSlug($name);
                         }
                         
                         $db->insert('categories', [
