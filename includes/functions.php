@@ -13,8 +13,8 @@
  * @param string $string String to sanitize
  * @return string Sanitized string
  */
-function escape(string $string): string {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+function escape(?string $string): string {
+    return htmlspecialchars((string)($string ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
 /**

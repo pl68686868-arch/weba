@@ -228,8 +228,8 @@ include __DIR__ . '/includes/header.php';
                     <h3>Về tác giả</h3>
                     <div class="author-bio__content">
                         <div class="author-bio__text">
-                            <h4><?= escape($post['author_name']) ?></h4>
-                            <p><?= escape(SITE_TAGLINE) ?></p>
+                            <h4><?= escape($post['author_name'] ?? 'Admin') ?></h4>
+                            <p><?= defined('SITE_TAGLINE') ? escape(SITE_TAGLINE) : 'Chia sẻ kiến thức & trải nghiệm' ?></p>
                         </div>
                     </div>
                 </div>
