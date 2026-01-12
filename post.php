@@ -157,7 +157,7 @@ include __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                 </header>
                 
-                <?php if (($post['post_type'] ?? 'post') === 'podcast' && !empty($post['spotify_url'])): ?>
+                <?php if (!empty($post['spotify_url'])): ?>
                     <?php
                     // Convert standard Spotify URL to Embed URL if needed
                     $spotifyUrl = $post['spotify_url'];
@@ -165,7 +165,7 @@ include __DIR__ . '/includes/header.php';
                         $spotifyUrl = str_replace('open.spotify.com/episode', 'open.spotify.com/embed/episode', $spotifyUrl);
                     }
                     ?>
-                    <div class="podcast-player" style="margin-bottom: 2rem;">
+                    <div class="podcast-player" style="margin-bottom: 3rem; margin-top: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-radius: 12px; overflow: hidden;">
                         <iframe style="border-radius:12px" src="<?= escape($spotifyUrl) ?>" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                     </div>
                 <?php endif; ?>
@@ -252,9 +252,9 @@ include __DIR__ . '/includes/header.php';
                     <span class="eyebrow">Khám phá thêm</span>
                     <h2 class="section-title">Bài viết liên quan</h2>
                 </div>
-                <div class="articles-grid">
+                <div class="articles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
                     <?php foreach ($relatedPosts as $related): ?>
-                        <article class="article-card">
+                        <article class="article-card" style="border-bottom: none;">
                             <?php if ($related['featured_image']): ?>
                                 <?php
                                     $relImg = $related['featured_image'];
@@ -262,28 +262,34 @@ include __DIR__ . '/includes/header.php';
                                         $relImg = UPLOAD_URL . '/' . $relImg;
                                     }
                                 ?>
-                                <img 
-                                    src="<?= escape($relImg) ?>" 
-                                    alt="<?= escape($related['title']) ?>"
-                                    class="article-card__image"
-                                    loading="lazy"
-                                    onerror="this.style.display='none'"
-                                >
+                                <a href="/post/<?= escape($related['slug']) ?>" class="article-card__link" style="text-decoration: none;">
+                                    <div class="article-card__image-wrapper" style="aspect-ratio: 16/10; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
+                                        <img 
+                                            src="<?= escape($relImg) ?>" 
+                                            alt="<?= escape($related['title']) ?>"
+                                            class="article-card__image"
+                                            loading="lazy"
+                                            onerror="this.style.display='none'"
+                                            style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;"
+                                        >
+                                    </div>
+                                </a>
                             <?php endif; ?>
                             
                             <div class="article-card__content">
-                                <a href="/category/<?= escape($related['category_slug']) ?>" class="article-card__category">
+                                <a href="/category/<?= escape($related['category_slug']) ?>" class="article-card__category" style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-gold); font-weight: 600; text-decoration: none; display: block; margin-bottom: 0.5rem;">
                                     <?= escape($related['category_name']) ?>
                                 </a>
                                 
-                                <h3 class="article-card__title">
-                                    <a href="/post/<?= escape($related['slug']) ?>">
+                                <h3 class="article-card__title" style="font-size: 1.25rem; margin: 0 0 0.5rem 0; line-height: 1.3;">
+                                    <a href="/post/<?= escape($related['slug']) ?>" style="text-decoration: none; color: var(--color-text-primary);">
                                         <?= escape($related['title']) ?>
                                     </a>
                                 </h3>
                                 
-                                <div class="article-card__meta">
+                                <div class="article-card__meta" style="font-size: 0.85rem; color: #666; font-family: var(--font-ui);">
                                     <span><?= formatDate($related['published_at'] ?? $related['created_at'], 'short') ?></span>
+                                    <span style="margin: 0 5px;">•</span>
                                     <span><?= $related['reading_time'] ?> phút đọc</span>
                                 </div>
                             </div>
