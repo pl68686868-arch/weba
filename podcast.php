@@ -74,7 +74,7 @@ include __DIR__ . '/includes/header.php';
 
 <!-- Section 2: Themes Grid (Album Style) -->
 <!-- Section 2: Podcast Episodes -->
-<section class="podcast-library section-spacing">
+<section class="podcast-library" style="padding: 4rem 0;">
     <div class="container">
         <div class="section-header text-center">
             <span class="eyebrow">Tập mới nhất</span>

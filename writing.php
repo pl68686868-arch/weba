@@ -27,7 +27,7 @@ $perPage = POSTS_PER_PAGE;
 $offset = ($page - 1) * $perPage;
 
 // Build query based on filters
-$where = ["p.status = 'published'"];
+$where = ["p.status = 'published'", "p.post_type = 'post'"];
 $params = [];
 
 // Category filter
@@ -80,7 +80,7 @@ $categories = $cache->remember('writing_categories', function() use ($db) {
     return $db->fetchAll(
         "SELECT c.*, COUNT(p.id) as post_count 
          FROM categories c
-         LEFT JOIN posts p ON c.id = p.category_id AND p.status = 'published'
+         JOIN posts p ON c.id = p.category_id AND p.status = 'published' AND p.post_type = 'post'
          GROUP BY c.id
          ORDER BY c.display_order ASC"
     );
