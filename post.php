@@ -252,7 +252,7 @@ include __DIR__ . '/includes/header.php';
                     <span class="eyebrow">Khám phá thêm</span>
                     <h2 class="section-title">Bài viết liên quan</h2>
                 </div>
-                <div class="articles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="articles-grid">
                     <?php foreach ($relatedPosts as $related): ?>
                         <article class="article-card" style="border-bottom: none;">
                             <?php if ($related['featured_image']): ?>

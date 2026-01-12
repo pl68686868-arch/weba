@@ -13,6 +13,9 @@ if (!defined('SITE_NAME')) {
     require_once __DIR__ . '/../config/config.php';
 }
 
+// Content Security Policy
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: *; frame-src 'self' https://open.spotify.com https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://www.google-analytics.com;");
+
 // Prevent aggressive caching
 header("Cache-Control: no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
