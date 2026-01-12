@@ -652,53 +652,63 @@ require_once __DIR__ . '/../includes/admin-header.php';
         }
     });
     
-    // Store original options on load
-    const categorySelect = document.getElementById('category_id');
-    const originalOptions = Array.from(categorySelect.options);
+    // Wrap in DOMContentLoaded to ensure elements exist
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('category_id');
+        const typeSelect = document.getElementById('post_type');
+        const spotifyField = document.getElementById('spotifyField');
 
-    // Toggle Spotify Field & Filter Categories
-    function toggleSpotifyField() {
-        const type = document.getElementById('post_type').value;
-        const field = document.getElementById('spotifyField');
-        field.style.display = type === 'podcast' ? 'block' : 'none';
-        
-        // Save current selection
-        const currentVal = categorySelect.value;
-        
-        // Clear current options
-        categorySelect.innerHTML = '';
-        
-        originalOptions.forEach(opt => {
-            if (opt.value === "") {
-                categorySelect.appendChild(opt.cloneNode(true));
-                return;
+        if (!categorySelect || !typeSelect) return;
+
+        // Store original options
+        const originalOptions = Array.from(categorySelect.options);
+
+        // Toggle Spotify Field & Filter Categories
+        window.toggleSpotifyField = function() {
+            const type = typeSelect.value;
+            
+            if (spotifyField) {
+                spotifyField.style.display = type === 'podcast' ? 'block' : 'none';
             }
             
-            const catType = opt.getAttribute('data-type') || 'post';
+            // Save current selection
+            const currentVal = categorySelect.value;
             
-            if (catType === type) {
-                categorySelect.appendChild(opt.cloneNode(true));
+            // Clear current options
+            categorySelect.innerHTML = '';
+            
+            originalOptions.forEach(opt => {
+                if (opt.value === "") {
+                    categorySelect.appendChild(opt.cloneNode(true));
+                    return;
+                }
+                
+                const catType = opt.getAttribute('data-type') || 'post';
+                
+                if (catType === type) {
+                    categorySelect.appendChild(opt.cloneNode(true));
+                }
+            });
+            
+            // Restore selection if valid
+            let exists = false;
+            for (let i = 0; i < categorySelect.options.length; i++) {
+                if (categorySelect.options[i].value === currentVal) {
+                    exists = true;
+                    break;
+                }
             }
-        });
-        
-        // Restore selection if valid
-        let exists = false;
-        for (let i = 0; i < categorySelect.options.length; i++) {
-            if (categorySelect.options[i].value === currentVal) {
-                exists = true;
-                break;
+            
+            if (exists) {
+                categorySelect.value = currentVal;
+            } else {
+                categorySelect.value = "";
             }
-        }
+        };
         
-        if (exists) {
-            categorySelect.value = currentVal;
-        } else {
-            categorySelect.value = "";
-        }
-    }
-    
-    // Run on load
-    toggleSpotifyField();
+        // Initial run
+        toggleSpotifyField();
+    });
 
 </script>
 
