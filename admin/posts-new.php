@@ -681,38 +681,55 @@ require_once __DIR__ . '/../includes/admin-header.php';
         }
     });
 
+    // Store original options on load
+    const categorySelect = document.getElementById('category_id');
+    const originalOptions = Array.from(categorySelect.options);
+
     // Toggle Spotify Field & Filter Categories
     function toggleSpotifyField() {
         const type = document.getElementById('post_type').value;
         const field = document.getElementById('spotifyField');
         field.style.display = type === 'podcast' ? 'block' : 'none';
         
-        // Filter Categories
-        const categorySelect = document.getElementById('category_id');
-        const options = categorySelect.querySelectorAll('option');
+        // Save current selection
+        const currentVal = categorySelect.value;
+        
+        // Clear current options
+        categorySelect.innerHTML = '';
+        
+        // Re-add filtered options
         let firstVisible = null;
         
-        options.forEach(opt => {
-            if (!opt.value) return; // Skip default option
+        originalOptions.forEach(opt => {
+            if (opt.value === "") {
+                // Always add default option
+                categorySelect.appendChild(opt.cloneNode(true));
+                return;
+            }
             
             const catType = opt.getAttribute('data-type') || 'post';
             
-            // Logic: 
-            // If post_type is 'podcast', show ONLY 'podcast' categories
-            // If post_type is 'post', show ONLY 'post' categories
-            
             if (catType === type) {
-                opt.style.display = '';
-                if (!firstVisible) firstVisible = opt;
-            } else {
-                opt.style.display = 'none';
+                const clone = opt.cloneNode(true);
+                categorySelect.appendChild(clone);
+                if (!firstVisible) firstVisible = clone;
             }
         });
         
-        // Reset selection if current selection is hidden
-        const currentSelected = categorySelect.options[categorySelect.selectedIndex];
-        if (currentSelected.style.display === 'none') {
-            categorySelect.value = ""; // Reset to empty
+        // Restore selection if valid, otherwise select empty or first
+        // Check if currentVal exists in new options
+        let exists = false;
+        for (let i = 0; i < categorySelect.options.length; i++) {
+            if (categorySelect.options[i].value === currentVal) {
+                exists = true;
+                break;
+            }
+        }
+        
+        if (exists) {
+            categorySelect.value = currentVal;
+        } else {
+            categorySelect.value = "";
         }
     }
     

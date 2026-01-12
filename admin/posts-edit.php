@@ -652,37 +652,48 @@ require_once __DIR__ . '/../includes/admin-header.php';
         }
     });
     
+    // Store original options on load
+    const categorySelect = document.getElementById('category_id');
+    const originalOptions = Array.from(categorySelect.options);
+
     // Toggle Spotify Field & Filter Categories
     function toggleSpotifyField() {
         const type = document.getElementById('post_type').value;
         const field = document.getElementById('spotifyField');
         field.style.display = type === 'podcast' ? 'block' : 'none';
         
-        // Filter Categories
-        const categorySelect = document.getElementById('category_id');
-        const options = categorySelect.querySelectorAll('option');
-        let firstVisible = null;
+        // Save current selection
+        const currentVal = categorySelect.value;
         
-        options.forEach(opt => {
-            if (!opt.value) return; // Skip default option
+        // Clear current options
+        categorySelect.innerHTML = '';
+        
+        originalOptions.forEach(opt => {
+            if (opt.value === "") {
+                categorySelect.appendChild(opt.cloneNode(true));
+                return;
+            }
             
             const catType = opt.getAttribute('data-type') || 'post';
             
             if (catType === type) {
-                opt.style.display = '';
-                if (!firstVisible) firstVisible = opt;
-            } else {
-                opt.style.display = 'none';
+                categorySelect.appendChild(opt.cloneNode(true));
             }
         });
         
-        // If current selection is hidden, select first visible
-        // But only if we are actually changing type? 
-        // For edit page, we want to preserve selection if it matches.
-        const currentSelected = categorySelect.options[categorySelect.selectedIndex];
-        if (currentSelected.style.display === 'none') {
-            categorySelect.value = ""; // Reset to empty or maybe firstVisible?
-            // Let's reset to empty so user is forced to choose
+        // Restore selection if valid
+        let exists = false;
+        for (let i = 0; i < categorySelect.options.length; i++) {
+            if (categorySelect.options[i].value === currentVal) {
+                exists = true;
+                break;
+            }
+        }
+        
+        if (exists) {
+            categorySelect.value = currentVal;
+        } else {
+            categorySelect.value = "";
         }
     }
     
