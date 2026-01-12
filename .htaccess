@@ -56,7 +56,7 @@ Options -Indexes
     Header set Referrer-Policy "strict-origin-when-cross-origin"
     
     # Content Security Policy (adjust as needed)
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: *; frame-src 'self' https://open.spotify.com https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://www.google-analytics.com;"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.ckeditor.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: *; frame-src 'self' https://open.spotify.com https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://www.google-analytics.com;"
     
     # Remove server signature
     Header unset Server
