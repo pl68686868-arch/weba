@@ -188,7 +188,6 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     </select>
                 </div>
                 <button type="submit" class="btn btn-full">Lưu bài viết</button>
-                <button type="submit" class="btn btn-full">Lưu bài viết</button>
             </div>
             
             <div class="card">
@@ -675,8 +674,6 @@ require_once __DIR__ . '/../includes/admin-header.php';
             uploadBtn.disabled = false;
             fileInput.value = ''; // Reset file input
         }
-    });
-
     });
 
     // Toggle Spotify Field
