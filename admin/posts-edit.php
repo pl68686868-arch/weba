@@ -221,7 +221,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 <h3>Loại bài viết</h3>
                 <div class="form-group">
                     <label for="post_type">Loại nội dung</label>
-                    <select id="post_type" name="post_type" onchange="toggleSpotifyField()">
+                    <select id="post_type" name="post_type">
                         <option value="post" <?= (($post['post_type'] ?? 'post') === 'post') ? 'selected' : '' ?>>Bài viết (Blog)</option>
                         <option value="podcast" <?= (($post['post_type'] ?? '') === 'podcast') ? 'selected' : '' ?>>Podcast</option>
                     </select>
@@ -654,6 +654,8 @@ require_once __DIR__ . '/../includes/admin-header.php';
     
     // Wrap in DOMContentLoaded to ensure elements exist
     document.addEventListener('DOMContentLoaded', function() {
+        console.log("Admin Edit Script Loaded");
+        
         const categorySelect = document.getElementById('category_id');
         const typeSelect = document.getElementById('post_type');
         const spotifyField = document.getElementById('spotifyField');
@@ -664,8 +666,9 @@ require_once __DIR__ . '/../includes/admin-header.php';
         const originalOptions = Array.from(categorySelect.options);
 
         // Toggle Spotify Field & Filter Categories
-        window.toggleSpotifyField = function() {
+        function toggleSpotifyField() {
             const type = typeSelect.value;
+            console.log("Filtering edit for:", type);
             
             if (spotifyField) {
                 spotifyField.style.display = type === 'podcast' ? 'block' : 'none';
@@ -677,6 +680,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
             // Clear current options
             categorySelect.innerHTML = '';
             
+            // Re-add filtered options
             originalOptions.forEach(opt => {
                 if (opt.value === "") {
                     categorySelect.appendChild(opt.cloneNode(true));
@@ -704,7 +708,10 @@ require_once __DIR__ . '/../includes/admin-header.php';
             } else {
                 categorySelect.value = "";
             }
-        };
+        }
+        
+        // Bind Event Listener
+        typeSelect.addEventListener('change', toggleSpotifyField);
         
         // Initial run
         toggleSpotifyField();

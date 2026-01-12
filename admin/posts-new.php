@@ -199,7 +199,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 <h3>Loại bài viết</h3>
                 <div class="form-group">
                     <label for="post_type">Loại nội dung</label>
-                    <select id="post_type" name="post_type" onchange="toggleSpotifyField()">
+                    <select id="post_type" name="post_type">
                         <option value="post" <?= (($_POST['post_type'] ?? '') === 'post') ? 'selected' : '' ?>>Bài viết (Blog)</option>
                         <option value="podcast" <?= (($_POST['post_type'] ?? '') === 'podcast') ? 'selected' : '' ?>>Podcast</option>
                     </select>
@@ -683,18 +683,25 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
     // Wrap in DOMContentLoaded to ensure elements exist
     document.addEventListener('DOMContentLoaded', function() {
+        console.log("Admin Script Loaded");
+        
         const categorySelect = document.getElementById('category_id');
         const typeSelect = document.getElementById('post_type');
         const spotifyField = document.getElementById('spotifyField');
 
-        if (!categorySelect || !typeSelect) return;
+        if (!categorySelect || !typeSelect) {
+            console.error("Critical elements missing");
+            return;
+        }
 
         // Store original options
         const originalOptions = Array.from(categorySelect.options);
+        console.log("Total Categories:", originalOptions.length);
 
         // Toggle Spotify Field & Filter Categories
-        window.toggleSpotifyField = function() {
+        function toggleSpotifyField() {
             const type = typeSelect.value;
+            console.log("Filtering for:", type);
             
             if (spotifyField) {
                 spotifyField.style.display = type === 'podcast' ? 'block' : 'none';
@@ -707,11 +714,9 @@ require_once __DIR__ . '/../includes/admin-header.php';
             categorySelect.innerHTML = '';
             
             // Re-add filtered options
-            let firstVisible = null;
-            
+            let count = 0;
             originalOptions.forEach(opt => {
                 if (opt.value === "") {
-                    // Always add default option
                     categorySelect.appendChild(opt.cloneNode(true));
                     return;
                 }
@@ -719,11 +724,11 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 const catType = opt.getAttribute('data-type') || 'post';
                 
                 if (catType === type) {
-                    const clone = opt.cloneNode(true);
-                    categorySelect.appendChild(clone);
-                    if (!firstVisible) firstVisible = clone;
+                    categorySelect.appendChild(opt.cloneNode(true));
+                    count++;
                 }
             });
+            console.log("Visible options:", count);
             
             // Restore selection if valid
             let exists = false;
@@ -739,7 +744,10 @@ require_once __DIR__ . '/../includes/admin-header.php';
             } else {
                 categorySelect.value = "";
             }
-        };
+        }
+        
+        // Bind Event Listener (Better than onchange attribute)
+        typeSelect.addEventListener('change', toggleSpotifyField);
         
         // Initial run
         toggleSpotifyField();
