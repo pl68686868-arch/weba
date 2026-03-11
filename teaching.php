@@ -60,7 +60,7 @@ include __DIR__ . '/includes/header.php';
                     <img src="<?= UPLOAD_URL . '/' . escape($heroImage) ?>" alt="Giảng dạy & Đào tạo">
                 <?php else: ?>
                     <!-- Minimalist Placeholder -->
-                    <div style="background: #EBE8E0; width: 100%; aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); font-family: var(--font-ui);">
+                    <div style="background: var(--color-bg-tertiary); width: 100%; aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); font-family: var(--font-ui);">
                         [Teaching Image Placeholder]
                     </div>
                 <?php endif; ?>

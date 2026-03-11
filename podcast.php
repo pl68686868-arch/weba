@@ -61,7 +61,7 @@ include __DIR__ . '/includes/header.php';
                         <img src="<?= UPLOAD_URL . '/' . escape($coverArt) ?>" alt="Podcast Cover Art" style="width: 100%; height: 100%; object-fit: cover;">
                     <?php else: ?>
                         <!-- Placeholder -->
-                        <div class="placeholder-portrait" style="background: #1E2522; width: 100%; height: 600px; display: flex; align-items: center; justify-content: center; color: #fff;">
+                        <div class="placeholder-portrait" style="background: var(--color-bg-tertiary); width: 100%; height: 600px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary);">
                             [Podcast Cover Art]
                         </div>
                     <?php endif; ?>
@@ -128,7 +128,7 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($podcasts as $podcast): ?>
                     <a href="/post/<?= escape($podcast['slug']) ?>" class="podcast-card-link">
                         <div class="podcast-card">
-                            <div class="podcast-card__cover" style="<?= $podcast['featured_image'] ? "background-image: url('" . UPLOAD_URL . '/' . escape($podcast['featured_image']) . "'); background-size: cover; background-position: center;" : "background-color: #e9ecef;" ?>">
+                            <div class="podcast-card__cover" style="<?= $podcast['featured_image'] ? "background-image: url('" . UPLOAD_URL . '/' . escape($podcast['featured_image']) . "'); background-size: cover; background-position: center;" : "background-color: var(--color-bg-tertiary);" ?>">
                                 <?php if (!$podcast['featured_image']): ?>
                                     <span class="podcast-card__icon">🎙️</span>
                                 <?php endif; ?>

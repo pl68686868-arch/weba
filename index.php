@@ -161,7 +161,6 @@ include __DIR__ . '/includes/header.php';
         <div class="pillars__grid">
             <?php 
             // Define premium generated images for pillars
-            // Define premium generated images for pillars
             $pillarImages = [
                 'tam-ly-hoc-doi-song-truong-thanh' => 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=600&auto=format&fit=crop', // Psychology (Journaling)
                 'chanh-niem-hoi-phuc-than-tam' => 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=600&auto=format&fit=crop', // Mindfulness
