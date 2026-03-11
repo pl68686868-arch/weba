@@ -47,7 +47,7 @@ include __DIR__ . '/includes/header.php';
                         <?= escape(get_setting('podcast_hero_desc', 'Không gian cho những cuộc trò chuyện chậm rãi về những điều thường bị bỏ quên trong sự hối hả của đời sống thường nhật. Nơi chúng ta cùng ngồi lại, lắng nghe và hiểu sâu hơn về chính mình.')) ?>
                     </p>
                 </div>
-                <div class="hero-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <div class="hero-actions">
                     <button class="btn btn-primary">Nghe trailer</button>
                     <a href="#subscribe" class="btn btn-outline">Đăng ký</a>
                 </div>

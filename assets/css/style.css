@@ -1093,16 +1093,18 @@ body.page-subpage {
 
 @media (min-width: 992px) {
     .about-hero__grid {
-        grid-template-columns: 1fr 0.8fr;
-        gap: var(--space-5xl);
+        grid-template-columns: 1.2fr 1fr; /* Better balance between text/image */
+        gap: var(--space-4xl);
+        align-items: center;
     }
 }
 
 .about-hero__title {
-    font-size: 4rem;
+    font-size: clamp(3rem, 5vw, 4.5rem);
     line-height: 1.1;
-    margin: var(--space-md) 0 var(--space-xl);
+    margin: var(--space-sm) 0 var(--space-lg);
     color: var(--color-text-primary);
+    letter-spacing: -0.02em;
 }
 
 .about-hero__desc p {
@@ -1115,8 +1117,7 @@ body.page-subpage {
 }
 
 .about-hero__desc p:first-of-type {
-    font-size: 1.5rem;
-    /* Lead paragraph */
+    font-size: 1.35rem; /* Slightly more balanced lead */
     color: var(--color-text-primary);
     font-weight: 500;
 }
