@@ -69,8 +69,8 @@ include __DIR__ . '/includes/header.php';
 
 <!-- Section 2: Methodology (Clean Grid) -->
 <section class="teaching-methodology section-spacing">
-    <div class="container container--narrow">
-        <div class="text-center">
+    <div class="container">
+        <div class="text-center" style="max-width: var(--container-narrow); margin: 0 auto;">
             <h2 class="section-title">Phương pháp tiếp cận</h2>
             <p class="section-desc" style="max-width: 600px; margin: 1.5rem auto 0;">
                 Các chương trình được thiết kế dựa trên nền tảng <strong>Tâm lý học ứng dụng</strong> kết hợp với 

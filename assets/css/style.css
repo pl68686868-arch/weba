@@ -1294,39 +1294,47 @@ body.page-subpage {
 
 .method-card {
     text-align: center;
-    padding: var(--space-2xl);
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border);
+    padding: var(--space-3xl) var(--space-2xl);
+    background: #1F2321; /* Slightly darker midnight spruce */
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03);
-    transition: transform 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
 }
 
 .method-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    border-color: var(--color-gold);
+    box-shadow: 0 20px 40px rgba(236, 182, 19, 0.08);
 }
 
 .method-icon {
-    font-size: 3rem;
-    margin-bottom: var(--space-md);
+    font-size: 3.5rem;
+    margin-bottom: var(--space-lg);
     display: block;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
 .method-card h3 {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     color: var(--color-text-primary);
     margin-bottom: var(--space-md);
+    letter-spacing: -0.01em;
 }
 
 .method-card p {
+    font-family: var(--font-ui);
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.8;
     margin: 0;
+    font-weight: 400;
 }
 
 /* ============================================================================
