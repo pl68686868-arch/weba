@@ -150,7 +150,7 @@ HTML;
         );
 
         return $this->send(
-            ADMIN_EMAIL,
+            'doanduong1011@gmail.com', // Hardcoded to bypass server config
             "💌 Lời chào từ {$name} - " . SITE_NAME,
             $html,
             $email // Reply-To = visitor's email

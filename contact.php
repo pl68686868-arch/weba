@@ -120,8 +120,8 @@ include __DIR__ . '/includes/header.php';
                 <div class="contact-methods">
                     <div class="method-item">
                         <span class="method-label">Email trực tiếp</span>
-                        <a href="mailto:<?= htmlspecialchars(FROM_EMAIL) ?>" class="method-link link-underline">
-                            <?= htmlspecialchars(FROM_EMAIL) ?>
+                        <a href="mailto:doanduong1011@gmail.com" class="method-link link-underline">
+                            doanduong1011@gmail.com
                         </a>
                     </div>
                     
