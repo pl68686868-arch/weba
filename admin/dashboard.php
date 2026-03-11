@@ -112,32 +112,42 @@ include __DIR__ . '/../includes/admin-header.php';
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-card__icon">📄</div>
-            <div class="stat-card__label">Tổng bài viết</div>
-            <div class="stat-card__value"><?= $stats['total_posts'] ?? 0 ?></div>
+            <div class="stat-card__content">
+                <div class="stat-card__value"><?= $stats['total_posts'] ?? 0 ?></div>
+                <div class="stat-card__label">Tổng bài viết</div>
+            </div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">✅</div>
-            <div class="stat-card__label">Đã xuất bản</div>
-            <div class="stat-card__value"><?= $stats['published_posts'] ?? 0 ?></div>
+            <div class="stat-card__content">
+                <div class="stat-card__value"><?= $stats['published_posts'] ?? 0 ?></div>
+                <div class="stat-card__label">Đã xuất bản</div>
+            </div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">📝</div>
-            <div class="stat-card__label">Bản nháp</div>
-            <div class="stat-card__value"><?= $stats['draft_posts'] ?? 0 ?></div>
+            <div class="stat-card__content">
+                <div class="stat-card__value"><?= $stats['draft_posts'] ?? 0 ?></div>
+                <div class="stat-card__label">Bản nháp</div>
+            </div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">💬</div>
-            <div class="stat-card__label">Chờ duyệt</div>
-            <div class="stat-card__value"><?= $stats['pending_comments'] ?? 0 ?></div>
+            <div class="stat-card__content">
+                <div class="stat-card__value"><?= $stats['pending_comments'] ?? 0 ?></div>
+                <div class="stat-card__label">Chờ duyệt</div>
+            </div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">📧</div>
-            <div class="stat-card__label">Bản tin</div>
-            <div class="stat-card__value"><?= $stats['newsletter_subscribers'] ?? 0 ?></div>
+            <div class="stat-card__content">
+                <div class="stat-card__value"><?= $stats['newsletter_subscribers'] ?? 0 ?></div>
+                <div class="stat-card__label">Bản tin</div>
+            </div>
         </div>
     </div>
 

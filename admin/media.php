@@ -144,26 +144,27 @@ require_once __DIR__ . '/../includes/admin-header.php';
     .progress-track { height: 8px; background: rgba(0, 0, 0, 0.05); border-radius: 4px; overflow: hidden; }
     .progress-bar-fill { width: 0%; height: 100%; background: var(--color-primary); transition: width 0.3s ease; }
     
-    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 32px; }
-    .media-card { overflow: hidden; position: relative; border-radius: 12px; transform: translateZ(0); }
-    .media-card:hover { transform: translateY(-8px); }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; }
+    .media-card { overflow: hidden; position: relative; border-radius: var(--radius-lg); transform: translateZ(0); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease; }
+    .media-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
     
-    .media-preview-container { aspect-ratio: 1/1; background: var(--bg-body); display: flex; align-items: center; justify-content: center; position: relative; cursor: zoom-in; }
-    .media-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .media-card:hover .media-img { transform: scale(1.1); }
+    .media-preview-container { aspect-ratio: 1/1; background: var(--bg-body); display: flex; align-items: center; justify-content: center; position: relative; cursor: zoom-in; border-bottom: 1px solid var(--border-color); }
+    .media-card:hover .media-preview-container { border-color: transparent; }
+    .media-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .media-card:hover .media-img { transform: scale(1.08); }
     
     .file-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .file-icon { font-size: 3rem; }
     .file-ext { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; }
     
-    .media-delete-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 10px; border: none; background: rgba(255, 255, 255, 0.95); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; color: #DC2626; opacity: 0; transform: scale(0.8); transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; z-index: 2; }
+    .media-delete-btn { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.9); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; color: #DC2626; opacity: 0; transform: scale(0.8); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; z-index: 2; font-size: 14px; }
     .media-card:hover .media-delete-btn { opacity: 1; transform: scale(1); }
-    .media-delete-btn:hover { background: #DC2626; color: white; transform: scale(1.1); }
+    .media-delete-btn:hover { background: #DC2626; color: white; }
     
-    .media-action-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: all 0.3s ease; z-index: 1; }
+    .media-action-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); opacity: 0; transition: all 0.3s ease; z-index: 1; }
     .media-card:hover .media-action-overlay { opacity: 1; }
-    .media-url-input { width: 100%; font-size: 0.7rem; padding: 8px 12px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; }
-    .media-url-input:focus { border-color: rgba(255, 255, 255, 0.5); }
+    .media-url-input { width: 100%; font-size: 0.7rem; padding: 8px 12px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(4px); color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; cursor: pointer; outline: none; transition: background 0.2s; }
+    .media-url-input:hover, .media-url-input:focus { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.6); }
     
     .media-details { padding: 16px; background: var(--bg-card); }
     .media-filename { font-size: 0.875rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
@@ -267,24 +268,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function prependMediaItem(item) {
         const div = document.createElement('div');
-        div.className = 'media-item';
+        div.className = 'card media-card p-0';
         div.dataset.mediaId = item.id;
         
-        // Simple template literal for new item
         const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(item.type);
         const previewHtml = isImage 
-            ? `<img src="${item.url}" alt="${item.original_filename}">`
-            : `<div class="file-icon">📄</div>`;
+            ? `<img src="${item.url}" alt="${item.original_filename}" class="media-img">`
+            : `<div class="file-placeholder"><div class="file-icon">📄</div><span class="file-ext">${item.type.toUpperCase()}</span></div>`;
 
         div.innerHTML = `
-            <div class="media-preview">
+            <div class="media-preview-container">
                 ${previewHtml}
-                <button class="delete-btn" onclick="deleteMedia(${item.id}, '${item.original_filename}')" title="Xóa file">🗑️</button>
+                <button class="media-delete-btn" onclick="deleteMedia(${item.id}, '${item.original_filename}')" title="Xóa">✕</button>
+                <div class="media-action-overlay">
+                    <input type="text" value="${item.url}" readonly onclick="this.select(); event.stopPropagation();" class="media-url-input" title="Nhấn để sao chép link">
+                </div>
             </div>
-            <div class="media-info">
-                <p class="filename" title="${item.original_filename}">${item.original_filename}</p>
-                <div class="media-actions">
-                    <input type="text" value="${item.url}" readonly onclick="this.select()" class="url-input">
+            <div class="media-details">
+                <p class="media-filename" title="${item.original_filename}">${item.original_filename}</p>
+                <div class="media-meta">
+                    <span>Vừa xong</span>
                 </div>
             </div>
         `;
