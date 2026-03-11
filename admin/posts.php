@@ -193,7 +193,7 @@ include __DIR__ . '/../includes/admin-header.php';
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="status-badge status-<?= $post['status'] ?>">
+                                    <span class="badge badge-<?= $post['status'] === 'published' ? 'success' : 'warning' ?>">
                                         <?= $post['status'] === 'published' ? 'Đã đăng' : 'Bản nháp' ?>
                                     </span>
                                 </td>
@@ -202,16 +202,15 @@ include __DIR__ . '/../includes/admin-header.php';
                                 </td>
                                 <td style="text-align: right;">
                                     <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                        <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" class="btn btn-secondary btn-small" title="Chỉnh sửa">
-                                            Sửa
+                                        <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" class="btn-action" title="Chỉnh sửa">
+                                            <i class="ph ph-pencil-simple"></i>
                                         </a>
                                         <button 
-                                            class="btn btn-danger btn-small delete-post-btn"
+                                            class="btn-action delete delete-post-btn"
                                             data-post-id="<?= $post['id'] ?>"
                                             data-post-title="<?= htmlspecialchars($post['title']) ?>"
-                                            style="padding: 6px 12px; background: #FEF2F2;"
                                             title="Xóa bài">
-                                            Xóa
+                                            <i class="ph ph-trash"></i>
                                         </button>
                                     </div>
                                 </td>

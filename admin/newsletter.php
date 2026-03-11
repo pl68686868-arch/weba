@@ -150,8 +150,8 @@ require_once __DIR__ . '/../includes/admin-header.php';
                                         <?= $auth->getCSRFInput() ?>
                                         <input type="hidden" name="action" value="delete_subscriber">
                                         <input type="hidden" name="subscriber_id" value="<?= $sub['id'] ?>">
-                                        <button type="submit" class="btn-icon btn-icon-danger">
-                                            ✕
+                                        <button type="submit" class="btn-action delete" title="Xóa">
+                                            <i class="ph ph-trash"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -179,7 +179,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 <?= $auth->getCSRFInput() ?>
                 <div class="form-group">
                     <label class="form-label">Tiêu đề email</label>
-                    <input type="text" name="subject" class="form-control" placeholder="Ví dụ: Cập nhật mới từ Đặng Tuấn Anh..." value="<?= htmlspecialchars($_POST['subject'] ?? '') ?>" required>
+                    <input type="text" name="subject" class="form-control" placeholder="Ví dụ: Cập nhật mới từ Dương Trần Minh Đoàn..." value="<?= htmlspecialchars($_POST['subject'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nội dung thông điệp</label>
@@ -188,10 +188,10 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 </div>
                 <div class="newsletter-actions">
                     <button type="submit" name="action" value="send_test" class="btn btn-secondary flex-1">
-                        🧪 Gửi thử (Admin)
+                        <i class="ph ph-flask"></i> Gửi thử (Admin)
                     </button>
                     <button type="submit" name="action" value="send_all" class="btn btn-primary flex-2" onclick="return confirm('Gửi email đến tất cả subscriber đã xác nhận?')">
-                        🚀 Gửi cho toàn bộ (<?= (string)count(array_filter($subscribers, fn($s) => $s['status'] === 'active')) ?> active)
+                        <i class="ph ph-paper-plane-right"></i> Gửi cho toàn bộ (<?= (string)count(array_filter($subscribers, fn($s) => $s['status'] === 'active')) ?> active)
                     </button>
                 </div>
             </form>

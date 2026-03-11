@@ -78,10 +78,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $success = 'Tag deleted successfully';
                     }
                     break;
+                    
+                case 'inline_update':
+                    $id = (int)($_POST['id'] ?? 0);
+                    $name = trim($_POST['name'] ?? '');
+                    if ($id > 0 && !empty($name)) {
+                        $db->update('tags', ['name' => $name], 'id = :id', ['id' => $id]);
+                        $success = 'Tag name updated';
+                    } else {
+                        $error = 'Invalid data or empty name';
+                    }
+                    break;
             }
         } catch (Exception $e) {
             error_log('Tags error: ' . $e->getMessage());
             $error = 'An error occurred';
+        }
+        
+        // Handle AJAX Response
+        if (!empty($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => empty($error),
+                'message' => $error ?: $success
+            ]);
+            exit;
         }
     }
 }
@@ -122,30 +143,33 @@ include __DIR__ . '/../includes/admin-header.php';
         </div>
     <?php endif; ?>
     
-    <!-- Create Form -->
-    <div id="createForm" class="card mb-8" style="display: none;">
-        <h3 class="mb-6">🏷️ Tạo thẻ mới</h3>
-        <form method="POST" action="">
-            <?= $auth->getCSRFInput() ?>
-            <input type="hidden" name="action" value="create">
-            
-            <div class="grid grid-cols-2 gap-6">
-                <div class="form-group mb-0">
-                    <label class="form-label">Tên thẻ *</label>
-                    <input type="text" name="name" class="form-control" placeholder="Ví dụ: Chữa lành" required>
+    <!-- Create Modal -->
+    <div id="createModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="hideCreateForm()"></div>
+        <div class="modal-content max-w-sm">
+            <h3 class="mb-6">🏷️ Tạo thẻ mới</h3>
+            <form method="POST" action="">
+                <?= $auth->getCSRFInput() ?>
+                <input type="hidden" name="action" value="create">
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="form-group mb-0">
+                        <label class="form-label">Tên thẻ *</label>
+                        <input type="text" name="name" class="form-control" placeholder="Ví dụ: Chữa lành" required>
+                    </div>
+                    
+                    <div class="form-group mb-0">
+                        <label class="form-label">Slug (Tự động tạo nếu trống)</label>
+                        <input type="text" name="slug" class="form-control" placeholder="chua-lanh">
+                    </div>
                 </div>
                 
-                <div class="form-group mb-0">
-                    <label class="form-label">Slug (Tự động tạo nếu trống)</label>
-                    <input type="text" name="slug" class="form-control" placeholder="chua-lanh">
+                <div class="form-actions mt-8">
+                    <button type="button" onclick="hideCreateForm()" class="btn btn-secondary">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary">Tạo thẻ</button>
                 </div>
-            </div>
-            
-            <div class="form-actions mt-8">
-                <button type="button" onclick="hideCreateForm()" class="btn btn-secondary">Hủy bỏ</button>
-                <button type="submit" class="btn btn-primary">Tạo thẻ</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     
     <!-- Tags Grid -->
@@ -154,24 +178,19 @@ include __DIR__ . '/../includes/admin-header.php';
             <div class="card tag-card">
                 <div class="tag-card-content">
                     <div class="tag-info">
-                        <h3 class="tag-name"><?= htmlspecialchars($tag['name']) ?></h3>
+                        <h3 class="tag-name inline-edit" data-id="<?= $tag['id'] ?>" title="Nhấn đúp để sửa" style="cursor: pointer;"><?= htmlspecialchars($tag['name']) ?></h3>
                         <code class="tag-slug">#<?= htmlspecialchars($tag['slug']) ?></code>
                     </div>
                     <span class="badge badge-published"><?= $tag['post_count'] ?> bài</span>
                 </div>
                 
                 <div class="tag-card-actions">
-                    <button onclick="editTag(<?= htmlspecialchars(json_encode($tag)) ?>)" class="btn-icon" title="Sửa">
-                        ✏️
+                    <button onclick="editTag(<?= htmlspecialchars(json_encode($tag)) ?>)" class="btn-action" title="Sửa">
+                        <i class="ph ph-pencil-simple"></i>
                     </button>
-                    <form method="POST" action="" class="inline-block" onsubmit="return confirm('Xóa thẻ này?')">
-                        <?= $auth->getCSRFInput() ?>
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="<?= $tag['id'] ?>">
-                        <button type="submit" class="btn-icon btn-icon-danger" title="Xóa">
-                            ✕
-                        </button>
-                    </form>
+                    <button class="btn-action delete delete-tag" data-id="<?= $tag['id'] ?>" data-name="<?= escape($tag['name']) ?>" title="Xóa">
+                        <i class="ph ph-trash"></i>
+                    </button>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -282,11 +301,11 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <script>
 function showCreateForm() {
-    document.getElementById('createForm').style.display = 'block';
+    document.getElementById('createModal').style.display = 'flex';
 }
 
 function hideCreateForm() {
-    document.getElementById('createForm').style.display = 'none';
+    document.getElementById('createModal').style.display = 'none';
 }
 
 function editTag(tag) {
@@ -299,6 +318,113 @@ function editTag(tag) {
 function closeEditModal() {
     document.getElementById('editModal').style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+    // UX: Optimistic Delete
+    document.querySelectorAll('.delete-tag').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const card = this.closest('.tag-card');
+            
+            Swal.fire({
+                title: 'Xóa thẻ này?',
+                text: `Chắc chắn xóa thẻ "${name}"? Thao tác này sẽ gỡ thẻ khỏi các bài viết liên quan.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#991B1B',
+                cancelButtonColor: '#E6EDE9',
+                cancelButtonText: '<span style="color:var(--color-primary)">Hủy</span>',
+                confirmButtonText: 'Đồng ý xóa'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData();
+                    formData.append('action', 'delete');
+                    formData.append('id', id);
+                    formData.append('ajax', '1');
+                    formData.append('<?= CSRF_TOKEN_NAME ?>', '<?= escape($auth->generateCSRFToken()) ?>');
+                    
+                    fetch('', { method: 'POST', body: formData })
+                        .then(res => res.json())
+                        .then(data => {
+                            if(data.success) {
+                                Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'success', title: data.message });
+                                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                card.style.opacity = '0';
+                                card.style.transform = 'scale(0.9)';
+                                setTimeout(() => card.remove(), 300);
+                            } else {
+                                Swal.fire('Lỗi', data.message, 'error');
+                            }
+                        })
+                        .catch(() => Swal.fire('Lỗi', 'Lỗi kết nối.', 'error'));
+                }
+            });
+        });
+    });
+
+    // UX: Inline Editing
+    document.querySelectorAll('.inline-edit').forEach(el => {
+        el.addEventListener('dblclick', function() {
+            if (this.querySelector('input')) return;
+            const id = this.dataset.id;
+            const currentName = this.innerText.trim();
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentName;
+            input.className = 'form-input';
+            input.style.padding = '2px 6px';
+            input.style.marginTop = '-2px';
+            input.style.marginBottom = '-2px';
+            
+            this.innerHTML = '';
+            this.appendChild(input);
+            input.focus();
+            
+            const saveChanges = () => {
+                const newName = input.value.trim();
+                if (newName === currentName || newName === '') {
+                    this.innerHTML = escapeHtml(currentName);
+                    return;
+                }
+                
+                this.innerHTML = `<span style="color:var(--color-accent); font-size: 0.875rem;">Đang lưu...</span>`;
+                
+                const formData = new FormData();
+                formData.append('action', 'inline_update');
+                formData.append('id', id);
+                formData.append('name', newName);
+                formData.append('ajax', '1');
+                formData.append('<?= CSRF_TOKEN_NAME ?>', '<?= escape($auth->generateCSRFToken()) ?>');
+                
+                fetch('', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            this.innerHTML = escapeHtml(newName);
+                            Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, icon: 'success', title: 'Đã lưu' });
+                        } else {
+                            this.innerHTML = escapeHtml(currentName);
+                            Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'error', title: data.message });
+                        }
+                    })
+                    .catch(() => {
+                        this.innerHTML = escapeHtml(currentName);
+                    });
+            };
+            
+            input.addEventListener('blur', saveChanges);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') saveChanges();
+                if (e.key === 'Escape') this.innerHTML = escapeHtml(currentName);
+            });
+        });
+    });
+});
 </script>
 
 <?php

@@ -66,110 +66,6 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <div class="admin-page">
     <div class="admin-page__header">
-        <h1>Users</h1>
-        <a href="/admin/users-new.php" class="btn btn-primary">+ New User</a>
-    </div>
-    
-    <!-- Filters -->
-    <div class="filters-card">
-        <form method="GET" action="" class="filters-form">
-            <div class="filter-group" style="flex: 1; min-width: 200px;">
-                <label>Search:</label>
-                <input type="text" name="search" class="form-input" placeholder="Search by name, email..." value="<?= htmlspecialchars($search) ?>">
-            </div>
-            
-            <div class="filter-group">
-                <label>Role:</label>
-                <select name="role" class="form-select">
-                    <option value="">All</option>
-                    <option value="admin" <?= $role === 'admin' ? 'selected' : '' ?>>Admin</option>
-                    <option value="editor" <?= $role === 'editor' ? 'selected' : '' ?>>Editor</option>
-                    <option value="author" <?= $role === 'author' ? 'selected' : '' ?>>Author</option>
-                </select>
-            </div>
-            
-            <button type="submit" class="btn btn-secondary">Filter</button>
-            <a href="/admin/users.php" class="btn btn-secondary">Clear</a>
-        </form>
-    </div>
-    
-    <!-- Users Table -->
-    <div class="table-card">
-        <?php if (!empty($users)): ?>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th>Joined</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td>
-                                <strong><?= escape($user['full_name']) ?></strong>
-                                <br>
-                                <small class="text-muted"><?= escape($user['email']) ?></small>
-                                <br>
-                                <small class="text-muted">@<?= escape($user['username']) ?></small>
-                            </td>
-                            <td>
-                                <span class="role-badge role-<?= $user['role'] ?>">
-                                    <?= ucfirst($user['role']) ?>
-                                </span>
-                            </td>
-                            <td><?= formatDate($user['created_at'], 'date') ?></td>
-                            <td>
-                                <a href="/admin/users-edit.php?id=<?= $user['id'] ?>" class="btn btn-small btn-secondary">
-                                    Edit
-                                </a>
-                                <?php if ($user['id'] != $auth->getUserId()): ?>
-                                    <button 
-                                        class="btn btn-small btn-danger delete-user-btn"
-                                        data-user-id="<?= $user['id'] ?>"
-                                        data-user-name="<?= escape($user['full_name']) ?>"
-                                        title="Delete user">
-                                        Delete
-                                    </button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            
-            <!-- Pagination -->
-            <?php if ($totalPages > 1): ?>
-                <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="pagination__btn">
-                            ← Previous
-                        </a>
-                    <?php endif; ?>
-                    
-                    <span class="pagination__info">
-                        Page <?= (string)$page ?> of <?= (string)$totalPages ?> (<?= (string)$totalUsers ?> total)
-                    </span>
-                    
-                    <?php if ($page < $totalPages): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="pagination__btn">
-                            Next →
-                        </a>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-        <?php else: ?>
-            <div class="empty-state">
-                <p>No users found.</p>
-            </div>
-        <?php endif; ?>
-    </div>
-</div>
-
-<div class="admin-page">
-    <div class="admin-page__header">
         <h1>Quản lý người dùng</h1>
         <a href="/admin/users-new.php" class="btn btn-primary">+ Thêm người dùng</a>
     </div>
@@ -240,16 +136,16 @@ include __DIR__ . '/../includes/admin-header.php';
                                 <td><?= formatDate($user['created_at'], 'date') ?></td>
                                 <td class="text-right">
                                     <div class="table-actions">
-                                        <a href="/admin/users-edit.php?id=<?= $user['id'] ?>" class="btn-icon" title="Chỉnh sửa">
-                                            <span class="icon">✏️</span>
+                                        <a href="/admin/users-edit.php?id=<?= $user['id'] ?>" class="btn-action" title="Chỉnh sửa">
+                                            <i class="ph ph-pencil-simple"></i>
                                         </a>
                                         <?php if ($user['id'] != $auth->getUserId()): ?>
                                             <button 
-                                                class="btn-icon btn-icon-danger delete-user-btn"
+                                                class="btn-action delete delete-user-btn"
                                                 data-user-id="<?= $user['id'] ?>"
                                                 data-user-name="<?= escape($user['full_name']) ?>"
                                                 title="Xóa người dùng">
-                                                <span class="icon">🗑️</span>
+                                                <i class="ph ph-trash"></i>
                                             </button>
                                         <?php endif; ?>
                                     </div>

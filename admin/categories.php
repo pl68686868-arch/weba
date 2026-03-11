@@ -110,10 +110,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     break;
+                    
+                case 'inline_update':
+                    $id = (int)($_POST['id'] ?? 0);
+                    $name = trim($_POST['name'] ?? '');
+                    if ($id > 0 && !empty($name)) {
+                        $db->update('categories', ['name' => $name], 'id = :id', ['id' => $id]);
+                        $success = 'Category name updated';
+                    } else {
+                        $error = 'Invalid data or empty name';
+                    }
+                    break;
             }
         } catch (Exception $e) {
             error_log('Categories error: ' . $e->getMessage());
             $error = 'An error occurred';
+        }
+        
+        // Handle AJAX Response
+        if (!empty($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => empty($error),
+                'message' => $error ?: $success
+            ]);
+            exit;
         }
     }
 }
@@ -154,48 +175,51 @@ include __DIR__ . '/../includes/admin-header.php';
         </div>
     <?php endif; ?>
     
-    <!-- Create Form (hidden by default) -->
-    <div id="createForm" class="card mb-8" style="display: none;">
-        <h3 class="card-title">✨ Tạo danh mục mới</h3>
-        <form method="POST" action="">
-            <?= $auth->getCSRFInput() ?>
-            <input type="hidden" name="action" value="create">
-            
-            <div class="form-grid">
-                <div class="form-main">
-                    <div class="form-group">
-                        <label class="form-label">Tên danh mục *</label>
-                        <input type="text" name="name" class="form-control" placeholder="Ví dụ: Thiền định & Chánh niệm" required>
+    <!-- Create Modal -->
+    <div id="createModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="hideCreateForm()"></div>
+        <div class="modal-content max-w-2xl">
+            <h3 class="mb-6">✨ Tạo danh mục mới</h3>
+            <form method="POST" action="">
+                <?= $auth->getCSRFInput() ?>
+                <input type="hidden" name="action" value="create">
+                
+                <div class="form-grid">
+                    <div class="form-main">
+                        <div class="form-group">
+                            <label class="form-label">Tên danh mục *</label>
+                            <input type="text" name="name" class="form-control" placeholder="Ví dụ: Thiền định & Chánh niệm" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mô tả</label>
+                            <textarea name="description" class="form-control" rows="4" placeholder="Một vài dòng giới thiệu về danh mục này..."></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Mô tả</label>
-                        <textarea name="description" class="form-control" rows="4" placeholder="Một vài dòng giới thiệu về danh mục này..."></textarea>
+                    <div class="form-sidebar">
+                        <div class="form-group">
+                            <label class="form-label">Loại nội dung</label>
+                            <select name="type" class="form-control">
+                                <option value="post">Bài viết (Blog)</option>
+                                <option value="podcast">Podcast</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Slug (Để trống để tự tạo)</label>
+                            <input type="text" name="slug" class="form-control" placeholder="thien-dinh-chanh-niem">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Thứ tự hiển thị</label>
+                            <input type="number" name="display_order" class="form-control" value="0">
+                        </div>
                     </div>
                 </div>
-                <div class="form-sidebar">
-                    <div class="form-group">
-                        <label class="form-label">Loại nội dung</label>
-                        <select name="type" class="form-control">
-                            <option value="post">Bài viết (Blog)</option>
-                            <option value="podcast">Podcast</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Slug (Để trống để tự tạo)</label>
-                        <input type="text" name="slug" class="form-control" placeholder="thien-dinh-chanh-niem">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Thứ tự hiển thị</label>
-                        <input type="number" name="display_order" class="form-control" value="0">
-                    </div>
+                
+                <div class="form-actions mt-6">
+                    <button type="button" onclick="hideCreateForm()" class="btn btn-secondary">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary">Tạo danh mục</button>
                 </div>
-            </div>
-            
-            <div class="form-actions mt-6">
-                <button type="button" onclick="hideCreateForm()" class="btn btn-secondary">Hủy bỏ</button>
-                <button type="submit" class="btn btn-primary">Tạo danh mục</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     
     <!-- Categories Table -->
@@ -217,7 +241,9 @@ include __DIR__ . '/../includes/admin-header.php';
                         <tr>
                             <td class="pl-6">
                                 <div class="category-info">
-                                    <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
+                                    <div class="category-name inline-edit" data-id="<?= $cat['id'] ?>" title="Nhấn đúp để sửa" style="cursor: pointer;">
+                                        <?= htmlspecialchars($cat['name']) ?>
+                                    </div>
                                     <?php if ($cat['description']): ?>
                                         <div class="category-desc"><?= htmlspecialchars(substr($cat['description'], 0, 80)) ?>...</div>
                                     <?php endif; ?>
@@ -233,18 +259,13 @@ include __DIR__ . '/../includes/admin-header.php';
                             <td class="text-center text-muted"><?= $cat['display_order'] ?></td>
                             <td class="text-right pr-6">
                                 <div class="table-actions">
-                                    <button onclick="editCategory(<?= htmlspecialchars(json_encode($cat)) ?>)" class="btn-icon" title="Chỉnh sửa">
-                                        ✏️
+                                    <button onclick="editCategory(<?= htmlspecialchars(json_encode($cat)) ?>)" class="btn-action" title="Chỉnh sửa">
+                                        <i class="ph ph-pencil-simple"></i>
                                     </button>
                                     <?php if ($cat['post_count'] == 0): ?>
-                                        <form method="POST" action="" class="inline-block" onsubmit="return confirm('Xóa danh mục này?')">
-                                            <?= $auth->getCSRFInput() ?>
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?= $cat['id'] ?>">
-                                            <button type="submit" class="btn-icon btn-icon-danger" title="Xóa">
-                                                ✕
-                                            </button>
-                                        </form>
+                                        <button class="btn-action delete delete-category" data-id="<?= $cat['id'] ?>" data-name="<?= escape($cat['name']) ?>" title="Xóa">
+                                            <i class="ph ph-trash"></i>
+                                        </button>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -336,11 +357,11 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <script>
 function showCreateForm() {
-    document.getElementById('createForm').style.display = 'block';
+    document.getElementById('createModal').style.display = 'flex';
 }
 
 function hideCreateForm() {
-    document.getElementById('createForm').style.display = 'none';
+    document.getElementById('createModal').style.display = 'none';
 }
 
 function editCategory(cat) {
@@ -356,6 +377,113 @@ function editCategory(cat) {
 function closeEditModal() {
     document.getElementById('editModal').style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Escape HTML Helper
+    const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+    // UX: Optimistic Delete with SweetAlert2
+    document.querySelectorAll('.delete-category').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const tr = this.closest('tr');
+            
+            Swal.fire({
+                title: 'Xóa danh mục?',
+                text: `Chắc chắn xóa "${name}"? Thao tác này không thể hoàn tác.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#991B1B',
+                cancelButtonColor: '#E6EDE9',
+                cancelButtonText: '<span style="color:var(--color-primary)">Hủy</span>',
+                confirmButtonText: 'Đồng ý xóa'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData();
+                    formData.append('action', 'delete');
+                    formData.append('id', id);
+                    formData.append('ajax', '1');
+                    formData.append('<?= CSRF_TOKEN_NAME ?>', '<?= escape($auth->generateCSRFToken()) ?>');
+                    
+                    fetch('', { method: 'POST', body: formData })
+                        .then(res => res.json())
+                        .then(data => {
+                            if(data.success) {
+                                Swal.fire('Đã xóa', data.message, 'success');
+                                tr.style.transition = 'opacity 0.3s ease';
+                                tr.style.opacity = '0';
+                                setTimeout(() => tr.remove(), 300);
+                            } else {
+                                Swal.fire('Lỗi', data.message, 'error');
+                            }
+                        })
+                        .catch(() => Swal.fire('Lỗi', 'Lỗi kết nối.', 'error'));
+                }
+            });
+        });
+    });
+
+    // UX: Inline Editing
+    document.querySelectorAll('.inline-edit').forEach(el => {
+        el.addEventListener('dblclick', function() {
+            if (this.querySelector('input')) return;
+            const id = this.dataset.id;
+            const currentName = this.innerText.trim();
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentName;
+            input.className = 'form-input';
+            input.style.padding = '4px 8px';
+            input.style.marginBottom = '-8px'; // Prevent row jumping
+            input.style.marginTop = '-8px';
+            
+            this.innerHTML = '';
+            this.appendChild(input);
+            input.focus();
+            
+            const saveChanges = () => {
+                const newName = input.value.trim();
+                if (newName === currentName || newName === '') {
+                    this.innerHTML = escapeHtml(currentName);
+                    return;
+                }
+                
+                this.innerHTML = `<span style="color:var(--color-accent)">Đang lưu...</span>`;
+                
+                const formData = new FormData();
+                formData.append('action', 'inline_update');
+                formData.append('id', id);
+                formData.append('name', newName);
+                formData.append('ajax', '1');
+                formData.append('<?= CSRF_TOKEN_NAME ?>', '<?= escape($auth->generateCSRFToken()) ?>');
+                
+                fetch('', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            this.innerHTML = `<span style="color:var(--color-primary)">${escapeHtml(newName)}</span>`;
+                            Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'success', title: 'Lưu thành công' });
+                        } else {
+                            this.innerHTML = escapeHtml(currentName);
+                            Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'error', title: data.message });
+                        }
+                    })
+                    .catch(() => {
+                        this.innerHTML = escapeHtml(currentName);
+                    });
+            };
+            
+            input.addEventListener('blur', saveChanges);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') saveChanges();
+                if (e.key === 'Escape') this.innerHTML = escapeHtml(currentName);
+            });
+        });
+    });
+});
 </script>
 
 <?php

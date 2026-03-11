@@ -73,8 +73,8 @@ require_once __DIR__ . '/../includes/admin-header.php';
                                     <div class="comment-content">
                                         <?= htmlspecialchars($comment['content']) ?>
                                     </div>
-                                    <span class="status-badge status-<?= $comment['status'] === 'pending' ? 'draft' : 'published' ?>">
-                                        <?= $comment['status'] === 'pending' ? '🕒 Chờ duyệt' : '✅ Đã duyệt' ?>
+                                    <span class="badge badge-<?= $comment['status'] === 'pending' ? 'warning' : 'success' ?>">
+                                        <?= $comment['status'] === 'pending' ? 'Chờ duyệt' : 'Đã duyệt' ?>
                                     </span>
                                 </td>
                                 <td>
@@ -88,12 +88,12 @@ require_once __DIR__ . '/../includes/admin-header.php';
                                 <td class="text-right pr-6">
                                     <div class="table-actions">
                                         <?php if ($comment['status'] !== 'approved'): ?>
-                                            <a href="?action=approve&id=<?= $comment['id'] ?>" class="btn-icon btn-icon-primary" title="Duyệt">
-                                                ✓
+                                            <a href="?action=approve&id=<?= $comment['id'] ?>" class="btn-action" title="Duyệt" style="color: var(--color-primary);">
+                                                <i class="ph ph-check"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a href="?action=delete&id=<?= $comment['id'] ?>" class="btn-icon btn-icon-danger" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                            ✕
+                                        <a href="?action=delete&id=<?= $comment['id'] ?>" class="btn-action delete" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                            <i class="ph ph-trash"></i>
                                         </a>
                                     </div>
                                 </td>
