@@ -221,10 +221,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
             <label>Eyebrow text</label>
             <input type="text" name="about_eyebrow" class="form-control" value="<?= htmlspecialchars($settingsMap['about_eyebrow']['setting_value'] ?? 'Người bạn đồng hành') ?>">
         </div>
-        <div class="form-group">
-            <label>Tiêu đề Hero (HTML cho phép &lt;br&gt;, &lt;span&gt;)</label>
-            <textarea name="about_hero_title" class="form-control" rows="2"><?= htmlspecialchars($settingsMap['about_hero_title']['setting_value'] ?? 'Chánh niệm, Tâm lý học & Sự trưởng thành') ?></textarea>
-        </div>
+
         <div class="form-group">
             <label>Mô tả Hero</label>
             <textarea name="about_hero_desc" class="form-control" rows="4"><?= htmlspecialchars($settingsMap['about_hero_desc']['setting_value'] ?? 'Tôi tin rằng việc học cách dừng lại, quan sát và hiểu mình một cách tỉnh thức là nền tảng quan trọng để mỗi người sống và làm việc có ý nghĩa hơn, không chỉ cho hiện tại mà cả về lâu dài.
@@ -250,10 +247,7 @@ Tôi là Danny, một người thực hành và giảng dạy tâm lý học ứ
     <!-- ========================================== -->
     <div class="card mt-4">
         <h3>🎓 Giảng Dạy — Hero</h3>
-        <div class="form-group">
-            <label>Tiêu đề Hero</label>
-            <input type="text" name="teaching_hero_title" class="form-control" value="<?= htmlspecialchars($settingsMap['teaching_hero_title']['setting_value'] ?? 'Khai phóng Tiềm năng Con người') ?>">
-        </div>
+
         <div class="form-group">
             <label>Mô tả Hero</label>
             <textarea name="teaching_hero_desc" class="form-control" rows="3"><?= htmlspecialchars($settingsMap['teaching_hero_desc']['setting_value'] ?? 'Tôi tin rằng giáo dục không chỉ là truyền tải kiến thức, mà là quá trình khơi gợi sự chuyển hóa từ bên trong. Hành trình học tập của người trưởng thành cần sự kết hợp giữa hiểu biết khoa học và trải nghiệm thực chứng.') ?></textarea>
@@ -277,10 +271,7 @@ Tôi là Danny, một người thực hành và giảng dạy tâm lý học ứ
     <!-- ========================================== -->
     <div class="card mt-4">
         <h3>🎙️ Podcast — Hero</h3>
-        <div class="form-group">
-            <label>Tiêu đề Hero</label>
-            <input type="text" name="podcast_hero_title" class="form-control" value="<?= htmlspecialchars($settingsMap['podcast_hero_title']['setting_value'] ?? 'Đối thoại Nội tâm & Chánh niệm') ?>">
-        </div>
+
         <div class="form-group">
             <label>Mô tả Hero</label>
             <textarea name="podcast_hero_desc" class="form-control" rows="3"><?= htmlspecialchars($settingsMap['podcast_hero_desc']['setting_value'] ?? 'Không gian cho những cuộc trò chuyện chậm rãi về những điều thường bị bỏ quên trong sự hối hả của đời sống thường nhật. Nơi chúng ta cùng ngồi lại, lắng nghe và hiểu sâu hơn về chính mình.') ?></textarea>
@@ -304,10 +295,7 @@ Tôi là Danny, một người thực hành và giảng dạy tâm lý học ứ
     <!-- ========================================== -->
     <div class="card mt-4">
         <h3>📞 Liên Hệ</h3>
-        <div class="form-group">
-            <label>Tiêu đề trang</label>
-            <input type="text" name="contact_title" class="form-control" value="<?= htmlspecialchars($settingsMap['contact_title']['setting_value'] ?? 'Kết nối & Trò chuyện') ?>">
-        </div>
+
         <div class="form-group">
             <label>Nội dung giới thiệu</label>
             <textarea name="contact_intro" class="form-control" rows="3"><?= htmlspecialchars($settingsMap['contact_intro']['setting_value'] ?? 'Cảm ơn bạn đã ghé thăm. Tôi luôn trân trọng những cơ hội được lắng nghe và chia sẻ về hành trình thực hành tâm lý, giáo dục và chánh niệm.
