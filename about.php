@@ -42,7 +42,9 @@ include __DIR__ . '/includes/header.php';
             <div class="about-hero__content">
                 <span class="eyebrow"><?= escape(get_setting('about_eyebrow', 'Người bạn đồng hành')) ?></span>
                 <h1 class="about-hero__title">
-                    <?= get_setting('about_hero_title', 'Chánh niệm,<br>Tâm lý học &<br><span class="text-accent">Sự trưởng thành</span>') ?>
+                    Chánh niệm,<br>
+                    Tâm lý học &<br>
+                    <span class="text-accent">Sự trưởng thành</span>
                 </h1>
                 <div class="about-hero__desc">
                     <?php 
@@ -69,7 +71,7 @@ include __DIR__ . '/includes/header.php';
                         <img src="<?= UPLOAD_URL . '/' . escape($heroImage) ?>" alt="Danny Duong - Chân dung" style="width: 100%; height: 100%; object-fit: cover;">
                     <?php else: ?>
                         <!-- Placeholder -->
-                        <div class="placeholder-portrait" style="background: #E5E5E5; width: 100%; height: 600px; display: flex; align-items: center; justify-content: center; color: #999;">
+                        <div class="placeholder-portrait" style="background: var(--color-bg-tertiary); width: 100%; height: 600px; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary);">
                             [Ảnh chân dung - 4:5]
                         </div>
                     <?php endif; ?>

@@ -83,7 +83,7 @@ include __DIR__ . '/includes/header.php';
         <div class="contact-grid">
             <!-- Left Column: Visual & Info -->
             <div class="contact-info">
-                <h1 class="page-title"><?= get_setting('contact_title', 'Kết nối &<br>Trò chuyện') ?></h1>
+                <h1 class="page-title">Kết nối &<br>Trò chuyện</h1>
                 <div class="contact-intro">
                     <?php 
                     $contactIntro = get_setting('contact_intro', '');

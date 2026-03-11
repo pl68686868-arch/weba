@@ -36,7 +36,9 @@ include __DIR__ . '/includes/header.php';
             <div class="about-hero__content">
                 <span class="eyebrow">Giảng dạy & Đào tạo</span>
                 <h1 class="about-hero__title">
-                    <?= get_setting('teaching_hero_title', 'Khai phóng<br>Tiềm năng<br><span class="text-accent" style="color: var(--color-accent-medium);">Con người</span>') ?>
+                    Khai phóng<br>
+                    Tiềm năng<br>
+                    <span class="text-accent" style="color: var(--color-accent-medium);">Con người</span>
                 </h1>
                 <div class="about-hero__desc">
                     <p>

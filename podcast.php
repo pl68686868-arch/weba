@@ -38,7 +38,9 @@ include __DIR__ . '/includes/header.php';
             <div class="about-hero__content">
                 <span class="eyebrow">The Podcast</span>
                 <h1 class="about-hero__title">
-                    <?= get_setting('podcast_hero_title', 'Đối thoại<br>Nội tâm &<br><span class="text-accent">Chánh niệm</span>') ?>
+                    Đối thoại<br>
+                    Nội tâm &<br>
+                    <span class="text-accent">Chánh niệm</span>
                 </h1>
                 <div class="about-hero__desc">
                     <p>
@@ -133,10 +135,10 @@ include __DIR__ . '/includes/header.php';
                             </div>
                             <div class="podcast-card__content">
                                 <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;"><?= escape($podcast['title']) ?></h3>
-                                <p style="font-size: 0.9rem; color: #666; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                <p style="font-size: 0.9rem; color: var(--color-text-tertiary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                     <?= escape($podcast['excerpt'] ?? '') ?>
                                 </p>
-                                <span style="font-size: 0.8rem; color: #999; margin-top: auto; display: block; padding-top: 10px;">
+                                <span style="font-size: 0.8rem; color: var(--color-text-tertiary); margin-top: auto; display: block; padding-top: 10px;">
                                     <?= formatDate($podcast['published_at'], 'short') ?>
                                 </span>
                             </div>
@@ -162,7 +164,7 @@ include __DIR__ . '/includes/header.php';
         height: 100%;
         display: flex;
         flex-direction: column;
-        border: 1px solid #eee;
+        border: 1px solid var(--color-border);
         border-radius: 12px;
         overflow: hidden;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -170,11 +172,11 @@ include __DIR__ . '/includes/header.php';
     }
     .podcast-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.05);
     }
     .podcast-card__cover {
         aspect-ratio: 1/1;
-        background-color: #f5f5f5;
+        background-color: var(--color-bg-tertiary);
         display: flex;
         align-items: center;
         justify-content: center;
