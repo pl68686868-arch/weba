@@ -1,6 +1,6 @@
 <?php
 // Override server-level CSP for admin pages to allow CDN resources
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.ckeditor.com https://cke4.ckeditor.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.ckeditor.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *; frame-src 'self' https://open.spotify.com https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://cke4.ckeditor.com https://cdn.ckeditor.com;");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.ckeditor.com https://cke4.ckeditor.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.ckeditor.com https://unpkg.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://unpkg.com https://cdn.jsdelivr.net data:; img-src 'self' data: https: blob: *; frame-src 'self' https://open.spotify.com https://www.youtube.com https://player.vimeo.com; connect-src 'self' https://cke4.ckeditor.com https://cdn.ckeditor.com;");
 ?>
 <!DOCTYPE html>
 <html lang="vi">
