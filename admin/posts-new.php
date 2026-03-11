@@ -520,17 +520,5 @@ require_once __DIR__ . '/../includes/admin-header.php';
     const currentImg = document.getElementById('featured_image').value;
     if (currentImg) updateImagePreview(currentImg);
 </script>
-gorySelect.value = "";
-            }
-        }
-        
-        // Bind Event Listener (Better than onchange attribute)
-        typeSelect.addEventListener('change', toggleSpotifyField);
-        
-        // Initial run
-        toggleSpotifyField();
-    });
-
-</script>
 
 <?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>
