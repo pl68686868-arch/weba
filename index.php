@@ -82,12 +82,11 @@ include __DIR__ . '/includes/header.php';
         <!-- Text Content (Left) -->
         <div class="hero__content">
             <h1 class="hero__title">
-                Dương Trần Minh Đoàn
-                <span class="hero__subtitle">Giảng viên, người thực hành tâm lý và chánh niệm</span>
+                <?= escape(get_setting('hero_name', 'Dương Trần Minh Đoàn')) ?>
+                <span class="hero__subtitle"><?= escape(get_setting('hero_subtitle', 'Giảng viên, người thực hành tâm lý và chánh niệm')) ?></span>
             </h1>
             <p class="hero__text">
-                Tôi là giảng viên và người thực hành tâm lý, thực hành và giảng dạy dựa trên nền tảng chánh niệm. 
-                Công việc của tôi gắn liền với việc quan sát, lắng nghe và đồng hành cùng đời sống nội tâm.
+                <?= escape(get_setting('hero_bio', 'Tôi là giảng viên và người thực hành tâm lý, thực hành và giảng dạy dựa trên nền tảng chánh niệm. Công việc của tôi gắn liền với việc quan sát, lắng nghe và đồng hành cùng đời sống nội tâm.')) ?>
             </p>
             <div style="margin-top: 2rem;">
                 <a href="/about.php" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: var(--color-gold); color: #1C1F1D; text-decoration: none; border-radius: 8px; font-weight: 600; letter-spacing: 0.05em; transition: transform 0.3s, background 0.3s;">
@@ -116,13 +115,10 @@ include __DIR__ . '/includes/header.php';
     <div class="container intro__container">
         <div class="intro__text-wrapper">
             <p class="intro__text">
-                Website này là không gian tôi viết và chia sẻ những suy tư, kiến thức và trải nghiệm thực hành 
-                dành cho người trưởng thành đang ở trong hành trình tìm kiếm chiều sâu nội tâm, ý nghĩa trong công việc 
-                và sự hồi phục thân–tâm.
+                <?= escape(get_setting('intro_paragraph_1', 'Website này là không gian tôi viết và chia sẻ những suy tư, kiến thức và trải nghiệm thực hành dành cho người trưởng thành đang ở trong hành trình tìm kiếm chiều sâu nội tâm, ý nghĩa trong công việc và sự hồi phục thân–tâm.')) ?>
             </p>
             <p class="intro__text">
-                Các nội dung được tiếp cận từ góc nhìn tâm lý học ứng dụng, chánh niệm và phản tư nghề nghiệp, 
-                với mong muốn góp phần nuôi dưỡng một đời sống tỉnh thức, bền vững và có ý nghĩa hơn.
+                <?= escape(get_setting('intro_paragraph_2', 'Các nội dung được tiếp cận từ góc nhìn tâm lý học ứng dụng, chánh niệm và phản tư nghề nghiệp, với mong muốn góp phần nuôi dưỡng một đời sống tỉnh thức, bền vững và có ý nghĩa hơn.')) ?>
             </p>
         </div>
     </div>
@@ -139,21 +135,19 @@ include __DIR__ . '/includes/header.php';
         <div class="testimonials-grid">
             <blockquote class="testimonial-card testimonial-card--primary">
                 <p class="testimonial-quote">
-                    "Thầy Đoàn đã giúp tôi nhìn nhận lại bản thân một cách nhẹ nhàng và sâu sắc. 
-                    Những buổi hướng dẫn chánh niệm thực sự mang lại sự bình an mà tôi đã tìm kiếm rất lâu."
+                    "<?= escape(get_setting('testimonial_1_quote', 'Thầy Đoàn đã giúp tôi nhìn nhận lại bản thân một cách nhẹ nhàng và sâu sắc. Những buổi hướng dẫn chánh niệm thực sự mang lại sự bình an mà tôi đã tìm kiếm rất lâu.')) ?>"
                 </p>
                 <cite class="testimonial-author">
-                    — Học viên khóa Mindfulness At Work
+                    <?= escape(get_setting('testimonial_1_author', '— Học viên khóa Mindfulness At Work')) ?>
                 </cite>
             </blockquote>
             
             <blockquote class="testimonial-card testimonial-card--gold">
                 <p class="testimonial-quote">
-                    "Cách tiếp cận của thầy rất khoa học nhưng đồng thời cũng rất gần gũi. 
-                    Tôi học được cách lắng nghe bản thân và không còn sợ đối diện với những cảm xúc khó khăn."
+                    "<?= escape(get_setting('testimonial_2_quote', 'Cách tiếp cận của thầy rất khoa học nhưng đồng thời cũng rất gần gũi. Tôi học được cách lắng nghe bản thân và không còn sợ đối diện với những cảm xúc khó khăn.')) ?>"
                 </p>
                 <cite class="testimonial-author">
-                    — Học viên khóa Tâm lý học Ứng dụng
+                    <?= escape(get_setting('testimonial_2_author', '— Học viên khóa Tâm lý học Ứng dụng')) ?>
                 </cite>
             </blockquote>
         </div>

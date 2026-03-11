@@ -36,15 +36,11 @@ include __DIR__ . '/includes/header.php';
             <div class="about-hero__content">
                 <span class="eyebrow">Giảng dạy & Đào tạo</span>
                 <h1 class="about-hero__title">
-                    Khai phóng<br>
-                    Tiềm năng<br>
-                    <span class="text-accent" style="color: var(--color-accent-medium);">Con người</span>
+                    <?= get_setting('teaching_hero_title', 'Khai phóng<br>Tiềm năng<br><span class="text-accent" style="color: var(--color-accent-medium);">Con người</span>') ?>
                 </h1>
                 <div class="about-hero__desc">
                     <p>
-                        Tôi tin rằng giáo dục không chỉ là truyền tải kiến thức, mà là quá trình khơi gợi sự chuyển hóa 
-                        từ bên trong. Hành trình học tập của người trưởng thành cần sự kết hợp giữa hiểu biết khoa học 
-                        và trải nghiệm thực chứng.
+                        <?= escape(get_setting('teaching_hero_desc', 'Tôi tin rằng giáo dục không chỉ là truyền tải kiến thức, mà là quá trình khơi gợi sự chuyển hóa từ bên trong. Hành trình học tập của người trưởng thành cần sự kết hợp giữa hiểu biết khoa học và trải nghiệm thực chứng.')) ?>
                     </p>
                 </div>
                 <div class="hero-actions" style="margin-top: 2rem;">
@@ -103,7 +99,7 @@ include __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Section 3: Areas Grid (Polished) -->
-<section id="areas" class="teaching-areas-section section-spacing" style="background: white;">
+<section id="areas" class="teaching-areas-section section-spacing" style="background: var(--color-bg-secondary);">
     <div class="container">
         <div class="section-header text-center" style="margin-bottom: 4rem;">
             <span class="eyebrow" style="color: var(--color-gold); font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem;">Chuyên môn</span>
@@ -145,10 +141,9 @@ include __DIR__ . '/includes/header.php';
 <!-- Section 4: CTA (Minimal) -->
 <section class="teaching-cta section-spacing text-center" style="padding-bottom: 8rem;">
     <div class="container container--narrow">
-        <h2 class="section-title">Hợp tác Đào tạo</h2>
+        <h2 class="section-title"><?= escape(get_setting('teaching_cta_title', 'Hợp tác Đào tạo')) ?></h2>
         <p class="section-desc" style="margin-bottom: 2rem;">
-            Tôi luôn sẵn sàng cho các cơ hội hợp tác giảng dạy tại trường Đại học, 
-            Doanh nghiệp hoặc các dự án cộng đồng.
+            <?= escape(get_setting('teaching_cta_desc', 'Tôi luôn sẵn sàng cho các cơ hội hợp tác giảng dạy tại trường Đại học, Doanh nghiệp hoặc các dự án cộng đồng.')) ?>
         </p>
         <a href="/contact.php?purpose=teaching" class="btn btn-outline" style="border: 1px solid var(--color-text-primary); color: var(--color-text-primary); padding: 1rem 2.5rem; text-decoration: none; border-radius: 50px; font-weight: 500; transition: all 0.3s ease; display: inline-block;">
             Cùng trò chuyện

@@ -8,12 +8,11 @@
                 <div class="footer__brand-col">
                     <h2 class="footer__logo"><?= htmlspecialchars(SITE_NAME) ?></h2>
                     <p class="footer__desc">
-                        Website này là không gian chia sẻ những suy tư, kiến thức và trải nghiệm thực hành 
-                        dựa trên nền tảng tâm lý học và chánh niệm.
-                    </p>
-                    <p class="footer__copyright">
-                        &copy; 2026 Dương Trần Minh Đoàn. <br>Mọi quyền được bảo lưu.
-                    </p>
+                    <?= escape(get_setting('footer_description', 'Website này là không gian chia sẻ những suy tư, kiến thức và trải nghiệm thực hành dựa trên nền tảng tâm lý học và chánh niệm.')) ?>
+                </p>
+                <p class="footer__copyright">
+                    <?= escape(get_setting('footer_copyright', '© 2026 Dương Trần Minh Đoàn. Mọi quyền được bảo lưu.')) ?>
+                </p>
                 </div>
 
                 <!-- Column 2: Quick Links -->
@@ -33,8 +32,8 @@
                 <div class="footer__newsletter-col">
                     <h3 class="footer__heading">Kết nối</h3>
                     <p class="footer__newsletter-desc">
-                        Nhận bài viết mới nhất qua email. Không spam, chỉ có sự chia sẻ.
-                    </p>
+                    <?= escape(get_setting('footer_newsletter_desc', 'Nhận bài viết mới nhất qua email. Không spam, chỉ có sự chia sẻ.')) ?>
+                </p>
                     <form action="/subscribe.php" method="POST" class="newsletter-form">
                         <input type="email" name="email" placeholder="Email của bạn" required class="newsletter-input">
                         <button type="submit" class="newsletter-button">Đăng ký</button>

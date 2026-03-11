@@ -40,21 +40,24 @@ include __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="about-hero__grid">
             <div class="about-hero__content">
-                <span class="eyebrow">Người bạn đồng hành</span>
+                <span class="eyebrow"><?= escape(get_setting('about_eyebrow', 'Người bạn đồng hành')) ?></span>
                 <h1 class="about-hero__title">
-                    Chánh niệm,<br>
-                    Tâm lý học &<br>
-                    <span class="text-accent">Sự trưởng thành</span>
+                    <?= get_setting('about_hero_title', 'Chánh niệm,<br>Tâm lý học &<br><span class="text-accent">Sự trưởng thành</span>') ?>
                 </h1>
                 <div class="about-hero__desc">
-                    <p>
-                        Tôi tin rằng việc học cách dừng lại, quan sát và hiểu mình một cách tỉnh thức là nền tảng 
-                        quan trọng để mỗi người sống và làm việc có ý nghĩa hơn, không chỉ cho hiện tại mà cả về lâu dài.
-                    </p>
-                    <p>
-                        Tôi là Danny, một người thực hành và giảng dạy tâm lý học ứng dụng, dành sự quan tâm đặc biệt 
-                        cho đời sống nội tâm của người trưởng thành.
-                    </p>
+                    <?php 
+                    $aboutDesc = get_setting('about_hero_desc', '');
+                    if ($aboutDesc) {
+                        foreach (explode("\n\n", $aboutDesc) as $p) {
+                            echo '<p>' . escape(trim($p)) . '</p>';
+                        }
+                    } else {
+                    ?>
+                    <p>Tôi tin rằng việc học cách dừng lại, quan sát và hiểu mình một cách tỉnh thức là nền tảng 
+                        quan trọng để mỗi người sống và làm việc có ý nghĩa hơn, không chỉ cho hiện tại mà cả về lâu dài.</p>
+                    <p>Tôi là Danny, một người thực hành và giảng dạy tâm lý học ứng dụng, dành sự quan tâm đặc biệt 
+                        cho đời sống nội tâm của người trưởng thành.</p>
+                    <?php } ?>
                 </div>
             </div>
             <div class="about-hero__visual">
@@ -82,13 +85,10 @@ include __DIR__ . '/includes/header.php';
         <div class="philosophy-content">
             <h2 class="section-title text-light">Triết lý thực hành</h2>
             <blockquote class="philosophy-quote">
-                "Không giản lược. Không thần thánh hóa.<br>
-                Chỉ đơn giản là <span class="text-gold">hiểu sâu sắc</span>."
+                "<?= escape(get_setting('about_philosophy_quote', 'Không giản lược. Không thần thánh hóa. Chỉ đơn giản là hiểu sâu sắc.')) ?>"
             </blockquote>
             <p class="text-light-soft">
-                Trong công việc giảng dạy và thực hành, tôi quan tâm đến cách con người trải nghiệm áp lực, 
-                ý nghĩa công việc, sự mệt mỏi tinh thần cũng như nhu cầu hồi phục thân–tâm trong đời sống hiện đại. 
-                Tôi tiếp cận các vấn đề này từ sự kết hợp giữa tâm lý học, chánh niệm và phản tư nghề nghiệp.
+                <?= escape(get_setting('about_philosophy_desc', 'Trong công việc giảng dạy và thực hành, tôi quan tâm đến cách con người trải nghiệm áp lực, ý nghĩa công việc, sự mệt mỏi tinh thần cũng như nhu cầu hồi phục thân–tâm trong đời sống hiện đại. Tôi tiếp cận các vấn đề này từ sự kết hợp giữa tâm lý học, chánh niệm và phản tư nghề nghiệp.')) ?>
             </p>
         </div>
     </div>

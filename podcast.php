@@ -38,14 +38,11 @@ include __DIR__ . '/includes/header.php';
             <div class="about-hero__content">
                 <span class="eyebrow">The Podcast</span>
                 <h1 class="about-hero__title">
-                    Đối thoại<br>
-                    Nội tâm &<br>
-                    <span class="text-accent">Chánh niệm</span>
+                    <?= get_setting('podcast_hero_title', 'Đối thoại<br>Nội tâm &<br><span class="text-accent">Chánh niệm</span>') ?>
                 </h1>
                 <div class="about-hero__desc">
                     <p>
-                        Không gian cho những cuộc trò chuyện chậm rãi về những điều thường bị bỏ quên trong sự hối hả 
-                        của đời sống thường nhật. Nơi chúng ta cùng ngồi lại, lắng nghe và hiểu sâu hơn về chính mình.
+                        <?= escape(get_setting('podcast_hero_desc', 'Không gian cho những cuộc trò chuyện chậm rãi về những điều thường bị bỏ quên trong sự hối hả của đời sống thường nhật. Nơi chúng ta cùng ngồi lại, lắng nghe và hiểu sâu hơn về chính mình.')) ?>
                     </p>
                 </div>
                 <div class="hero-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
@@ -169,7 +166,7 @@ include __DIR__ . '/includes/header.php';
         border-radius: 12px;
         overflow: hidden;
         transition: transform 0.2s, box-shadow 0.2s;
-        background: white;
+        background: var(--color-bg-secondary);
     }
     .podcast-card:hover {
         transform: translateY(-5px);
@@ -211,14 +208,14 @@ include __DIR__ . '/includes/header.php';
     <div class="container container--narrow text-center">
         <h2 class="section-title">Đăng ký theo dõi</h2>
         <p class="section-desc">
-            Podcast có mặt trên tất cả các nền tảng phổ biến. Đăng ký ngay để không bỏ lỡ tập mới nhất.
+            <?= escape(get_setting('podcast_subscribe_desc', 'Podcast có mặt trên tất cả các nền tảng phổ biến. Đăng ký ngay để không bỏ lỡ tập mới nhất.')) ?>
         </p>
         
         <div class="platform-links">
-            <a href="#" class="platform-btn spotify">
+            <a href="<?= escape(get_setting('podcast_spotify_url', '#')) ?>" class="platform-btn spotify">
                 <span>Spotify</span>
             </a>
-            <a href="#" class="platform-btn apple">
+            <a href="<?= escape(get_setting('podcast_apple_url', '#')) ?>" class="platform-btn apple">
                 <span>Apple Podcast</span>
             </a>
             <a href="/rss.php" class="platform-btn rss">

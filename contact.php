@@ -83,16 +83,21 @@ include __DIR__ . '/includes/header.php';
         <div class="contact-grid">
             <!-- Left Column: Visual & Info -->
             <div class="contact-info">
-                <h1 class="page-title">Kết nối &<br>Trò chuyện</h1>
+                <h1 class="page-title"><?= get_setting('contact_title', 'Kết nối &<br>Trò chuyện') ?></h1>
                 <div class="contact-intro">
-                    <p>
-                        Cảm ơn bạn đã ghé thăm. Tôi luôn trân trọng những cơ hội được lắng nghe 
-                        và chia sẻ về hành trình thực hành tâm lý, giáo dục và chánh niệm.
-                    </p>
-                    <p>
-                        Nếu bạn có lời mời hợp tác, thắc mắc chuyên môn, hoặc đơn giản là muốn gửi một lời chào, 
-                        đừng ngần ngại để lại tin nhắn.
-                    </p>
+                    <?php 
+                    $contactIntro = get_setting('contact_intro', '');
+                    if ($contactIntro) {
+                        foreach (explode("\n\n", $contactIntro) as $p) {
+                            echo '<p>' . escape(trim($p)) . '</p>';
+                        }
+                    } else {
+                    ?>
+                    <p>Cảm ơn bạn đã ghé thăm. Tôi luôn trân trọng những cơ hội được lắng nghe 
+                        và chia sẻ về hành trình thực hành tâm lý, giáo dục và chánh niệm.</p>
+                    <p>Nếu bạn có lời mời hợp tác, thắc mắc chuyên môn, hoặc đơn giản là muốn gửi một lời chào, 
+                        đừng ngần ngại để lại tin nhắn.</p>
+                    <?php } ?>
                 </div>
                 
                 <div class="contact-methods">
@@ -105,7 +110,7 @@ include __DIR__ . '/includes/header.php';
                     
                     <div class="method-item">
                         <span class="method-label">Thời gian phản hồi</span>
-                        <p class="method-desc">Tôi thường kiểm tra email vào buổi sáng và sẽ phản hồi trong vòng 2-3 ngày làm việc.</p>
+                        <p class="method-desc"><?= escape(get_setting('contact_response_time', 'Tôi thường kiểm tra email vào buổi sáng và sẽ phản hồi trong vòng 2-3 ngày làm việc.')) ?></p>
                     </div>
                 </div>
             </div>
