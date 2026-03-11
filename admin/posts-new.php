@@ -375,6 +375,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
     // CKEditor Configuration
     CKEDITOR.config.notification_aggregationTimeout = 0;
     var editor = CKEDITOR.replace('content', {
+        versionCheck: false,
         height: 500,
         removePlugins: 'exportpdf',
         filebrowserUploadUrl: '/admin/upload_ckeditor.php',
