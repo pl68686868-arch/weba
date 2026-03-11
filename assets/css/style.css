@@ -1178,9 +1178,9 @@ body.page-subpage {
 .pillars-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-xl);
-    margin-top: var(--space-3xl);
-    margin-bottom: var(--space-3xl);
+    gap: var(--space-md); /* Reduced from xl */
+    margin-top: var(--space-xl); /* Balanced gap */
+    margin-bottom: var(--space-xl);
 }
 
 @media (min-width: 768px) {
@@ -1272,7 +1272,7 @@ body.page-subpage {
 }
 
 .section-spacing {
-    padding: var(--space-3xl) 0; /* Reduced from 5xl (160px) to 3xl (96px) */
+    padding: var(--space-xl) 0; /* Reduced from 3xl (96px) to xl (48px) for tighter rhythm */
 }
 
 .teaching-methodology {
@@ -1282,8 +1282,8 @@ body.page-subpage {
 .method-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-2xl);
-    margin-top: var(--space-3xl);
+    gap: var(--space-xl); /* Reduced from 2xl */
+    margin-top: var(--space-xl); /* Balanced gap */
 }
 
 @media (min-width: 992px) {
