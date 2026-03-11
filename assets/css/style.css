@@ -1093,8 +1093,8 @@ body.page-subpage {
 
 @media (min-width: 992px) {
     .about-hero__grid {
-        grid-template-columns: 1.2fr 1fr; /* Better balance between text/image */
-        gap: var(--space-4xl);
+        grid-template-columns: 1.1fr 1fr; /* Slimmer text vs visual */
+        gap: var(--space-5xl);
         align-items: center;
     }
 }
@@ -1109,11 +1109,10 @@ body.page-subpage {
 
 .about-hero__desc p {
     font-size: 1.25rem;
-    /* Increased base size */
     color: var(--color-text-secondary);
     margin-bottom: var(--space-md);
     line-height: 1.8;
-    max-width: 600px;
+    max-width: 540px; /* Slimmer for editorial feel */
 }
 
 .about-hero__desc p:first-of-type {
@@ -1126,7 +1125,18 @@ body.page-subpage {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.06);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    aspect-ratio: 4/5; /* Portrait to match text height */
+    min-height: 540px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-hero__image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Section 2: Philosophy (Dark) */

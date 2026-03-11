@@ -61,7 +61,7 @@ include __DIR__ . '/includes/header.php';
                         <img src="<?= UPLOAD_URL . '/' . escape($coverArt) ?>" alt="Podcast Cover Art" style="width: 100%; height: 100%; object-fit: cover;">
                     <?php else: ?>
                         <!-- Placeholder -->
-                        <div class="placeholder-portrait" style="background: var(--color-bg-tertiary); width: 100%; height: 600px; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary);">
+                        <div style="background: var(--color-bg-tertiary); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary);">
                             [Podcast Cover Art]
                         </div>
                     <?php endif; ?>
