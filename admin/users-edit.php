@@ -104,8 +104,8 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <div class="admin-page">
     <div class="admin-page__header">
-        <h1>Edit User: <?= escape($user['username']) ?></h1>
-        <a href="/admin/users.php" class="btn btn-secondary">← Back to Users</a>
+        <h1>Chỉnh sửa người dùng: <?= escape($user['username']) ?></h1>
+        <a href="/admin/users.php" class="btn btn-secondary">← Quản lý người dùng</a>
     </div>
     
     <?php if ($error): ?>
@@ -116,47 +116,54 @@ include __DIR__ . '/../includes/admin-header.php';
         <div class="alert alert-success"><?= escape($success) ?></div>
     <?php endif; ?>
     
-    <div class="form-card">
-        <form method="POST" action="">
+    <div class="card max-w-2xl mx-auto">
+        <form method="POST" action="" class="user-form">
             <div class="form-group">
-                <label class="form-label">Username</label>
+                <label class="form-label">Tên đăng nhập</label>
                 <input type="text" class="form-input" value="<?= escape($user['username']) ?>" disabled>
-                <small class="form-hint">Username cannot be changed.</small>
+                <small class="form-hint">Tên đăng nhập không thể thay đổi.</small>
             </div>
             
             <div class="form-group">
-                <label for="full_name" class="form-label">Full Name *</label>
+                <label for="full_name" class="form-label">Họ và tên <span class="required">*</span></label>
                 <input type="text" id="full_name" name="full_name" class="form-input" value="<?= escape($user['full_name']) ?>" required>
             </div>
             
             <div class="form-group">
-                <label for="email" class="form-label">Email *</label>
+                <label for="email" class="form-label">Email <span class="required">*</span></label>
                 <input type="email" id="email" name="email" class="form-input" value="<?= escape($user['email']) ?>" required>
             </div>
             
             <div class="form-group">
-                <label for="password" class="form-label">New Password (leave empty to keep current)</label>
-                <input type="password" id="password" name="password" class="form-input" placeholder="••••••">
+                <label for="password" class="form-label">Mật khẩu mới (để trống nếu không đổi)</label>
+                <input type="password" id="password" name="password" class="form-input" placeholder="••••••••">
             </div>
             
             <div class="form-group">
-                <label for="role" class="form-label">Role</label>
+                <label for="role" class="form-label">Vai trò</label>
                 <select name="role" id="role" class="form-select" <?= ($userId === $currentUserId) ? 'disabled' : '' ?>>
-                    <option value="author" <?= $user['role'] === 'author' ? 'selected' : '' ?>>Author</option>
-                    <option value="editor" <?= $user['role'] === 'editor' ? 'selected' : '' ?>>Editor</option>
-                    <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Administrator</option>
+                    <option value="author" <?= $user['role'] === 'author' ? 'selected' : '' ?>>Tác giả (Chỉ quản lý bài viết của mình)</option>
+                    <option value="editor" <?= $user['role'] === 'editor' ? 'selected' : '' ?>>Biên tập viên (Quản lý tất cả bài viết)</option>
+                    <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Quản trị viên (Toàn quyền hệ thống)</option>
                 </select>
                 <?php if ($userId === $currentUserId): ?>
                     <input type="hidden" name="role" value="<?= $user['role'] ?>">
-                    <small class="form-hint">You cannot change your own role.</small>
+                    <small class="form-hint">Bạn không thể tự thay đổi vai trò của mình.</small>
                 <?php endif; ?>
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update User</button>
+            <div class="form-actions mt-4 text-right">
+                <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    .max-w-2xl { max-width: 600px; margin-left: auto; margin-right: auto; }
+    .required { color: #ef4444; }
+    .text-right { text-align: right; }
+    .mt-4 { margin-top: 1.5rem; }
+</style>
 
 <?php include __DIR__ . '/../includes/admin-footer.php'; ?>

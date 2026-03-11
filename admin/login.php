@@ -68,46 +68,65 @@ $csrfToken = $auth->generateCSRFToken();
     <meta name="robots" content="noindex, nofollow">
     <title>Đăng nhập Admin | <?= SITE_NAME ?></title>
     <style>
+        :root {
+            --primary-color: #2C5F4F;
+            --primary-hover: #3A7D6B;
+            --bg-gradient: linear-gradient(135deg, #1a3a2f 0%, #2c5f4f 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #2C5F4F 0%, #3A7D6B 100%);
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 24px;
+            color: var(--text-main);
         }
         
         .login-container {
-            background: #FFFFFF;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             padding: 48px;
             width: 100%;
-            max-width: 400px;
+            max-width: 440px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .login-header {
             text-align: center;
             margin-bottom: 40px;
         }
+
+        .login-logo {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
         
         .login-header h1 {
-            color: #2C5F4F;
-            font-size: 24px;
-            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
             margin-bottom: 8px;
         }
         
         .login-header p {
-            color: #5A5A5A;
-            font-size: 14px;
+            color: var(--text-muted);
+            font-size: 15px;
         }
         
         .form-group {
@@ -116,67 +135,93 @@ $csrfToken = $auth->generateCSRFToken();
         
         .form-group label {
             display: block;
-            color: #2D2D2D;
+            color: var(--text-main);
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 8px;
         }
         
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #E5E3DD;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
             font-size: 15px;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background: #f9fafb;
         }
         
         .form-group input:focus {
             outline: none;
-            border-color: #3A7D6B;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(44, 95, 79, 0.1);
         }
         
         .btn {
             width: 100%;
-            padding: 14px;
-            background: #2C5F4F;
+            padding: 16px;
+            background: var(--primary-color);
             color: #FFFFFF;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(44, 95, 79, 0.3);
         }
         
         .btn:hover {
-            background: #3A7D6B;
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 20px 25px -5px rgba(44, 95, 79, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
         
         .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 16px;
+            border-radius: 12px;
             margin-bottom: 24px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid transparent;
         }
         
         .alert-error {
-            background: #FEE;
-            color: #C33;
-            border: 1px solid #FCC;
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fee2e2;
         }
         
         .alert-success {
-            background: #EFE;
-            color: #3A3;
-            border: 1px solid #CFC;
+            background: #ecfdf5;
+            color: #065f46;
+            border-color: #d1fae5;
         }
         
         .footer-text {
             text-align: center;
-            color: #5A5A5A;
+            color: var(--text-muted);
             font-size: 13px;
             margin-top: 32px;
+            opacity: 0.8;
+        }
+
+        /* Float animation for the container */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .login-container {
+            animation: float 6s ease-in-out infinite;
         }
     </style>
 </head>

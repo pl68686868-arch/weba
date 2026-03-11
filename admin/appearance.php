@@ -65,178 +65,120 @@ foreach ($imageKeys as $key) {
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
-<div class="admin-header">
-    <h1>Quản lý Giao diện & Hình ảnh</h1>
-</div>
-
-<?php if ($success): ?>
-    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-<?php endif; ?>
-
-<?php if ($error): ?>
-    <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
-<?php endif; ?>
-
-<form method="POST" action="" enctype="multipart/form-data" class="appearance-form">
-    
-    <!-- About Page -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Trang Giới thiệu (About)</h3>
+<div class="admin-page">
+    <div class="admin-header">
+        <div>
+            <h1>Hình ảnh & Giao diện</h1>
+            <p>Tùy chỉnh các hình ảnh đại diện cho từng chuyên trang trên website.</p>
         </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label>Ảnh Chân dung (Hero Section)</label>
-                <div class="image-preview-wrapper">
+    </div>
+    
+    <?php if ($success): ?>
+        <div style="background: rgba(16, 185, 129, 0.1); color: #059669; padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.2); font-weight: 500;">
+            ✅ <?= htmlspecialchars($success) ?>
+        </div>
+    <?php endif; ?>
+    
+    <?php if ($error): ?>
+        <div style="background: rgba(239, 68, 68, 0.1); color: #DC2626; padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid rgba(239, 68, 68, 0.2); font-weight: 500;">
+            ⚠️ <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+    
+    <form method="POST" action="" enctype="multipart/form-data">
+        <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px;">
+            
+            <!-- About Page -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <div style="width: 40px; height: 40px; background: rgba(44, 95, 79, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">📋</div>
+                    <h3 style="margin: 0;">Trang Giới thiệu</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ảnh Chân dung (Hero)</label>
                     <?php if ($images['about_hero_image']): ?>
-                        <div class="current-image">
-                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['about_hero_image']) ?>" alt="Current About Image">
+                        <div class="image-preview" style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 2px solid var(--border-color); aspect-ratio: 4/5;">
+                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['about_hero_image']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     <?php else: ?>
-                        <div class="placeholder-box">Chưa có ảnh</div>
+                        <div style="margin-bottom: 16px; border-radius: 12px; aspect-ratio: 4/5; background: var(--bg-body); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.875rem;">Chưa có ảnh</div>
                     <?php endif; ?>
-                    <input type="file" name="about_hero_image" class="form-control-file" accept="image/*">
-                    <small class="text-muted">Kích thước khuyên dùng: 600x750px (Tỉ lệ 4:5)</small>
+                    <input type="file" name="about_hero_image" class="form-control" accept="image/*">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Kích thước khuyên dùng: 600x750px (4:5)</p>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Teaching Page -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Trang Giảng dạy (Teaching)</h3>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label>Ảnh Minh họa (Hero Section)</label>
-                <div class="image-preview-wrapper">
+            <!-- Teaching Page -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <div style="width: 40px; height: 40px; background: rgba(44, 95, 79, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🎓</div>
+                    <h3 style="margin: 0;">Trang Giảng dạy</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ảnh Minh họa (Hero)</label>
                     <?php if ($images['teaching_hero_image']): ?>
-                        <div class="current-image">
-                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['teaching_hero_image']) ?>" alt="Current Teaching Image">
+                        <div class="image-preview" style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 2px solid var(--border-color); aspect-ratio: 4/5;">
+                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['teaching_hero_image']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     <?php else: ?>
-                        <div class="placeholder-box">Chưa có ảnh</div>
+                        <div style="margin-bottom: 16px; border-radius: 12px; aspect-ratio: 4/5; background: var(--bg-body); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.875rem;">Chưa có ảnh</div>
                     <?php endif; ?>
-                    <input type="file" name="teaching_hero_image" class="form-control-file" accept="image/*">
-                    <small class="text-muted">Kích thước khuyên dùng: 600x750px (Tỉ lệ 4:5)</small>
+                    <input type="file" name="teaching_hero_image" class="form-control" accept="image/*">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Kích thước khuyên dùng: 600x750px (4:5)</p>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Podcast Page -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Trang Podcast</h3>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label>Ảnh Bìa Podcast (Cover Art)</label>
-                <div class="image-preview-wrapper">
+            <!-- Podcast Page -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <div style="width: 40px; height: 40px; background: rgba(44, 95, 79, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🎙️</div>
+                    <h3 style="margin: 0;">Trang Podcast</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ảnh Bìa Podcast (Cover Art)</label>
                     <?php if ($images['podcast_cover_art']): ?>
-                        <div class="current-image">
-                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['podcast_cover_art']) ?>" alt="Current Podcast Cover">
+                        <div class="image-preview" style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 2px solid var(--border-color); aspect-ratio: 1/1;">
+                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['podcast_cover_art']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     <?php else: ?>
-                        <div class="placeholder-box">Chưa có ảnh</div>
+                        <div style="margin-bottom: 16px; border-radius: 12px; aspect-ratio: 1/1; background: var(--bg-body); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.875rem;">Chưa có ảnh</div>
                     <?php endif; ?>
-                    <input type="file" name="podcast_cover_art" class="form-control-file" accept="image/*">
-                    <small class="text-muted">Kích thước khuyên dùng: 800x800px (Vuông)</small>
+                    <input type="file" name="podcast_cover_art" class="form-control" accept="image/*">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Kích thước khuyên dùng: 800x800px (1:1)</p>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Contact Page -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Trang Liên hệ</h3>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label>Ảnh Minh họa (Hero/Layout)</label>
-                <div class="image-preview-wrapper">
+            
+            <!-- Contact Page -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <div style="width: 40px; height: 40px; background: rgba(44, 95, 79, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">📞</div>
+                    <h3 style="margin: 0;">Trang Liên hệ</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ảnh Minh họa</label>
                     <?php if ($images['contact_hero_image']): ?>
-                        <div class="current-image">
-                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['contact_hero_image']) ?>" alt="Current Contact Image">
+                        <div class="image-preview" style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 2px solid var(--border-color); aspect-ratio: 3/4;">
+                            <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($images['contact_hero_image']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     <?php else: ?>
-                        <div class="placeholder-box">Chưa có ảnh</div>
+                        <div style="margin-bottom: 16px; border-radius: 12px; aspect-ratio: 3/4; background: var(--bg-body); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.875rem;">Chưa có ảnh</div>
                     <?php endif; ?>
-                    <input type="file" name="contact_hero_image" class="form-control-file" accept="image/*">
-                    <small class="text-muted">Kích thước khuyên dùng: 600x800px</small>
+                    <input type="file" name="contact_hero_image" class="form-control" accept="image/*">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Kích thước khuyên dùng: 600x800px</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="form-actions sticky-actions">
-        <button type="submit" class="btn btn-primary btn-lg">Lưu thay đổi</button>
-    </div>
-</form>
-
-<style>
-    .card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        overflow: hidden;
-    }
-    .card-header {
-        background: #f8f9fa;
-        padding: 15px 20px;
-        border-bottom: 1px solid #eee;
-    }
-    .card-header h3 { margin: 0; font-size: 1.1rem; color: #333; }
-    .card-body { padding: 20px; }
-    
-    .image-preview-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin-top: 10px;
-    }
-    
-    .current-image img {
-        max-width: 200px;
-        max-height: 250px;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        object-fit: cover;
-    }
-    
-    .placeholder-box {
-        width: 150px;
-        height: 150px;
-        background: #f0f0f0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #999;
-        border-radius: 4px;
-        border: 2px dashed #ddd;
-    }
-    
-    .mb-4 { margin-bottom: 1.5rem; }
-    
-    .sticky-actions {
-        position: sticky;
-        bottom: 20px;
-        background: white;
-        padding: 15px 20px;
-        border-top: 1px solid #eee;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-        border-radius: 8px;
-        display: flex;
-        justify-content: flex-end;
-        z-index: 100;
-    }
-    
-    .btn-lg {
-        padding: 12px 30px;
-        font-size: 1rem;
-    }
-</style>
+        <div style="position: sticky; bottom: 32px; right: 32px; display: flex; justify-content: flex-end; z-index: 100;">
+            <button type="submit" class="btn btn-primary" style="padding: 16px 48px; font-size: 1rem; box-shadow: var(--shadow-xl);">
+                💾 Lưu các thay đổi
+            </button>
+        </div>
+    </form>
+</div>
 
 <?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>

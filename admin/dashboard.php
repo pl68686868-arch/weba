@@ -96,136 +96,133 @@ include __DIR__ . '/../includes/admin-header.php';
 ?>
 
 <div class="dashboard">
-    <div class="dashboard__header">
-        <h1>Dashboard</h1>
-        <p>Xin chào, <?= escape($auth->getUsername()) ?>!</p>
+    <div class="admin-header">
+        <div>
+            <h1>Tổng quan</h1>
+            <p>Xin chào, <?= escape($auth->getUsername()) ?>! Hôm nay là <?= date('d/m/Y') ?>.</p>
+        </div>
+        <div class="admin-header__actions">
+            <a href="/admin/posts-new.php" class="btn btn-primary">
+                <span>+</span> Viết bài mới
+            </a>
+        </div>
     </div>
     
     <!-- Statistics Cards -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-card__icon">📄</div>
-            <div class="stat-card__content">
-                <div class="stat-card__value"><?= $stats['total_posts'] ?? 0 ?></div>
-                <div class="stat-card__label">Tổng bài viết</div>
-            </div>
+            <div class="stat-card__label">Tổng bài viết</div>
+            <div class="stat-card__value"><?= $stats['total_posts'] ?? 0 ?></div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">✅</div>
-            <div class="stat-card__content">
-                <div class="stat-card__value"><?= $stats['published_posts'] ?? 0 ?></div>
-                <div class="stat-card__label">Đã xuất bản</div>
-            </div>
+            <div class="stat-card__label">Đã xuất bản</div>
+            <div class="stat-card__value"><?= $stats['published_posts'] ?? 0 ?></div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">📝</div>
-            <div class="stat-card__content">
-                <div class="stat-card__value"><?= $stats['draft_posts'] ?? 0 ?></div>
-                <div class="stat-card__label">Bản nháp</div>
-            </div>
+            <div class="stat-card__label">Bản nháp</div>
+            <div class="stat-card__value"><?= $stats['draft_posts'] ?? 0 ?></div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">💬</div>
-            <div class="stat-card__content">
-                <div class="stat-card__value"><?= $stats['pending_comments'] ?? 0 ?></div>
-                <div class="stat-card__label">Comments chờ duyệt</div>
-            </div>
+            <div class="stat-card__label">Chờ duyệt</div>
+            <div class="stat-card__value"><?= $stats['pending_comments'] ?? 0 ?></div>
         </div>
         
         <div class="stat-card">
             <div class="stat-card__icon">📧</div>
-            <div class="stat-card__content">
-                <div class="stat-card__value"><?= $stats['newsletter_subscribers'] ?? 0 ?></div>
-                <div class="stat-card__label">Newsletter subscribers</div>
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-card__icon">🏷️</div>
-            <div class="stat-card__content">
-                <div class="stat-card__value"><?= $stats['total_tags'] ?? 0 ?></div>
-                <div class="stat-card__label">Tags</div>
-            </div>
+            <div class="stat-card__label">Bản tin</div>
+            <div class="stat-card__value"><?= $stats['newsletter_subscribers'] ?? 0 ?></div>
         </div>
     </div>
 
     <!-- Analytics Chart -->
-    <div class="card mb-4" style="margin-bottom: 32px; padding: 24px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-        <h2 style="margin: 0 0 24px;">Traffic Overview (30 Days)</h2>
-        <div style="height: 300px;">
+    <div class="card chart-card">
+        <h3>📈 Traffic (30 ngày gần đây)</h3>
+        <div style="height: 350px; position: relative;">
             <canvas id="viewsChart"></canvas>
-        </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <h2>Quick Actions</h2>
-        <div class="action-buttons">
-            <a href="/admin/posts-new.php" class="btn btn-primary">+ Tạo bài viết mới</a>
-            <a href="/admin/posts.php" class="btn btn-secondary">Quản lý bài viết</a>
-            <a href="/admin/comments.php" class="btn btn-secondary">Quản lý comments</a>
-            <a href="/admin/media.php" class="btn btn-secondary">Media Library</a>
         </div>
     </div>
     
     <div class="dashboard-grid">
         <!-- Recent Posts -->
-        <div class="dashboard-section">
-            <h2>Bài viết gần đây</h2>
+        <div class="card">
+            <h3>🖋️ Bài viết gần đây</h3>
             <?php if (!empty($recentPosts)): ?>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Tiêu đề</th>
-                            <th>Chuyên mục</th>
-                            <th>Trạng thái</th>
-                            <th>Cập nhật</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($recentPosts as $post): ?>
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
                             <tr>
-                                <td>
-                                    <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>">
-                                        <?= escape($post['title']) ?>
-                                    </a>
-                                </td>
-                                <td><?= escape($post['category_name']) ?></td>
-                                <td>
-                                    <span class="status-badge status-<?= $post['status'] ?>">
-                                        <?= ucfirst($post['status']) ?>
-                                    </span>
-                                </td>
-                                <td><?= formatDate($post['updated_at'], 'relative') ?></td>
+                                <th>Tiêu đề</th>
+                                <th>Trạng thái</th>
+                                <th>Cập nhật</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recentPosts as $post): ?>
+                                <tr>
+                                    <td>
+                                        <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" style="font-weight: 500;">
+                                            <?= escape($post['title']) ?>
+                                        </a>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                                            <?= escape($post['category_name']) ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-<?= $post['status'] ?>">
+                                            <?= $post['status'] === 'published' ? 'Đã đăng' : 'Bản nháp' ?>
+                                        </span>
+                                    </td>
+                                    <td style="color: var(--text-muted); font-size: 0.8125rem;">
+                                        <?= formatDate($post['updated_at'], 'relative') ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php else: ?>
-                <p>Chưa có bài viết nào.</p>
+                <p style="color: var(--text-muted); text-align: center; padding: 40px 0;">Chưa có bài viết nào.</p>
             <?php endif; ?>
+            <div style="margin-top: 24px; text-align: center;">
+                <a href="/admin/posts.php" class="btn btn-secondary btn-small">Xem tất cả bài viết</a>
+            </div>
         </div>
         
         <!-- Popular Posts -->
-        <div class="dashboard-section">
-            <h2>Bài viết phổ biến (30 ngày)</h2>
+        <div class="card">
+            <h3>🔥 Bài viết phổ biến</h3>
             <?php if (!empty($popularPosts)): ?>
-                <ul class="popular-list">
+                <ul class="popular-list" style="list-style: none; padding: 0; margin: 0;">
                     <?php foreach ($popularPosts as $post): ?>
-                        <li>
-                            <a href="/post/<?= escape($post['slug']) ?>" target="_blank">
-                                <?= escape($post['title']) ?>
-                            </a>
-                            <span class="view-count"><?= number_format($post['view_count']) ?> views</span>
+                        <li style="padding: 16px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                            <div style="flex: 1; padding-right: 16px;">
+                                <a href="/post/<?= escape($post['slug']) ?>" target="_blank" style="font-weight: 500; display: block; margin-bottom: 4px;">
+                                    <?= escape($post['title']) ?>
+                                </a>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">
+                                    /post/<?= escape($post['slug']) ?>
+                                </span>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-family: var(--font-heading); font-weight: 700; color: var(--color-primary);"><?= number_format($post['view_count']) ?></div>
+                                <div style="font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">lượt xem</div>
+                            </div>
                         </li>
                     <?php endforeach; ?>
                 </ul>
             <?php else: ?>
-                <p>Chưa có dữ liệu.</p>
+                <p style="color: var(--text-muted); text-align: center; padding: 40px 0;">Chưa có dữ liệu bài viết phổ biến.</p>
             <?php endif; ?>
+            <div style="margin-top: 24px; text-align: center;">
+                <a href="/admin/media.php" class="btn btn-secondary btn-small">Thư viện Media</a>
+            </div>
         </div>
     </div>
 </div>
@@ -245,37 +242,58 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: <?= json_encode($dates) ?>,
             datasets: [{
-                label: 'Page Views',
+                label: 'Lượt xem',
                 data: <?= json_encode($counts) ?>,
                 borderColor: '#2C5F4F',
-                backgroundColor: 'rgba(44, 95, 79, 0.1)',
-                borderWidth: 2,
+                backgroundColor: function(context) {
+                    const chart = context.chart;
+                    const {ctx, chartArea} = chart;
+                    if (!chartArea) return null;
+                    const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                    gradient.addColorStop(0, 'rgba(44, 95, 79, 0)');
+                    gradient.addColorStop(1, 'rgba(44, 95, 79, 0.15)');
+                    return gradient;
+                },
+                borderWidth: 3,
                 tension: 0.4,
                 fill: true,
-                pointRadius: 3,
-                pointHoverRadius: 6
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#2C5F4F',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
             plugins: {
                 legend: {
                     display: false
                 },
                 tooltip: {
-                    mode: 'index',
-                    intersect: false,
+                    backgroundColor: '#1C1F1D',
+                    padding: 12,
+                    titleFont: { size: 14, family: "'Inter', sans-serif" },
+                    bodyFont: { size: 13, family: "'Inter', sans-serif" },
+                    cornerRadius: 8,
+                    displayColors: false
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: '#f0f0f0'
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false
                     },
                     ticks: {
-                        stepSize: 1
+                        stepSize: 1,
+                        font: { size: 11 }
                     }
                 },
                 x: {
@@ -283,7 +301,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         display: false
                     },
                     ticks: {
-                        maxTicksLimit: 10
+                        maxTicksLimit: 7,
+                        font: { size: 11 }
                     }
                 }
             }

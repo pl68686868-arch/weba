@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     
-                    $sendResult = "Đã gửi thành công {$sent}/" . count($activeSubscribers) . " email." . ($failed > 0 ? " ({$failed} thất bại)" : '');
+                    $sendResult = "Đã gửi thành công " . (string)$sent . "/" . (string)count($activeSubscribers) . " email." . ($failed > 0 ? " (" . (string)$failed . " thất bại)" : '');
                 }
             }
         } elseif ($action === 'delete_subscriber') {
@@ -89,103 +89,147 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
-<div class="admin-header">
-    <h1>Newsletter</h1>
-</div>
-
-<?php if ($sendResult): ?>
-    <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
-        ✅ <?= htmlspecialchars($sendResult) ?>
-    </div>
-<?php endif; ?>
-
-<?php if ($sendError): ?>
-    <div class="alert alert-error" style="background: #f8d7da; color: #721c24; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
-        ⚠️ <?= htmlspecialchars($sendError) ?>
-    </div>
-<?php endif; ?>
-
-<div class="grid-layout">
-    <!-- List Subscribers -->
-    <div class="card">
-        <h3>Danh sách đăng ký (<?= count($subscribers) ?>)</h3>
-        <ul class="subscriber-list">
-            <?php foreach ($subscribers as $sub): ?>
-                <li class="subscriber-item">
-                    <div class="sub-info">
-                        <span class="email"><?= htmlspecialchars($sub['email']) ?></span>
-                        <span class="date"><?= date('d/m/Y', strtotime($sub['subscribed_at'])) ?></span>
-                    </div>
-                    <div class="sub-actions">
-                        <span class="status <?= $sub['status'] ?>"><?= $sub['status'] ?></span>
-                        <form method="POST" style="display:inline;" onsubmit="return confirm('Xóa subscriber này?')">
-                            <?= $auth->getCSRFInput() ?>
-                            <input type="hidden" name="action" value="delete_subscriber">
-                            <input type="hidden" name="subscriber_id" value="<?= $sub['id'] ?>">
-                            <button type="submit" class="btn-delete" title="Xóa">×</button>
-                        </form>
-                    </div>
-                </li>
-            <?php endforeach; ?>
-            <?php if (empty($subscribers)): ?>
-                <li style="padding: 10px; color: #999;">Chưa có người đăng ký.</li>
-            <?php endif; ?>
-        </ul>
+<div class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <h1>Bản tin Newsletter</h1>
+            <p>Quản lý danh sách đăng ký và gửi thông báo email.</p>
+        </div>
+        <div class="admin-page__actions">
+            <div class="header-stat">
+                <span class="stat-icon">📧</span>
+                <div class="stat-details">
+                    <span class="stat-label">Subscribers</span>
+                    <span class="stat-value"><?= (string)count($subscribers) ?></span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Compose Newsletter -->
-    <div class="card">
-        <h3>Gửi Email Newsletter</h3>
-        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-            Soạn nội dung và gửi email đến tất cả subscriber đã xác nhận, hoặc gửi thử nghiệm đến email admin.
-        </p>
-        <form method="POST" id="newsletter-compose-form">
-            <?= $auth->getCSRFInput() ?>
-            <div class="form-group">
-                <label>Tiêu đề</label>
-                <input type="text" name="subject" class="form-control" placeholder="Tiêu đề email..." value="<?= htmlspecialchars($_POST['subject'] ?? '') ?>" required>
+    <?php if ($sendResult): ?>
+        <div class="alert alert-success">
+            <span class="icon">✅</span> <?= htmlspecialchars($sendResult) ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($sendError): ?>
+        <div class="alert alert-error">
+            <span class="icon">⚠️</span> <?= htmlspecialchars($sendError) ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="newsletter-grid">
+        <!-- List Subscribers -->
+        <div class="card p-0 overflow-hidden">
+            <div class="card-header p-6 pb-0">
+                <h3 class="card-title">👥 Danh sách đăng ký</h3>
             </div>
-            <div class="form-group">
-                <label>Nội dung</label>
-                <textarea name="content" class="form-control" rows="10" placeholder="Soạn nội dung email..." required><?= htmlspecialchars($_POST['content'] ?? '') ?></textarea>
-                <small style="color: #999; font-size: 12px;">Nội dung sẽ được gửi trong template email premium của website.</small>
+            <div class="table-container max-h-[600px] overflow-y-auto">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th class="pl-6">Email</th>
+                            <th>Ngày</th>
+                            <th class="text-right pr-6">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($subscribers as $sub): ?>
+                            <tr>
+                                <td class="pl-6">
+                                    <div class="subscriber-email"><?= htmlspecialchars($sub['email']) ?></div>
+                                    <span class="status-badge status-<?= $sub['status'] ?>">
+                                        <?= $sub['status'] === 'active' ? 'Đã xác nhận' : 'Chưa xác nhận' ?>
+                                    </span>
+                                </td>
+                                <td class="subscriber-date">
+                                    <?= date('d/m/Y', strtotime($sub['subscribed_at'])) ?>
+                                </td>
+                                <td class="text-right pr-6">
+                                    <form method="POST" class="inline-block" onsubmit="return confirm('Xóa subscriber này?')">
+                                        <?= $auth->getCSRFInput() ?>
+                                        <input type="hidden" name="action" value="delete_subscriber">
+                                        <input type="hidden" name="subscriber_id" value="<?= $sub['id'] ?>">
+                                        <button type="submit" class="btn-icon btn-icon-danger">
+                                            ✕
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($subscribers)): ?>
+                            <tr>
+                                <td colspan="3" class="empty-cell">
+                                    Chưa có người đăng ký.
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
-            <div class="btn-group">
-                <button type="submit" name="action" value="send_test" class="btn btn-secondary">
-                    📧 Gửi Thử Nghiệm
-                </button>
-                <button type="submit" name="action" value="send_all" class="btn btn-primary" onclick="return confirm('Gửi email đến tất cả subscriber đã xác nhận?')">
-                    📨 Gửi Tất Cả (<?= count(array_filter($subscribers, fn($s) => $s['status'] === 'active')) ?> active)
-                </button>
-            </div>
-        </form>
+        </div>
+
+        <!-- Compose Newsletter -->
+        <div class="card">
+            <h3 class="card-title">✉️ Soạn tin thông báo</h3>
+            <p class="card-subtitle">
+                Tin nhắn sẽ được tự động chèn vào template email cao cấp của thương hiệu.
+            </p>
+            <form method="POST" id="newsletter-compose-form">
+                <?= $auth->getCSRFInput() ?>
+                <div class="form-group">
+                    <label class="form-label">Tiêu đề email</label>
+                    <input type="text" name="subject" class="form-control" placeholder="Ví dụ: Cập nhật mới từ Đặng Tuấn Anh..." value="<?= htmlspecialchars($_POST['subject'] ?? '') ?>" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nội dung thông điệp</label>
+                    <textarea name="content" class="form-control" rows="12" placeholder="Nhập nội dung tin nhắn của bạn tại đây..." required><?= htmlspecialchars($_POST['content'] ?? '') ?></textarea>
+                    <small class="form-hint">Hệ thống hỗ trợ tự động căn lề và định dạng theo chuẩn premium.</small>
+                </div>
+                <div class="newsletter-actions">
+                    <button type="submit" name="action" value="send_test" class="btn btn-secondary flex-1">
+                        🧪 Gửi thử (Admin)
+                    </button>
+                    <button type="submit" name="action" value="send_all" class="btn btn-primary flex-2" onclick="return confirm('Gửi email đến tất cả subscriber đã xác nhận?')">
+                        🚀 Gửi cho toàn bộ (<?= (string)count(array_filter($subscribers, fn($s) => $s['status'] === 'active')) ?> active)
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <style>
-    .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; }
-    .subscriber-list { list-style: none; padding: 0; max-height: 500px; overflow-y: auto; }
-    .subscriber-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-    .sub-info { display: flex; gap: 12px; align-items: center; }
-    .sub-actions { display: flex; gap: 8px; align-items: center; }
-    .subscriber-item .email { font-weight: 500; }
-    .subscriber-item .status { font-size: 12px; padding: 2px 6px; border-radius: 4px; }
-    .status.active { background: #e6fffa; color: #00baa4; }
-    .status.unconfirmed { background: #fff5cb; color: #b4850a; }
-    .btn-delete { background: none; border: 1px solid #ddd; color: #dc3545; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; }
-    .btn-delete:hover { background: #dc3545; color: white; border-color: #dc3545; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 15px; display: block; font-family: inherit; font-size: 14px; }
-    .form-control:focus { outline: none; border-color: var(--color-gold, #ECB613); box-shadow: 0 0 0 2px rgba(236,182,19,0.15); }
-    textarea.form-control { resize: vertical; min-height: 150px; }
-    .btn-group { display: flex; gap: 12px; margin-top: 10px; }
-    .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; }
-    .btn-secondary { background: #f0f0f0; color: #333; }
-    .btn-secondary:hover { background: #e0e0e0; }
-    .btn-primary { background: var(--color-gold, #ECB613); color: #1C1F1D; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    @media (max-width: 768px) {
-        .grid-layout { grid-template-columns: 1fr; }
-        .btn-group { flex-direction: column; }
+    .newsletter-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 32px; }
+    .p-0 { padding: 0; }
+    .p-6 { padding: 1.5rem; }
+    .pb-0 { padding-bottom: 0; }
+    .pl-6 { padding-left: 1.5rem; }
+    .pr-6 { padding-right: 1.5rem; }
+    .text-right { text-align: right; }
+    .inline-block { display: inline-block; }
+    .flex-1 { flex: 1; }
+    .flex-2 { flex: 2; }
+    .overflow-hidden { overflow: hidden; }
+    
+    .header-stat { background: var(--bg-card); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm); }
+    .stat-icon { font-size: 1.5rem; }
+    .stat-details { display: flex; flex-direction: column; }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+    .stat-value { font-size: 1.125rem; font-weight: 700; color: var(--color-primary); }
+    
+    .card-subtitle { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 24px; margin-top: -12px; }
+    
+    .subscriber-email { font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .subscriber-date { font-size: 0.8125rem; color: var(--text-muted); }
+    .empty-cell { text-align: center; padding: 64px !important; color: var(--text-muted); }
+    
+    .form-hint { color: var(--text-muted); margin-top: 8px; display: block; font-size: 0.75rem; }
+    
+    .newsletter-actions { display: flex; gap: 12px; margin-top: 32px; }
+
+    @media (max-width: 1024px) {
+        .newsletter-grid { grid-template-columns: 1fr; }
     }
 </style>
 

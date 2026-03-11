@@ -37,184 +37,139 @@ $mediaItems = $db->fetchAll($sql, $params);
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
-<div class="admin-header" style="justify-content: space-between; display: flex; align-items: center;">
-    <h1>Quản lý Media</h1>
-    <form method="GET" style="display: flex; gap: 8px;">
-        <input type="text" name="search" class="form-input" placeholder="Search files..." value="<?= htmlspecialchars($search) ?>" style="width: 200px;">
-        <button type="submit" class="btn btn-secondary">🔍</button>
-    </form>
-</div>
-
-<div class="card mb-4" id="uploadCard" style="padding: 24px; transition: all 0.2s;">
-    <h3>Upload File Mới</h3>
-    
-    <div id="dropZone" class="drop-zone">
-        <div class="drop-zone__icon">☁️</div>
-        <div class="drop-zone__text">
-            <strong>Kéo thả file vào đây</strong> hoặc click để chọn file
+<div class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <h1>Thư viện Media</h1>
+            <p>Quản lý hình ảnh và tài liệu tải lên hệ thống.</p>
         </div>
-        <small class="text-muted">Hỗ trợ: JPG, PNG, WEBP, PDF (Max 10MB)</small>
-        <input type="file" id="fileInput" name="file" style="display: none;" accept="image/*,application/pdf">
-    </div>
-
-    <!-- Progress indication -->
-    <div id="uploadProgress" class="upload-progress" style="display: none;">
-        <div class="progress-bar">
-            <div id="progressBarFill" class="progress-bar__fill" style="width: 0%"></div>
-        </div>
-        <span id="progressText">Đang upload...</span>
-    </div>
-</div>
-
-<div class="media-grid" id="mediaGrid">
-    <?php foreach ($mediaItems as $item): ?>
-        <div class="media-item" data-media-id="<?= $item['id'] ?>">
-            <div class="media-preview">
-                <?php if (in_array($item['file_type'], ['jpg', 'jpeg', 'png', 'gif', 'webp'])): ?>
-                    <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($item['file_path']) ?>" alt="<?= htmlspecialchars($item['original_filename']) ?>">
-                <?php else: ?>
-                    <div class="file-icon">📄</div>
-                <?php endif; ?>
-                <button class="delete-btn" onclick="deleteMedia(<?= $item['id'] ?>, '<?= htmlspecialchars($item['original_filename']) ?>')" title="Xóa file">
-                    🗑️
+        <div class="admin-page__actions">
+            <form method="GET" class="search-form-header">
+                <div class="form-group mb-0">
+                    <input type="text" name="search" class="form-control mr-2" placeholder="Tìm theo tên file..." value="<?= htmlspecialchars($search) ?>">
+                </div>
+                <button type="submit" class="btn btn-secondary btn-icon-only">
+                    🔍
                 </button>
+                <?php if (!empty($search)): ?>
+                    <a href="/admin/media.php" class="btn btn-secondary btn-icon-only ml-2" title="Xóa tìm kiếm">↺</a>
+                <?php endif; ?>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="card upload-drop-card" id="uploadCard">
+        <div id="dropZone" class="drop-zone">
+            <div class="drop-icon">☁️</div>
+            <h3 class="drop-title">Tải tệp tin mới lên</h3>
+            <p class="drop-subtitle">
+                <strong>Kéo thả tệp vào đây</strong> hoặc nhấp để chọn từ máy tính
+            </p>
+            <p class="drop-hint">
+                Hỗ trợ: JPG, PNG, WEBP, PDF (Tối đa 10MB)
+            </p>
+            <input type="file" id="fileInput" name="file" class="hidden" accept="image/*,application/pdf">
+        </div>
+
+        <!-- Progress indication -->
+        <div id="uploadProgress" class="upload-progress-container" style="display: none;">
+            <div class="progress-info">
+                <span id="progressText" class="progress-label">Đang tải lên...</span>
+                <span id="percentText" class="progress-percent">0%</span>
             </div>
-            <div class="media-info">
-                <p class="filename" title="<?= htmlspecialchars($item['original_filename']) ?>">
-                    <?= htmlspecialchars($item['original_filename']) ?>
-                </p>
-                <div class="media-actions">
-                    <input type="text" value="<?= UPLOAD_URL . '/' . htmlspecialchars($item['file_path']) ?>" readonly onclick="this.select()" class="url-input">
+            <div class="progress-track">
+                <div id="progressBarFill" class="progress-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Grid -->
+    <div class="media-grid" id="mediaGrid">
+        <?php foreach ($mediaItems as $item): ?>
+            <div class="card media-card p-0" data-media-id="<?= $item['id'] ?>">
+                <div class="media-preview-container">
+                    <?php if (in_array($item['file_type'], ['jpg', 'jpeg', 'png', 'gif', 'webp'])): ?>
+                        <img src="<?= UPLOAD_URL . '/' . htmlspecialchars($item['file_path']) ?>" alt="<?= htmlspecialchars($item['original_filename']) ?>" class="media-img">
+                    <?php else: ?>
+                        <div class="file-placeholder">
+                            <div class="file-icon">📄</div>
+                            <span class="file-ext"><?= strtoupper($item['file_type']) ?></span>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <button class="media-delete-btn" onclick="deleteMedia(<?= $item['id'] ?>, '<?= htmlspecialchars($item['original_filename']) ?>')" title="Xóa">
+                        ✕
+                    </button>
+                    
+                    <div class="media-action-overlay">
+                        <input type="text" value="<?= UPLOAD_URL . '/' . htmlspecialchars($item['file_path']) ?>" readonly onclick="this.select(); event.stopPropagation();" class="media-url-input" title="Nhấn để sao chép link">
+                    </div>
+                </div>
+                <div class="media-details">
+                    <p class="media-filename" title="<?= htmlspecialchars($item['original_filename']) ?>">
+                        <?= htmlspecialchars($item['original_filename']) ?>
+                    </p>
+                    <div class="media-meta">
+                         <span><?= date('d/m/Y', strtotime($item['created_at'])) ?></span>
+                         <span><?= isset($item['file_size']) ? (string)round($item['file_size'] / 1024, 1) . ' KB' : '' ?></span>
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
 </div>
 
 <style>
-    .drop-zone {
-        border: 2px dashed #ccc;
-        border-radius: 8px;
-        padding: 40px;
-        text-align: center;
-        background: #f9f9f9;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .drop-zone:hover, .drop-zone.drag-over {
-        border-color: #2C5F4F;
-        background: #e6f0ed;
-    }
-    .drop-zone__icon {
-        font-size: 48px;
-        margin-bottom: 16px;
-    }
-    .drop-zone__text {
-        font-size: 16px;
-        margin-bottom: 8px;
-        color: #333;
-    }
+    .mb-0 { margin-bottom: 0; }
+    .mr-2 { margin-right: 0.5rem; }
+    .ml-2 { margin-left: 0.5rem; }
+    .p-0 { padding: 0; }
+    .hidden { display: none; }
     
-    .upload-progress {
-        margin-top: 16px;
-    }
-    .progress-bar {
-        height: 6px;
-        background: #eee;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-bottom: 8px;
-    }
-    .progress-bar__fill {
-        height: 100%;
-        background: #2C5F4F;
-        transition: width 0.3s ease;
-    }
-
-    .media-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
-    }
-    .media-item {
-        background: white;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-        transition: transform 0.2s;
-    }
-    .media-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    /* ... reuse previous styles ... */
-    .media-preview {
-        height: 150px;
-        background: #f9f9f9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid #eee;
-        position: relative;
-    }
-    .media-preview img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: cover;
-    }
-    .delete-btn {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: rgba(255, 255, 255, 0.9);
-        border: none;
-        border-radius: 4px;
-        width: 32px;
-        height: 32px;
-        font-size: 18px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        opacity: 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .media-item:hover .delete-btn {
-        opacity: 1;
-    }
-    .delete-btn:hover {
-        background: #ef4444;
-        transform: scale(1.1);
-    }
-    .media-info {
-        padding: 12px;
-    }
-    .filename {
-        font-size: 13px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-bottom: 8px;
-    }
-    .url-input {
-        width: 100%;
-        font-size: 12px;
-        padding: 4px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: #f5f5f5;
-        cursor: pointer;
-    }
-    .file-icon {
-        font-size: 40px;
-    }
-    .mb-4 { margin-bottom: 24px; }
-    .text-muted { color: #666; font-size: 0.9em; }
+    .search-form-header { display: flex; align-items: center; }
+    .btn-icon-only { width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; }
+    
+    .upload-drop-card { border: 2px dashed var(--border-color); background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); margin-bottom: 40px; transition: var(--transition); }
+    .upload-drop-card.drag-over { border-color: var(--color-primary); background: rgba(44, 95, 79, 0.05); transform: scale(1.005); }
+    
+    .drop-zone { text-align: center; cursor: pointer; padding: 24px; }
+    .drop-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .drop-title { margin-bottom: 8px; font-weight: 700; }
+    .drop-subtitle { color: var(--text-muted); font-size: 1rem; }
+    .drop-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 16px; opacity: 0.7; }
+    
+    .upload-progress-container { margin-top: 32px; padding: 0 40px 24px; }
+    .progress-info { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.875rem; font-weight: 600; }
+    .progress-track { height: 8px; background: rgba(0, 0, 0, 0.05); border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { width: 0%; height: 100%; background: var(--color-primary); transition: width 0.3s ease; }
+    
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 32px; }
+    .media-card { overflow: hidden; position: relative; border-radius: 12px; transform: translateZ(0); }
+    .media-card:hover { transform: translateY(-8px); }
+    
+    .media-preview-container { aspect-ratio: 1/1; background: var(--bg-body); display: flex; align-items: center; justify-content: center; position: relative; cursor: zoom-in; }
+    .media-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .media-card:hover .media-img { transform: scale(1.1); }
+    
+    .file-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .file-icon { font-size: 3rem; }
+    .file-ext { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; }
+    
+    .media-delete-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 10px; border: none; background: rgba(255, 255, 255, 0.95); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; color: #DC2626; opacity: 0; transform: scale(0.8); transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; z-index: 2; }
+    .media-card:hover .media-delete-btn { opacity: 1; transform: scale(1); }
+    .media-delete-btn:hover { background: #DC2626; color: white; transform: scale(1.1); }
+    
+    .media-action-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: all 0.3s ease; z-index: 1; }
+    .media-card:hover .media-action-overlay { opacity: 1; }
+    .media-url-input { width: 100%; font-size: 0.7rem; padding: 8px 12px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; }
+    .media-url-input:focus { border-color: rgba(255, 255, 255, 0.5); }
+    
+    .media-details { padding: 16px; background: var(--bg-card); }
+    .media-filename { font-size: 0.875rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+    .media-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 500; }
 </style>
-
-<script>
+<?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>
 document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');

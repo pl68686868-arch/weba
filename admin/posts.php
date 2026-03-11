@@ -82,45 +82,55 @@ include __DIR__ . '/../includes/admin-header.php';
 ?>
 
 <div class="admin-page">
-    <div class="admin-page__header">
-        <h1>Posts</h1>
-        <div style="display: flex; gap: 10px;">
-            <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">Delete Selected (<span id="selectedCount">0</span>)</button>
-            <a href="/admin/posts-new.php" class="btn btn-primary">+ New Post</a>
+    <div class="admin-header">
+        <div>
+            <h1><?= isset($_GET['type']) && $_GET['type'] === 'podcast' ? 'Podcast & Dự án' : 'Bài viết' ?></h1>
+            <p>Quản lý và biên tập nội dung hệ thống.</p>
+        </div>
+        <div class="admin-header__actions" style="display: flex; gap: 12px;">
+            <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">Xóa mục đã chọn (<span id="selectedCount">0</span>)</button>
+            <a href="/admin/posts-new.php<?= isset($_GET['type']) ? '?type=' . $_GET['type'] : '' ?>" class="btn btn-primary">
+                <span>+</span> Tác phẩm mới
+            </a>
         </div>
     </div>
     
     <!-- Filters -->
-    <div class="filters-card">
-        <form method="GET" action="" class="filters-form">
-            <div class="filter-group" style="flex: 1; min-width: 200px;">
-                <label>Search:</label>
-                <input type="text" name="search" class="form-input" placeholder="Search by title..." value="<?= htmlspecialchars($search) ?>">
+    <div class="card" style="padding: 20px; margin-bottom: 24px;">
+        <form method="GET" action="" class="filters-form" style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+            <?php if (isset($_GET['type'])): ?>
+                <input type="hidden" name="type" value="<?= htmlspecialchars($_GET['type']) ?>">
+            <?php endif; ?>
+            
+            <div class="form-group" style="flex: 1; min-width: 250px; margin-bottom: 0;">
+                <label class="form-label">Tìm kiếm</label>
+                <input type="text" name="search" class="form-control" placeholder="Tiêu đề bài viết..." value="<?= htmlspecialchars($search) ?>">
             </div>
             
-            <div class="filter-group">
-                <label>Status:</label>
+            <div class="form-group" style="width: 150px; margin-bottom: 0;">
+                <label class="form-label">Trạng thái</label>
                 <select name="status" class="form-select">
-                    <option value="">All</option>
-                    <option value="published" <?= $status === 'published' ? 'selected' : '' ?>>Published</option>
-                    <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Draft</option>
-                    <option value="scheduled" <?= $status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
+                    <option value="">Tất cả</option>
+                    <option value="published" <?= $status === 'published' ? 'selected' : '' ?>>Đã đăng</option>
+                    <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Bản nháp</option>
                 </select>
             </div>
 
-            <div class="filter-group">
-                <label>Type:</label>
+            <?php if (!isset($_GET['type'])): ?>
+            <div class="form-group" style="width: 150px; margin-bottom: 0;">
+                <label class="form-label">Loại</label>
                 <select name="type" class="form-select">
-                    <option value="">All</option>
-                    <option value="post" <?= $type === 'post' ? 'selected' : '' ?>>Post</option>
+                    <option value="">Tất cả</option>
+                    <option value="post" <?= $type === 'post' ? 'selected' : '' ?>>Bài viết</option>
                     <option value="podcast" <?= $type === 'podcast' ? 'selected' : '' ?>>Podcast</option>
                 </select>
             </div>
+            <?php endif; ?>
             
-            <div class="filter-group">
-                <label>Category:</label>
+            <div class="form-group" style="width: 180px; margin-bottom: 0;">
+                <label class="form-label">Chuyên mục</label>
                 <select name="category" class="form-select">
-                    <option value="">All</option>
+                    <option value="">Tất cả</option>
                     <?php foreach ($categories as $cat): ?>
                         <option value="<?= $cat['id'] ?>" <?= $categoryId === $cat['id'] ? 'selected' : '' ?>>
                             <?= escape($cat['name']) ?>
@@ -129,96 +139,115 @@ include __DIR__ . '/../includes/admin-header.php';
                 </select>
             </div>
             
-            <button type="submit" class="btn btn-secondary">Filter</button>
-            <a href="/admin/posts.php" class="btn btn-secondary">Clear</a>
+            <div style="display: flex; gap: 8px;">
+                <button type="submit" class="btn btn-secondary">Lọc</button>
+                <a href="/admin/posts.php<?= isset($_GET['type']) ? '?type=' . $_GET['type'] : '' ?>" class="btn btn-secondary" title="Xóa lọc">↺</a>
+            </div>
         </form>
     </div>
     
-    <!-- Posts Table -->
+    <!-- Table -->
     <div class="table-card">
         <?php if (!empty($posts)): ?>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Category</th>
-                        <th>Author</th>
-                        <th>Status</th>
-                        <th>Views</th>
-                        <th>Updated</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($posts as $post): ?>
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
                         <tr>
-                            <td><input type="checkbox" class="post-checkbox" value="<?= $post['id'] ?>"></td>
-                            <td>
-                                <strong><?= escape($post['title']) ?></strong>
-                                <br>
-                                <small>
-                                    <a href="/post/<?= escape($post['slug']) ?>" target="_blank">
-                                        View →
-                                    </a>
-                                </small>
-                            </td>
-                            <td>
-                                <span class="badge" style="background: <?= $post['post_type'] === 'podcast' ? '#e9ecef' : '#fff3cd' ?>; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">
-                                    <?= ucfirst($post['post_type']) ?>
-                                </span>
-                            </td>
-                            <td><?= escape($post['category_name']) ?></td>
-                            <td><?= escape($post['author_name']) ?></td>
-                            <td>
-                                <span class="status-badge status-<?= $post['status'] ?>">
-                                    <?= ucfirst($post['status']) ?>
-                                </span>
-                            </td>
-                            <td><?= number_format($post['view_count']) ?></td>
-                            <td><?= formatDate($post['updated_at'], 'relative') ?></td>
-                            <td>
-                                <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" class="btn btn-small btn-secondary">
-                                    Edit
-                                </a>
-                                <button 
-                                    class="btn btn-small btn-danger delete-post-btn"
-                                    data-post-id="<?= $post['id'] ?>"
-                                    data-post-title="<?= htmlspecialchars($post['title']) ?>"
-                                    title="Delete post">
-                                    Delete
-                                </button>
-                            </td>
+                            <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAll"></th>
+                            <th>Nội dung</th>
+                            <th>Chuyên mục</th>
+                            <th>Thông số</th>
+                            <th>Trạng thái</th>
+                            <th>Cập nhật</th>
+                            <th style="text-align: right;">Thao tác</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($posts as $post): ?>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="post-checkbox" value="<?= $post['id'] ?>"></td>
+                                <td>
+                                    <div style="font-weight: 600; font-size: 1rem; margin-bottom: 4px;">
+                                        <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" class="post-link">
+                                            <?= escape($post['title']) ?>
+                                        </a>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <span style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-body); padding: 2px 6px; border-radius: 4px;">
+                                            <?= ucfirst($post['post_type']) ?>
+                                        </span>
+                                        <a href="/post/<?= escape($post['slug']) ?>" target="_blank" style="font-size: 0.75rem; color: var(--color-accent); font-weight: 500;">
+                                            Xem trực tiếp ↗
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="font-size: 0.875rem; font-weight: 500; color: var(--text-main);">
+                                        <?= escape($post['category_name']) ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary);"><?= number_format($post['view_count']) ?> <span style="font-size: 0.7rem; font-weight: 400; color: var(--text-muted); text-transform: uppercase;">view</span></span>
+                                        <span style="font-size: 0.75rem; color: var(--text-muted);"><?= escape($post['author_name']) ?></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-<?= $post['status'] ?>">
+                                        <?= $post['status'] === 'published' ? 'Đã đăng' : 'Bản nháp' ?>
+                                    </span>
+                                </td>
+                                <td style="color: var(--text-muted); font-size: 0.8125rem;">
+                                    <?= formatDate($post['updated_at'], 'relative') ?>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                        <a href="/admin/posts-edit.php?id=<?= $post['id'] ?>" class="btn btn-secondary btn-small" title="Chỉnh sửa">
+                                            Sửa
+                                        </a>
+                                        <button 
+                                            class="btn btn-danger btn-small delete-post-btn"
+                                            data-post-id="<?= $post['id'] ?>"
+                                            data-post-title="<?= htmlspecialchars($post['title']) ?>"
+                                            style="padding: 6px 12px; background: #FEF2F2;"
+                                            title="Xóa bài">
+                                            Xóa
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
             
             <!-- Pagination -->
             <?php if ($totalPages > 1): ?>
-                <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="pagination__btn">
-                            ← Previous
-                        </a>
-                    <?php endif; ?>
-                    
-                    <span class="pagination__info">
-                        Page <?= $page ?> of <?= $totalPages ?> (<?= $totalPosts ?> total)
-                    </span>
-                    
-                    <?php if ($page < $totalPages): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="pagination__btn">
-                            Next →
-                        </a>
-                    <?php endif; ?>
+                <div class="pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding: 0 8px;">
+                    <div style="font-size: 0.875rem; color: var(--text-muted);">
+                        Hiển thị trang <strong><?= $page ?></strong> trên <strong><?= $totalPages ?></strong> (Tổng <?= $totalPosts ?> mục)
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <?php if ($page > 1): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="btn btn-secondary btn-small">
+                                ← Trước
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if ($page < $totalPages): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="btn btn-secondary btn-small">
+                                Sau →
+                            </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
             <?php endif; ?>
         <?php else: ?>
-            <div class="empty-state">
-                <p>No posts found.</p>
-                <a href="/admin/posts-new.php" class="btn btn-primary">Create your first post</a>
+            <div class="card" style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.3;">📄</div>
+                <h3 style="margin-bottom: 8px;">Không tìm thấy bài viết</h3>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Hãy thử thay đổi bộ lọc hoặc tạo bài viết đầu tiên.</p>
+                <a href="/admin/posts-new.php" class="btn btn-primary">Viết bài mới</a>
             </div>
         <?php endif; ?>
     </div>
@@ -227,190 +256,23 @@ include __DIR__ . '/../includes/admin-header.php';
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal" style="display: none;">
     <div class="modal-overlay"></div>
-    <div class="modal-content">
-        <h3>Confirm Deletion</h3>
-        <p>Are you sure you want to delete this post?</p>
-        <p class="modal-post-title"></p>
-        <p class="text-danger"><strong>This action cannot be undone.</strong></p>
-        <div class="modal-actions">
-            <button id="confirmDelete" class="btn btn-danger">Delete Post</button>
-            <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+    <div class="card modal-content" style="max-width: 440px; border-radius: 20px; padding: 32px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); border: none;">
+        <div style="width: 60px; height: 60px; background: #FEF2F2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+            <span style="font-size: 24px; color: #DC2626;">⚠️</span>
+        </div>
+        <h3 style="text-align: center; margin-bottom: 12px; font-size: 1.5rem;">Xác nhận xóa</h3>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 4px;">Bạn có chắc chắn muốn xóa vĩnh viễn bài đăng này?</p>
+        <p class="modal-post-title" style="text-align: center; font-weight: 700; color: var(--text-main); font-size: 1.125rem; margin-bottom: 32px;"></p>
+        
+        <div style="display: flex; gap: 12px;">
+            <button id="cancelDelete" class="btn btn-secondary" style="flex: 1; border-radius: 12px; height: 48px;">Hủy bỏ</button>
+            <button id="confirmDelete" class="btn btn-danger" style="flex: 1; border-radius: 12px; height: 48px; background: #DC2626; color: white;">Xóa vĩnh viễn</button>
         </div>
     </div>
 </div>
 
 <!-- Toast Notification -->
-<div id="toast" class="toast" style="display: none;"></div>
-
-<style>
-.filters-card {
-    background: white;
-    padding: 24px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 24px;
-}
-
-.filters-form {
-    display: flex;
-    gap: 16px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.filter-group label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #2D2D2D;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 48px;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid #E0E0E0;
-}
-
-.pagination__btn {
-    padding: 8px 16px;
-    background: #F5F5F5;
-    border-radius: 6px;
-    text-decoration: none;
-    color: #2C5F4F;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.pagination__btn:hover {
-    background: #E0E0E0;
-}
-
-.pagination__info {
-    color: #5A5A5A;
-    font-size: 0.9375rem;
-}
-
-/* Delete Button */
-.btn-danger {
-    background: #DC3545;
-    color: white;
-    border: none;
-}
-
-.btn-danger:hover {
-    background: #C82333;
-}
-
-/* Modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-}
-
-.modal-content {
-    position: relative;
-    background: white;
-    border-radius: 12px;
-    padding: 32px;
-    max-width: 480px;
-    width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    z-index: 1001;
-}
-
-.modal-content h3 {
-    margin: 0 0 16px 0;
-    font-size: 1.5rem;
-    color: #2D2D2D;
-}
-
-.modal-content p {
-    margin: 8px 0;
-    color: #5A5A5A;
-}
-
-.modal-post-title {
-    font-weight: 600;
-    color: #2D2D2D;
-    font-size: 1.0625rem;
-}
-
-.text-danger {
-    color: #DC3545 !important;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    justify-content: flex-end;
-}
-
-/* Toast Notification */
-.toast {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    background: #2C5F4F;
-    color: white;
-    padding: 16px 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    z-index: 2000;
-    animation: slideIn 0.3s ease-out;
-}
-
-.toast.error {
-    background: #DC3545;
-}
-
-.toast.success {
-    background: #28A745;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(400px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-</style>
+<div id="toast" class="toast" style="display: none; position: fixed; top: 32px; right: 32px; z-index: 10000; padding: 16px 24px; border-radius: 12px; color: white; box-shadow: var(--shadow-lg); font-weight: 500; min-width: 300px; animation: slideIn 0.3s ease-out;"></div>
 
 <script>
 // Post deletion functionality

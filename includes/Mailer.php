@@ -74,14 +74,14 @@ class Mailer
     private function smtpSend(string $to, string $message): bool
     {
         $socket = @stream_socket_client(
-            "tcp://{$this->smtpHost}:{$this->smtpPort}",
+            "tcp://{$this->smtpHost}:" . (string)$this->smtpPort,
             $errno,
             $errstr,
             30 // timeout seconds
         );
 
         if (!$socket) {
-            throw new \RuntimeException("SMTP Connection failed: {$errstr} ({$errno})");
+            throw new \RuntimeException("SMTP Connection failed: " . ($errstr ?: 'Unknown error') . " (" . (string)($errno ?? '') . ")");
         }
 
         // Set timeout
@@ -155,7 +155,7 @@ class Mailer
 
         $code = intval(substr($response, 0, 3));
         if ($code >= 400) {
-            throw new \RuntimeException("SMTP Error ({$code}): " . trim($response));
+            throw new \RuntimeException("SMTP Error (" . (string)$code . "): " . trim($response));
         }
 
         return $response;

@@ -101,40 +101,49 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <div class="admin-page">
     <div class="admin-page__header">
-        <h1>Tags Management</h1>
-        <button onclick="showCreateForm()" class="btn btn-primary">+ New Tag</button>
+        <div>
+            <h1>Quản lý Thẻ (Tags)</h1>
+            <p>Sử dụng các thẻ để giúp người đọc dễ dàng tìm thấy các bài viết liên quan.</p>
+        </div>
+        <div class="admin-page__actions">
+            <button onclick="showCreateForm()" class="btn btn-primary">+ Thêm thẻ mới</button>
+        </div>
     </div>
     
     <?php if ($error): ?>
-        <div class="alert alert-error"><?= escape($error) ?></div>
+        <div class="alert alert-error">
+            <span class="icon">⚠️</span> <?= htmlspecialchars($error) ?>
+        </div>
     <?php endif; ?>
     
     <?php if ($success): ?>
-        <div class="alert alert-success"><?= escape($success) ?></div>
+        <div class="alert alert-success">
+            <span class="icon">✅</span> <?= htmlspecialchars($success) ?>
+        </div>
     <?php endif; ?>
     
     <!-- Create Form -->
-    <div id="createForm" class="form-card" style="display: none;">
-        <h2>Create New Tag</h2>
+    <div id="createForm" class="card mb-8" style="display: none;">
+        <h3 class="mb-6">🏷️ Tạo thẻ mới</h3>
         <form method="POST" action="">
             <?= $auth->getCSRFInput() ?>
             <input type="hidden" name="action" value="create">
             
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="name" class="form-label">Tag Name *</label>
-                    <input type="text" id="name" name="name" class="form-input" required>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="form-group mb-0">
+                    <label class="form-label">Tên thẻ *</label>
+                    <input type="text" name="name" class="form-control" placeholder="Ví dụ: Chữa lành" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="slug" class="form-label">Slug (auto-generated)</label>
-                    <input type="text" id="slug" name="slug" class="form-input">
+                <div class="form-group mb-0">
+                    <label class="form-label">Slug (Tự động tạo nếu trống)</label>
+                    <input type="text" name="slug" class="form-control" placeholder="chua-lanh">
                 </div>
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <button type="button" onclick="hideCreateForm()" class="btn btn-secondary">Cancel</button>
+            <div class="form-actions mt-8">
+                <button type="button" onclick="hideCreateForm()" class="btn btn-secondary">Hủy bỏ</button>
+                <button type="submit" class="btn btn-primary">Tạo thẻ</button>
             </div>
         </form>
     </div>
@@ -142,23 +151,26 @@ include __DIR__ . '/../includes/admin-header.php';
     <!-- Tags Grid -->
     <div class="tags-grid">
         <?php foreach ($tags as $tag): ?>
-            <div class="tag-card">
-                <div class="tag-card__header">
-                    <h3><?= escape($tag['name']) ?></h3>
-                    <span class="tag-count"><?= $tag['post_count'] ?> posts</span>
+            <div class="card tag-card">
+                <div class="tag-card-content">
+                    <div class="tag-info">
+                        <h3 class="tag-name"><?= htmlspecialchars($tag['name']) ?></h3>
+                        <code class="tag-slug">#<?= htmlspecialchars($tag['slug']) ?></code>
+                    </div>
+                    <span class="badge badge-published"><?= $tag['post_count'] ?> bài</span>
                 </div>
-                <div class="tag-card__slug">
-                    <code><?= escape($tag['slug']) ?></code>
-                </div>
-                <div class="tag-card__actions">
-                    <button onclick="editTag(<?= htmlspecialchars(json_encode($tag)) ?>)" class="btn btn-small btn-secondary">
-                        Edit
+                
+                <div class="tag-card-actions">
+                    <button onclick="editTag(<?= htmlspecialchars(json_encode($tag)) ?>)" class="btn-icon" title="Sửa">
+                        ✏️
                     </button>
-                    <form method="POST" action="" style="display: inline;" onsubmit="return confirm('Delete this tag?')">
+                    <form method="POST" action="" class="inline-block" onsubmit="return confirm('Xóa thẻ này?')">
                         <?= $auth->getCSRFInput() ?>
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="id" value="<?= $tag['id'] ?>">
-                        <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                        <button type="submit" class="btn-icon btn-icon-danger" title="Xóa">
+                            ✕
+                        </button>
                     </form>
                 </div>
             </div>
@@ -166,7 +178,8 @@ include __DIR__ . '/../includes/admin-header.php';
         
         <?php if (empty($tags)): ?>
             <div class="empty-state">
-                <p>No tags yet. Create your first tag!</p>
+                <div class="empty-icon">🏷️</div>
+                <p>Chưa có thẻ nào được tạo. Hãy bắt đầu bằng cách thêm thẻ mới!</p>
             </div>
         <?php endif; ?>
     </div>
@@ -174,100 +187,97 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <!-- Edit Modal -->
 <div id="editModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <h2>Edit Tag</h2>
+    <div class="modal-overlay" onclick="closeEditModal()"></div>
+    <div class="modal-content max-w-sm">
+        <h3 class="mb-6">🏷️ Chỉnh sửa thẻ</h3>
         <form method="POST" action="">
             <?= $auth->getCSRFInput() ?>
             <input type="hidden" name="action" value="update">
             <input type="hidden" id="edit_id" name="id">
             
             <div class="form-group">
-                <label for="edit_name" class="form-label">Tag Name *</label>
-                <input type="text" id="edit_name" name="name" class="form-input" required>
+                <label class="form-label">Tên thẻ *</label>
+                <input type="text" id="edit_name" name="name" class="form-control" required>
             </div>
             
             <div class="form-group">
-                <label for="edit_slug" class="form-label">Slug</label>
-                <input type="text" id="edit_slug" name="slug" class="form-input">
+                <label class="form-label">Slug</label>
+                <input type="text" id="edit_slug" name="slug" class="form-control">
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update</button>
-                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+            <div class="form-actions mt-8">
+                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Hủy bỏ</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
             </div>
         </form>
     </div>
 </div>
 
 <style>
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
+    .tags-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
 
-.tags-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-}
+    .tag-card {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-bottom: 0;
+    }
 
-.tag-card {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: transform 0.2s;
-}
+    .tag-card:hover {
+        transform: translateY(-4px);
+    }
 
-.tag-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
+    .tag-card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
 
-.tag-card__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
+    .tag-name {
+        margin: 0;
+        font-size: 1.125rem;
+        color: var(--color-primary);
+    }
 
-.tag-card h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: #2C5F4F;
-}
+    .tag-slug {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: var(--bg-body);
+        padding: 2px 8px;
+        border-radius: 6px;
+        margin-top: 6px;
+        display: inline-block;
+    }
 
-.tag-count {
-    font-size: 0.875rem;
-    color: #5A5A5A;
-    background: #F5F5F5;
-    padding: 4px 12px;
-    border-radius: 12px;
-}
+    .tag-card-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
 
-.tag-card__slug {
-    margin-bottom: 16px;
-}
+    .max-w-sm { max-width: 440px; }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mb-0 { margin-bottom: 0; }
+    .mt-8 { margin-top: 2rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .inline-block { display: inline-block; }
+    
+    .form-actions { display: flex; justify-content: flex-end; gap: 12px; }
 
-.tag-card__slug code {
-    background: #F5F5F5;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.875rem;
-}
+    @media (max-width: 640px) {
+        .grid-cols-2 { grid-template-columns: 1fr; }
+    }
+</style>
 
-.tag-card__actions {
-    display: flex;
-    gap: 8px;
-}
-
-.empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 48px;
-    color: #5A5A5A;
-}
+<style>
+    .tag-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 </style>
 
 <script>

@@ -90,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'excerpt' => $excerpt,
                 'category_id' => $category_id,
                 'status' => $status,
-                'status' => $status,
                 'post_type' => $post_type,
                 'spotify_url' => $spotify_url,
                 'featured_image' => $featured_image,
@@ -152,137 +151,158 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
-<div class="admin-header">
-    <h1>Chỉnh sửa bài viết</h1>
-    <a href="/admin/posts.php" class="btn btn-outline">Quay lại</a>
-</div>
-
-<?php if ($error): ?>
-    <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
-<?php endif; ?>
-
-<?php if ($success): ?>
-    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-<?php endif; ?>
-
-<form method="POST" action="" class="post-form">
-    <div class="grid-layout">
-        <div class="main-column">
-            <div class="card">
-                <div class="form-group">
-                    <label for="title">Tiêu đề bài viết <span class="required">*</span></label>
-                    <input type="text" id="title" name="title" required value="<?= htmlspecialchars($post['title']) ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="slug">Đường dẫn (Slug)</label>
-                    <input type="text" id="slug" name="slug" value="<?= htmlspecialchars($post['slug']) ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="content">Nội dung <span class="required">*</span></label>
-                    <textarea id="content" name="content" rows="20" required class="content-editor"><?= htmlspecialchars($post['content']) ?></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="excerpt">Mô tả ngắn (Excerpt)</label>
-                    <textarea id="excerpt" name="excerpt" rows="4"><?= htmlspecialchars($post['excerpt'] ?? '') ?></textarea>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>SEO Metadata</h3>
-                <div class="form-group">
-                    <label for="meta_title">Meta Title</label>
-                    <input type="text" id="meta_title" name="meta_title" value="<?= htmlspecialchars($post['meta_title'] ?? '') ?>">
-                </div>
-                <div class="form-group">
-                    <label for="meta_description">Meta Description</label>
-                    <textarea id="meta_description" name="meta_description" rows="3"><?= htmlspecialchars($post['meta_description'] ?? '') ?></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="sidebar-column">
-            <div class="card">
-                <h3>Thao tác</h3>
-                <div class="form-group">
-                    <label for="status">Trạng thái</label>
-                    <select id="status" name="status">
-                        <option value="draft" <?= $post['status'] === 'draft' ? 'selected' : '' ?>>Bản nháp</option>
-                        <option value="published" <?= $post['status'] === 'published' ? 'selected' : '' ?>>Công khai</option>
-                        <option value="scheduled" <?= $post['status'] === 'scheduled' ? 'selected' : '' ?>>Lên lịch</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-full">Cập nhật</button>
-            </div>
-            
-            <div class="card">
-                <h3>Loại bài viết</h3>
-                <div class="form-group">
-                    <label for="post_type">Loại nội dung</label>
-                    <select id="post_type" name="post_type">
-                        <option value="post" <?= (($post['post_type'] ?? 'post') === 'post') ? 'selected' : '' ?>>Bài viết (Blog)</option>
-                        <option value="podcast" <?= (($post['post_type'] ?? '') === 'podcast') ? 'selected' : '' ?>>Podcast</option>
-                    </select>
-                </div>
-                
-                <div class="form-group" id="spotifyField" style="display: none;">
-                    <label for="spotify_url">Link Spotify</label>
-                    <input type="text" id="spotify_url" name="spotify_url" value="<?= htmlspecialchars($post['spotify_url'] ?? '') ?>" placeholder="https://open.spotify.com/episode/...">
-                    <small>Nhập link tập podcast trên Spotify.</small>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Chuyên mục</h3>
-                <div class="form-group">
-                    <select id="category_id" name="category_id">
-                        <option value="">-- Chọn chuyên mục --</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?? 'post' ?>" <?= $post['category_id'] == $cat['id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat['name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Tags</h3>
-                <div class="form-group">
-                    <input type="text" id="tags" name="tags" value="<?= htmlspecialchars($tagList) ?>">
-                </div>
-            </div>
-
-
-            <div class="card">
-                <h3>Ảnh đại diện</h3>
-                <div class="form-group">
-                    <input type="text" id="featured_image" name="featured_image" value="<?= htmlspecialchars($post['featured_image'] ?? '') ?>" placeholder="Nhập URL ảnh...">
-                    <div style="display: flex; gap: 12px; margin-top: 8px;">
-                        <button type="button" id="uploadFeaturedBtn" class="btn btn-secondary" style="flex: 0;">
-                            📤 Upload ảnh
-                        </button>
-                        <small style="align-self: center;">hoặc <a href="#" id="openMediaPicker" style="color: #2563eb; text-decoration: underline;">chọn từ thư viện</a></small>
-                    </div>
-                    <input type="file" id="featuredImageFile" accept="image/*" style="display: none;">
-                    
-                    <div id="uploadProgress" style="display: none; margin-top: 10px;">
-                        <div style="background: #f0f0f0; border-radius: 4px; overflow: hidden;">
-                            <div id="progressBar" style="height: 4px; background: #2563eb; width: 0%; transition: width 0.3s;"></div>
-                        </div>
-                        <small id="progressText" style="color: #666; margin-top: 4px; display: block;"></small>
-                    </div>
-                    
-                    <div id="imagePreview" style="margin-top:10px; <?= empty($post['featured_image']) ? 'display:none;' : '' ?>">
-                        <img id="previewImg" src="<?= !empty($post['featured_image']) ? UPLOAD_URL . '/' . htmlspecialchars($post['featured_image']) : '' ?>" style="max-width:100%; border-radius:4px;">
-                    </div>
-                </div>
-            </div>
+<div class="admin-page">
+    <div class="admin-page__header">
+        <h1>Chỉnh Sửa Bài Viết</h1>
+        <div class="header-actions">
+            <a href="/<?= $post['slug'] ?>" target="_blank" class="btn btn-text">👁️ Xem bài viết</a>
+            <a href="/admin/posts.php" class="btn btn-secondary">← Quay lại danh sách</a>
         </div>
     </div>
-</form>
+
+    <?php if ($error): ?>
+        <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+
+    <?php if ($success): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+
+    <form method="POST" action="" class="post-form">
+        <div class="post-editor-grid">
+            <!-- Main Content Column -->
+            <div class="post-editor-main">
+                <div class="card">
+                    <div class="form-group">
+                        <label for="title" class="form-label">Tiêu đề bài viết <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" class="form-input" required value="<?= htmlspecialchars($post['title']) ?>" placeholder="Nhập tiêu đề hấp dẫn...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="slug" class="form-label">Đường dẫn (Slug)</label>
+                        <div class="slug-input-wrapper">
+                            <input type="text" id="slug" name="slug" class="form-input" value="<?= htmlspecialchars($post['slug']) ?>">
+                        </div>
+                        <small class="form-hint">Dùng cho đường dẫn URL thân thiện.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content" class="form-label">Nội dung <span class="required">*</span></label>
+                        <textarea id="content" name="content" rows="20" required class="content-editor"><?= htmlspecialchars($post['content']) ?></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excerpt" class="form-label">Mô tả ngắn (Excerpt)</label>
+                        <textarea id="excerpt" name="excerpt" class="form-input" rows="4" placeholder="Viết một đoạn tóm tắt ngắn về bài viết..."><?= htmlspecialchars($post['excerpt']) ?></textarea>
+                        <small class="form-hint">Hiển thị ở trang chủ và danh sách bài viết.</small>
+                    </div>
+                </div>
+
+                <!-- SEO Section -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">Tối ưu hóa tìm kiếm (SEO)</h3>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="meta_title" class="form-label">Thẻ tiêu đề (Meta Title)</label>
+                        <input type="text" id="meta_title" name="meta_title" class="form-input" value="<?= htmlspecialchars($post['meta_title'] ?? '') ?>" placeholder="Tiêu đề hiển thị trên Google...">
+                    </div>
+                    <div class="form-group">
+                        <label for="meta_description" class="form-label">Thẻ mô tả (Meta Description)</label>
+                        <textarea id="meta_description" name="meta_description" class="form-input" rows="3" placeholder="Đoạn mô tả ngắn hiển thị trên kết quả tìm kiếm..."><?= htmlspecialchars($post['meta_description'] ?? '') ?></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Column -->
+            <div class="post-editor-sidebar">
+                <div class="card sticky-sidebar">
+                    <div class="card-header">
+                        <h3 class="card-title">Cài đặt bài viết</h3>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <label for="status" class="form-label">Trạng thái</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="draft" <?= ($post['status'] === 'draft') ? 'selected' : '' ?>>Bản nháp</option>
+                            <option value="published" <?= ($post['status'] === 'published') ? 'selected' : '' ?>>Công khai</option>
+                            <option value="scheduled" <?= ($post['status'] === 'scheduled') ? 'selected' : '' ?>>Lên lịch</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="post_type" class="form-label">Loại nội dung</label>
+                        <select id="post_type" name="post_type" class="form-select">
+                            <option value="post" <?= ($post['post_type'] === 'post') ? 'selected' : '' ?>>Bài viết (Blog)</option>
+                            <option value="podcast" <?= ($post['post_type'] === 'podcast') ? 'selected' : '' ?>>Podcast</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="spotifyField" style="<?= ($post['post_type'] === 'podcast' ? 'display: block;' : 'display: none;') ?>">
+                        <label for="spotify_url" class="form-label">Link Spotify</label>
+                        <input type="text" id="spotify_url" name="spotify_url" class="form-input" value="<?= htmlspecialchars($post['spotify_url'] ?? '') ?>" placeholder="https://open.spotify.com/episode/...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category_id" class="form-label">Chuyên mục</label>
+                        <select id="category_id" name="category_id" class="form-select">
+                            <option value="">-- Chọn chuyên mục --</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?? 'post' ?>" <?= ($post['category_id'] == $cat['id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($cat['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tags" class="form-label">Thẻ (Tags)</label>
+                        <input type="text" id="tags" name="tags" class="form-input" value="<?= htmlspecialchars($tagList) ?>" placeholder="Cảm xúc, Chữa lành, ...">
+                        <small class="form-hint">Phân cách bằng dấu phẩy.</small>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ảnh đại diện</label>
+                        <div class="featured-image-upload">
+                            <input type="text" id="featured_image" name="featured_image" class="form-input mb-2" value="<?= htmlspecialchars($post['featured_image'] ?? '') ?>" placeholder="Nhập URL hoặc upload...">
+                            
+                            <div class="upload-actions">
+                                <button type="button" id="uploadFeaturedBtn" class="btn btn-secondary btn-small">
+                                    <span class="icon">📤</span> Tải lên
+                                </button>
+                                <button type="button" id="openMediaPicker" class="btn btn-text btn-small">
+                                    Chọn từ thư viện
+                                </button>
+                            </div>
+
+                            <input type="file" id="featuredImageFile" accept="image/*" style="display: none;">
+                            
+                            <div id="uploadProgress" class="upload-progress-container" style="display: none;">
+                                <div class="progress-bar-bg">
+                                    <div id="progressBar" class="progress-bar-fill"></div>
+                                </div>
+                                <small id="progressText" class="progress-message"></small>
+                            </div>
+
+                            <div id="imagePreview" class="featured-image-preview mt-3" style="<?= ($post['featured_image'] ? 'display: block;' : 'display: none;') ?>">
+                                <img id="previewImg" src="<?= $post['featured_image'] ? (strpos($post['featured_image'], 'http') === 0 ? $post['featured_image'] : UPLOAD_URL . '/' . $post['featured_image']) : '' ?>" alt="Preview">
+                                <button type="button" class="remove-preview" onclick="removeFeaturedImage()">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-actions mt-4">
+                        <button type="submit" class="btn btn-primary btn-full">
+                            Cập nhật bài viết
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <!-- Media Picker Modal -->
 <div id="mediaPickerModal" class="modal" style="display: none;">
@@ -300,14 +320,101 @@ require_once __DIR__ . '/../includes/admin-header.php';
 </div>
 
 <style>
-    .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-    .card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 24px; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
-    .form-group input[type="text"], .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-    .btn-full { width: 100%; }
-    .content-editor { font-family: monospace; line-height: 1.5; }
-    @media (max-width: 768px) { .grid-layout { grid-template-columns: 1fr; } }
+    .post-editor-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .sticky-sidebar {
+        position: sticky;
+        top: 24px;
+    }
+
+    .required { color: #ef4444; }
+    .mt-4 { margin-top: 1.5rem; }
+    .mt-3 { margin-top: 1rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+
+    .divider {
+        height: 1px;
+        background: var(--border-color, #e5e7eb);
+        margin: 20px 0;
+    }
+
+    .upload-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .featured-image-preview {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-color, #e5e7eb);
+    }
+
+    .featured-image-preview img {
+        width: 100%;
+        display: block;
+        max-height: 200px;
+        object-fit: cover;
+    }
+
+    .remove-preview {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: background 0.2s;
+    }
+
+    .remove-preview:hover {
+        background: rgba(220, 38, 38, 0.8);
+    }
+
+    .upload-progress-container {
+        margin-top: 12px;
+    }
+
+    .progress-bar-bg {
+        height: 6px;
+        background: #f3f4f6;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: var(--primary-color, #2C5F4F);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .progress-message {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+
+    @media (max-width: 1024px) {
+        .post-editor-grid {
+            grid-template-columns: 1fr;
+        }
+    }
     
     /* Hide CKEditor notification bar */
     .cke_notification_warning,
@@ -420,15 +527,14 @@ require_once __DIR__ . '/../includes/admin-header.php';
 <!-- CKEditor 4 Full -->
 <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
 <script>
-    // Suppress notification bar
+    // CKEditor Configuration
     CKEDITOR.config.notification_aggregationTimeout = 0;
-    
     var editor = CKEDITOR.replace('content', {
-        height: 600,
+        height: 500,
         removePlugins: 'exportpdf',
         filebrowserUploadUrl: '/admin/upload_ckeditor.php',
         filebrowserUploadMethod: 'xhr',
-        uiColor: '#ffffff', 
+        uiColor: '#ffffff',
         toolbarGroups: [
             { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
             { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
@@ -457,7 +563,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     'Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;' +
                     'Verdana/Verdana, Geneva, sans-serif'
     });
-    
+
     // Auto-insert uploaded images into editor
     editor.on('fileUploadResponse', function(evt) {
         evt.stop();
@@ -480,115 +586,133 @@ require_once __DIR__ . '/../includes/admin-header.php';
             }
         }
     });
-    
-    // ===== Media Picker Functionality =====
-    
-    // Open media picker
+
+    // Sidebar Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('post_type');
+        const spotifyField = document.getElementById('spotifyField');
+        const categorySelect = document.getElementById('category_id');
+        const originalOptions = Array.from(categorySelect.options);
+
+        function updateContext() {
+            const type = typeSelect.value;
+            if (spotifyField) spotifyField.style.display = type === 'podcast' ? 'block' : 'none';
+            
+            const currentVal = categorySelect.value;
+            categorySelect.innerHTML = '';
+            originalOptions.forEach(opt => {
+                if (opt.value === "" || opt.getAttribute('data-type') === type || opt.getAttribute('data-type') === 'post') {
+                    categorySelect.appendChild(opt.cloneNode(true));
+                }
+            });
+            // Restore selection if valid
+            let exists = false;
+            for (let i = 0; i < categorySelect.options.length; i++) {
+                if (categorySelect.options[i].value === currentVal) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (exists) {
+                categorySelect.value = currentVal;
+            } else {
+                categorySelect.value = "";
+            }
+        }
+
+        typeSelect.addEventListener('change', updateContext);
+        updateContext(); // Initial run
+    });
+
+    // Image Management
+    function updateImagePreview(url) {
+        const preview = document.getElementById('imagePreview');
+        const img = document.getElementById('previewImg');
+        const baseUrl = '<?= UPLOAD_URL ?>';
+        
+        if (url && url.trim() !== '') {
+            img.src = url.startsWith('http') ? url : `${baseUrl}/${url}`;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    function removeFeaturedImage() {
+        document.getElementById('featured_image').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+
+    // Media Picker
     document.getElementById('openMediaPicker').addEventListener('click', function(e) {
         e.preventDefault();
         openMediaPicker();
     });
-    
+
     // Update preview when URL is manually entered
     document.getElementById('featured_image').addEventListener('input', function(e) {
         updateImagePreview(e.target.value);
     });
-    
+
     function openMediaPicker() {
-        const modal = document.getElementById('mediaPickerModal');
-        modal.style.display = 'flex';
-        loadMediaItems();
+        document.getElementById('mediaPickerModal').style.display = 'flex';
+        loadMediaFiles();
     }
-    
+
     function closeMediaPicker() {
-        const modal = document.getElementById('mediaPickerModal');
-        modal.style.display = 'none';
+        document.getElementById('mediaPickerModal').style.display = 'none';
     }
-    
+
     // Close modal when clicking outside
     document.getElementById('mediaPickerModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeMediaPicker();
         }
     });
-    
-    async function loadMediaItems() {
+
+    async function loadMediaFiles() {
         const grid = document.getElementById('mediaGrid');
         grid.innerHTML = '<div class="loading">Đang tải...</div>';
-        
         try {
-            const response = await fetch('/api/media-list.php?limit=50');
-            const result = await response.json();
-            
+            const res = await fetch('/api/media-list.php?limit=50');
+            const result = await res.json();
             if (result.success && result.data.length > 0) {
-                renderMediaGrid(result.data);
+                grid.innerHTML = ''; // Clear loading
+                result.data.forEach(item => {
+                    // Only show images
+                    if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(item.file_type)) {
+                        return;
+                    }
+                    const div = document.createElement('div');
+                    div.className = 'media-picker-item';
+                    div.innerHTML = `<img src="<?= UPLOAD_URL ?>/${item.file_path}" alt="${item.original_filename}" title="${item.original_filename}">`;
+                    div.addEventListener('click', () => selectImage(item.file_path));
+                    grid.appendChild(div);
+                });
             } else {
                 grid.innerHTML = '<div class="loading">Chưa có ảnh nào trong thư viện</div>';
             }
-        } catch (error) {
-            console.error('Failed to load media:', error);
+        } catch (e) {
+            console.error('Failed to load media:', e);
             grid.innerHTML = '<div class="loading">Lỗi khi tải ảnh</div>';
         }
     }
-    
-    function renderMediaGrid(items) {
-        const grid = document.getElementById('mediaGrid');
-        grid.innerHTML = '';
-        
-        const UPLOAD_URL = '<?= UPLOAD_URL ?>';
-        
-        items.forEach(item => {
-            // Only show images
-            if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(item.file_type)) {
-                return;
-            }
-            
-            const div = document.createElement('div');
-            div.className = 'media-picker-item';
-            // Display with full URL but pass only filename to selectImage
-            const displayUrl = UPLOAD_URL + '/' + item.file_path;
-            div.innerHTML = `<img src="${displayUrl}" alt="${item.original_filename}" title="${item.original_filename}">`;
-            div.addEventListener('click', () => selectImage(item.file_path)); // Store only filename
-            grid.appendChild(div);
-        });
-    }
-    
+
     function selectImage(url) {
         document.getElementById('featured_image').value = url;
         updateImagePreview(url);
         closeMediaPicker();
     }
-    
-    function updateImagePreview(url) {
-        const preview = document.getElementById('imagePreview');
-        const img = document.getElementById('previewImg');
-        const UPLOAD_URL = '<?= UPLOAD_URL ?>';
-        
-        if (url && url.trim() !== '') {
-            // Construct full URL if it's just a filename
-            const fullUrl = url.startsWith('http') ? url : `${UPLOAD_URL}/${url}`;
-            img.src = fullUrl;
-            preview.style.display = 'block';
-        } else {
-            preview.style.display = 'none';
-        }
-    }
-    
-    // Featured Image Upload Functionality
+
+    // Upload Handle
     const uploadBtn = document.getElementById('uploadFeaturedBtn');
     const fileInput = document.getElementById('featuredImageFile');
-    const progressDiv = document.getElementById('uploadProgress');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
     
-    uploadBtn.addEventListener('click', () => {
-        fileInput.click();
-    });
-    
+    uploadBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        
+
         // Validate file type
         if (!file.type.startsWith('image')) {
             alert('Chỉ chấp nhận file ảnh!');
@@ -600,48 +724,40 @@ require_once __DIR__ . '/../includes/admin-header.php';
             alert('File quá lớn! Tối đa 10MB');
             return;
         }
-        
-        // Show progress
+
+        const progressDiv = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
         progressDiv.style.display = 'block';
         progressBar.style.width = '0%';
-        progressText.textContent = 'Đang upload...';
+        progressText.textContent = 'Đang tải lên...';
         uploadBtn.disabled = true;
-        
+
+        const formData = new FormData();
+        formData.append('file', file);
+
         try {
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            const response = await fetch('/admin/upload_featured_image.php', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const data = await response.json();
-            
+            const res = await fetch('/admin/upload_featured_image.php', { method: 'POST', body: formData });
+            const data = await res.json();
             if (data.success) {
-                // Update progress to 100%
                 progressBar.style.width = '100%';
-                progressText.textContent = 'Upload thành công!';
+                progressText.textContent = 'Thành công!';
                 progressText.style.color = '#28a745';
-                
-                // Update input and preview with FILENAME ONLY
                 document.getElementById('featured_image').value = data.filename;
                 updateImagePreview(data.filename);
-                
-                // Hide progress after 2s
                 setTimeout(() => {
                     progressDiv.style.display = 'none';
                     progressText.style.color = '#666';
-                }, 2000);
+                }, 1500);
             } else {
                 throw new Error(data.message || 'Upload thất bại');
             }
-        } catch (error) {
-            console.error('Upload error:', error);
+        } catch (err) {
+            console.error('Upload error:', err);
             progressBar.style.width = '0%';
-            progressText.textContent = error.message || 'Lỗi khi upload ảnh';
-            progressText.style.color = '#dc3545';
-            
+            progressText.textContent = 'Lỗi: ' + (err.message || 'Không xác định');
+            progressText.style.color = '#ef4444';
             setTimeout(() => {
                 progressDiv.style.display = 'none';
                 progressText.style.color = '#666';
@@ -651,70 +767,6 @@ require_once __DIR__ . '/../includes/admin-header.php';
             fileInput.value = ''; // Reset file input
         }
     });
-    
-    // Wrap in DOMContentLoaded to ensure elements exist
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("Admin Edit Script Loaded");
-        
-        const categorySelect = document.getElementById('category_id');
-        const typeSelect = document.getElementById('post_type');
-        const spotifyField = document.getElementById('spotifyField');
-
-        if (!categorySelect || !typeSelect) return;
-
-        // Store original options
-        const originalOptions = Array.from(categorySelect.options);
-
-        // Toggle Spotify Field & Filter Categories
-        function toggleSpotifyField() {
-            const type = typeSelect.value;
-            console.log("Filtering edit for:", type);
-            
-            if (spotifyField) {
-                spotifyField.style.display = type === 'podcast' ? 'block' : 'none';
-            }
-            
-            // Save current selection
-            const currentVal = categorySelect.value;
-            
-            // Clear current options
-            categorySelect.innerHTML = '';
-            
-            // Re-add filtered options
-            originalOptions.forEach(opt => {
-                if (opt.value === "") {
-                    categorySelect.appendChild(opt.cloneNode(true));
-                    return;
-                }
-                
-                const catType = opt.getAttribute('data-type') || 'post';
-                
-                if (catType === type) {
-                    categorySelect.appendChild(opt.cloneNode(true));
-                }
-            });
-            
-            // Restore selection if valid
-            let exists = false;
-            for (let i = 0; i < categorySelect.options.length; i++) {
-                if (categorySelect.options[i].value === currentVal) {
-                    exists = true;
-                    break;
-                }
-            }
-            
-            if (exists) {
-                categorySelect.value = currentVal;
-            } else {
-                categorySelect.value = "";
-            }
-        }
-        
-        // Bind Event Listener
-        typeSelect.addEventListener('change', toggleSpotifyField);
-        
-        // Initial run
-        toggleSpotifyField();
     });
 
 </script>

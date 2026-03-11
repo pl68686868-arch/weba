@@ -150,7 +150,7 @@ include __DIR__ . '/../includes/admin-header.php';
                     <?php endif; ?>
                     
                     <span class="pagination__info">
-                        Page <?= $page ?> of <?= $totalPages ?> (<?= $totalUsers ?> total)
+                        Page <?= (string)$page ?> of <?= (string)$totalPages ?> (<?= (string)$totalUsers ?> total)
                     </span>
                     
                     <?php if ($page < $totalPages): ?>
@@ -168,49 +168,216 @@ include __DIR__ . '/../includes/admin-header.php';
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div id="deleteUserModal" class="modal" style="display: none;">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-        <h3>Delete User</h3>
-        <p>Are you sure you want to delete <strong class="modal-user-name"></strong>?</p>
-        <div class="alert alert-info">
-            Their posts will be reassigned to you.
-        </div>
-        <p class="text-danger"><strong>This action cannot be undone.</strong></p>
-        <div class="modal-actions">
-            <button id="confirmDeleteUser" class="btn btn-danger">Delete User</button>
-            <button id="cancelDeleteUser" class="btn btn-secondary">Cancel</button>
-        </div>
+<div class="admin-page">
+    <div class="admin-page__header">
+        <h1>Quản lý người dùng</h1>
+        <a href="/admin/users-new.php" class="btn btn-primary">+ Thêm người dùng</a>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card mb-4">
+        <form method="GET" action="" class="filters-form-grid">
+            <div class="form-group mb-0">
+                <label class="form-label">Tìm kiếm</label>
+                <div class="search-input-wrapper">
+                    <input type="text" name="search" class="form-input" placeholder="Tên, email hoặc username..." value="<?= htmlspecialchars($search) ?>">
+                </div>
+            </div>
+            
+            <div class="form-group mb-0">
+                <label class="form-label">Vai trò</label>
+                <select name="role" class="form-select">
+                    <option value="">Tất cả vai trò</option>
+                    <option value="admin" <?= $role === 'admin' ? 'selected' : '' ?>>Quản trị viên</option>
+                    <option value="editor" <?= $role === 'editor' ? 'selected' : '' ?>>Biên tập viên</option>
+                    <option value="author" <?= $role === 'author' ? 'selected' : '' ?>>Tác giả</option>
+                </select>
+            </div>
+            
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-secondary">Lọc</button>
+                <a href="/admin/users.php" class="btn btn-text">Xóa bộ lọc</a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="card">
+        <?php if (!empty($users)): ?>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Người dùng</th>
+                            <th>Vai trò</th>
+                            <th>Ngày tham gia</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($users as $user): ?>
+                            <tr>
+                                <td>
+                                    <div class="user-info-cell">
+                                        <div class="user-avatar-placeholder">
+                                            <?= strtoupper(substr($user['full_name'], 0, 1)) ?>
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="user-name"><?= escape($user['full_name']) ?></div>
+                                            <div class="user-meta">
+                                                <span><?= escape($user['email']) ?></span>
+                                                <span class="dot">•</span>
+                                                <span class="user-handle">@<?= escape($user['username']) ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-<?= $user['role'] ?>">
+                                        <?= ucfirst($user['role']) ?>
+                                    </span>
+                                </td>
+                                <td><?= formatDate($user['created_at'], 'date') ?></td>
+                                <td class="text-right">
+                                    <div class="table-actions">
+                                        <a href="/admin/users-edit.php?id=<?= $user['id'] ?>" class="btn-icon" title="Chỉnh sửa">
+                                            <span class="icon">✏️</span>
+                                        </a>
+                                        <?php if ($user['id'] != $auth->getUserId()): ?>
+                                            <button 
+                                                class="btn-icon btn-icon-danger delete-user-btn"
+                                                data-user-id="<?= $user['id'] ?>"
+                                                data-user-name="<?= escape($user['full_name']) ?>"
+                                                title="Xóa người dùng">
+                                                <span class="icon">🗑️</span>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <?php if ($totalPages > 1): ?>
+                <div class="pagination-footer">
+                    <div class="pagination-info">
+                        Hiển thị trang <?= $page ?> / <?= $totalPages ?> (Tổng <?= $totalUsers ?> người dùng)
+                    </div>
+                    <div class="pagination-actions">
+                        <?php if ($page > 1): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="btn btn-secondary btn-small">
+                                ← Trước
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if ($page < $totalPages): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="btn btn-secondary btn-small">
+                                Sau →
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php else: ?>
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <p>Không tìm thấy người dùng nào.</p>
+                <a href="/admin/users-new.php" class="btn btn-primary mt-3">Thêm người dùng đầu tiên</a>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
-<!-- Toast -->
-<div id="toast" class="toast" style="display: none;"></div>
+<!-- Modal & Toast are handled by global styles in admin-style.css -->
 
 <style>
-.role-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: 500;
-}
-.role-admin { background: #fee2e2; color: #991b1b; }
-.role-editor { background: #e0e7ff; color: #3730a3; }
-.role-author { background: #d1fae5; color: #065f46; }
+    .filters-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 200px auto;
+        gap: 20px;
+        align-items: flex-end;
+    }
 
-.text-muted { color: #6b7280; font-size: 0.9em; }
+    .filter-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
 
-/* Reusing modal/toast styles from posts.php or admin-style.css (if moved there) */
-/* We'll copy critical styles just in case */
-.modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-.modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
-.modal-content { position: relative; background: white; border-radius: 12px; padding: 32px; max-width: 480px; width: 90%; z-index: 1001; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-.modal-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
-.text-danger { color: #DC3545; }
+    .user-info-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-.toast { position: fixed; top: 24px; right: 24px; background: #2C5F4F; color: white; padding: 16px 24px; border-radius: 8px; z-index: 2000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-.toast.error { background: #DC3545; }
+    .user-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-light, #f0f7f4);
+        color: var(--primary-color, #2C5F4F);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: 500;
+        color: var(--text-color, #1f2937);
+    }
+
+    .user-meta {
+        font-size: 0.85rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .dot { font-size: 1.2rem; line-height: 1; }
+    .user-handle { color: var(--primary-color, #2C5F4F); }
+
+    .badge-admin { background: #fee2e2; color: #991b1b; }
+    .badge-editor { background: #e0e7ff; color: #3730a3; }
+    .badge-author { background: #d1fae5; color: #065f46; }
+
+    .text-right { text-align: right; }
+    
+    .pagination-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        margin-top: 24px;
+        border-top: 1px solid var(--border-color, #e5e7eb);
+    }
+
+    .pagination-info {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    .pagination-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .filters-form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <script>
