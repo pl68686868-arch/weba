@@ -211,6 +211,8 @@ include __DIR__ . '/includes/header.php';
                             class="article-card__image"
                             loading="lazy"
                         >
+                    <?php else: ?>
+                        <div class="article-card__placeholder">✍</div>
                     <?php endif; ?>
                     
                     <div class="article-card__content">

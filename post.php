@@ -117,7 +117,7 @@ include __DIR__ . '/includes/header.php';
         ]) ?>
 
         <?php if ($post['status'] !== 'published'): ?>
-            <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 20px; text-align: center;">
+            <div style="background: rgba(236, 182, 19, 0.15); color: var(--color-gold); padding: 10px; border-radius: 4px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(236, 182, 19, 0.3);">
                 <strong>Preview Mode:</strong> This post is currently <strong><?= ucfirst($post['status']) ?></strong>.
             </div>
         <?php endif; ?>
@@ -272,6 +272,8 @@ include __DIR__ . '/includes/header.php';
                                         >
                                     </div>
                                 </a>
+                            <?php else: ?>
+                                <div class="article-card__placeholder">✍</div>
                             <?php endif; ?>
                             
                             <div class="article-card__content">
@@ -285,7 +287,7 @@ include __DIR__ . '/includes/header.php';
                                     </a>
                                 </h3>
                                 
-                                <div class="article-card__meta" style="font-size: 0.85rem; color: #666; font-family: var(--font-ui);">
+                                <div class="article-card__meta" style="font-size: 0.85rem; color: var(--color-text-tertiary); font-family: var(--font-ui);">
                                     <span><?= formatDate($related['published_at'] ?? $related['created_at'], 'short') ?></span>
                                     <span style="margin: 0 5px;">•</span>
                                     <span><?= $related['reading_time'] ?> phút đọc</span>
