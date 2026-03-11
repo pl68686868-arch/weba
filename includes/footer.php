@@ -34,10 +34,15 @@
                     <p class="footer__newsletter-desc">
                         <?= escape(get_setting('footer_newsletter_desc', 'Nhận bài viết mới nhất qua email. Không spam, chỉ có sự chia sẻ.')) ?>
                     </p>
-                    <form action="/subscribe.php" method="POST" class="newsletter-form">
-                        <input type="email" name="email" placeholder="Email của bạn" required class="newsletter-input">
-                        <button type="submit" class="newsletter-button">Đăng ký</button>
+                    <form id="newsletter-form" action="/subscribe.php" method="POST" class="newsletter-form">
+                        <?php
+                        $auth = $auth ?? new Auth();
+                        echo $auth->getCSRFInput();
+                        ?>
+                        <input type="email" name="email" placeholder="Email của bạn" required class="newsletter-input" id="newsletter-email">
+                        <button type="submit" class="newsletter-button" id="newsletter-submit">Đăng ký</button>
                     </form>
+                    <p id="newsletter-message" style="display:none; margin-top: 0.75rem; font-size: 0.875rem; font-family: var(--font-ui);"></p>
                 </div>
             </div>
         </div>
@@ -45,6 +50,7 @@
     
     <!-- JavaScript -->
     <script src="<?= ASSETS_URL ?>/js/main.js" defer></script>
+    <script src="<?= ASSETS_URL ?>/js/subscribe-handler.js" defer></script>
     
     <!-- Service Worker for PWA -->
     <script>

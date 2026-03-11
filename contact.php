@@ -46,12 +46,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif (strlen($message) < 20) {
                 $error = 'Tin nhắn quá ngắn. Vui lòng viết ít nhất 20 ký tự.';
             } else {
-                // In a real application, you would:
-                // 1. Send email to FROM_EMAIL
-                // 2. Or store in database for admin review
+                // Store in database
+                try {
+                    $db = Database::getInstance()->getPDO();
+                    $stmt = $db->prepare("INSERT INTO contact_messages (name, email, purpose, message, ip_address) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->execute([$name, $email, $purpose, $message, $ip]);
+                } catch (\Throwable $e) {
+                    error_log("Contact DB Error: " . $e->getMessage());
+                }
+
+                // Send email notification to site owner
+                require_once __DIR__ . '/includes/Mailer.php';
+                $mailer = new Mailer();
                 
-                // For now, just show success
-                $success = 'Cảm ơn bạn đã liên hệ! Tôi sẽ phản hồi trong thời gian sớm nhất.';
+                $emailSent = $mailer->sendContactNotification($name, $email, $purpose, $message);
+                
+                // Send auto-reply to visitor
+                $mailer->sendAutoReply($email, $name);
+                
+                if ($emailSent) {
+                    $success = 'Cảm ơn bạn đã liên hệ! Tôi đã nhận được lời chào và sẽ phản hồi trong thời gian sớm nhất.';
+                } else {
+                    $success = 'Cảm ơn bạn đã liên hệ! Tin nhắn đã được lưu lại, tôi sẽ phản hồi sớm nhất có thể.';
+                }
                 
                 // Log the contact
                 error_log("Contact from: {$name} ({$email}) - Purpose: {$purpose}");
