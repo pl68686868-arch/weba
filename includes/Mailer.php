@@ -77,7 +77,7 @@ class Mailer
             "tcp://{$this->smtpHost}:{$this->smtpPort}",
             $errno,
             $errstr,
-            30
+            30 // timeout seconds
         );
 
         if (!$socket) {
@@ -153,7 +153,7 @@ class Mailer
             }
         }
 
-        $code = (int)substr($response, 0, 3);
+        $code = intval(substr($response, 0, 3));
         if ($code >= 400) {
             throw new \RuntimeException("SMTP Error ({$code}): " . trim($response));
         }

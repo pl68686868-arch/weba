@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif (strlen($message) < 20) {
                 $error = 'Tin nhắn quá ngắn. Vui lòng viết ít nhất 20 ký tự.';
             } else {
-                // Store in database
+                // Store in database first (always)
                 try {
                     $db = Database::getInstance()->getPDO();
                     $stmt = $db->prepare("INSERT INTO contact_messages (name, email, purpose, message, ip_address) VALUES (?, ?, ?, ?, ?)");
@@ -55,22 +55,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     error_log("Contact DB Error: " . $e->getMessage());
                 }
 
-                // Send email notification to site owner
-                require_once __DIR__ . '/includes/Mailer.php';
-                $mailer = new Mailer();
-                
-                $emailSent = $mailer->sendContactNotification($name, $email, $purpose, $message);
-                
-                // Send auto-reply to visitor
-                $mailer->sendAutoReply($email, $name);
-                
-                if ($emailSent) {
-                    $success = 'Cảm ơn bạn đã liên hệ! Tôi đã nhận được lời chào và sẽ phản hồi trong thời gian sớm nhất.';
-                } else {
-                    $success = 'Cảm ơn bạn đã liên hệ! Tin nhắn đã được lưu lại, tôi sẽ phản hồi sớm nhất có thể.';
+                // Try to send email (wrapped in try/catch so it NEVER crashes the page)
+                try {
+                    require_once __DIR__ . '/includes/Mailer.php';
+                    $mailer = new Mailer();
+                    $mailer->sendContactNotification($name, $email, $purpose, $message);
+                    $mailer->sendAutoReply($email, $name);
+                } catch (\Throwable $e) {
+                    error_log("Contact Email Error: " . $e->getMessage());
                 }
+
+                // ALWAYS show success to user regardless of email status
+                $success = 'Cảm ơn bạn đã liên hệ! Tôi đã nhận được lời chào và sẽ phản hồi trong thời gian sớm nhất.';
                 
-                // Log the contact
                 error_log("Contact from: {$name} ({$email}) - Purpose: {$purpose}");
                 
                 // Clear form
