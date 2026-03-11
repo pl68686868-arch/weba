@@ -86,17 +86,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['HTTP_X_REQUESTED_W
 $seo = new SEO();
 $seo->setTitle('Liên hệ')
     ->setDescription(get_setting('contact_meta_desc', 'Liên hệ để trao đổi về giảng dạy, đào tạo, hợp tác học thuật và những kết nối chuyên môn cùng quan tâm đến chiều sâu nội tâm và phát triển bền vững.'))
-    ->setCanonical(SITE_URL . '/contact.php');
+    ->setCanonical(SITE_URL . '/contact.php')
+    ->setOGType('website')
+    ->setOGImage(DEFAULT_OG_IMAGE);
 
 // Track page view
-trackPageView('/contact.php');
+trackPageView(null, '/contact.php');
 
 // Include header
 include __DIR__ . '/includes/header.php';
 ?>
 
 <div class="contact-page">
-    <div class="container container--wide">
+    <div class="container container--narrow">
         <div class="contact-grid">
             <!-- Left Column: Visual & Info -->
             <div class="contact-info">
