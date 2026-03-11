@@ -594,8 +594,7 @@ a {
 
 @media (min-width: 1200px) {
     .pillars__grid {
-        grid-template-columns: repeat(4, 1fr);
-        /* 4 Columns on large screens */
+        grid-template-columns: repeat(3, 1fr); /* 3 columns handles 5 pillars better */
         gap: var(--space-md);
     }
 }
@@ -1162,6 +1161,11 @@ body.page-subpage {
     line-height: 1.8;
 }
 
+/* Fix visibility on light philosophy section */
+.about-philosophy .text-light-soft {
+    color: rgba(28, 31, 29, 0.7); /* Dark semi-transparent */
+}
+
 .text-gold {
     color: var(--color-accent-medium);
 }
@@ -1187,18 +1191,24 @@ body.page-subpage {
 
 @media (min-width: 1200px) {
     .pillars-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* 3 columns handles 5 items better */
     }
 }
 
 .pillar-card-minimal {
     padding: var(--space-xl);
     background: var(--color-bg-primary);
-    /* Subtle background difference */
     border: 1px solid rgba(255, 255, 255, 0.08);
-    /* Visible border */
     border-radius: var(--radius-md);
     transition: all 0.3s ease;
+    height: 100%;
+}
+
+.pillar-card-minimal--placeholder {
+    background: linear-gradient(135deg, #1C1F1D 0%, #2A312B 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .pillar-card-minimal:hover {

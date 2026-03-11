@@ -165,6 +165,7 @@ include __DIR__ . '/includes/header.php';
                 'tam-ly-hoc-doi-song-truong-thanh' => 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=600&auto=format&fit=crop', // Psychology (Journaling)
                 'chanh-niem-hoi-phuc-than-tam' => 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=600&auto=format&fit=crop', // Mindfulness
                 'giao-duc-hoc-tap-nguoi-truong-thanh' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=600&auto=format&fit=crop', // Education
+                'nhung-cau-chuyen-doi' => 'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop', // Storytelling
                 'phan-tu-nghe-nghiep' => 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop' // Career
             ];
             ?>

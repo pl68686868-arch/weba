@@ -457,18 +457,29 @@ include __DIR__ . '/includes/header.php';
     border-radius: var(--radius-md);
     font-family: var(--font-ui);
     font-size: 0.875rem;
-    font-weight: 500;
-    transition: var(--transition-base);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.share-btn--facebook { background: #1877F2; color: white; }
-.share-btn--twitter { background: #1DA1F2; color: white; }
-.share-btn--linkedin { background: #0A66C2; color: white; }
-.share-btn--email { background: var(--color-accent-dark); color: white; }
-
 .share-btn:hover {
+    background: var(--color-accent-lighter);
+    color: var(--color-accent-dark);
+    border-color: var(--color-accent-medium);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+}
+
+/* Specific accent for email to make it stand out slightly */
+.share-btn--email {
+    border-color: var(--color-accent-medium);
+    color: var(--color-accent-dark);
 }
 
 /* Author Bio */
