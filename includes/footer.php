@@ -36,7 +36,12 @@
                     </p>
                     <form id="newsletter-form" action="/subscribe.php" method="POST" class="newsletter-form">
                         <?php
-                        $auth = $auth ?? new Auth();
+                        if (!class_exists('Auth')) {
+                            require_once dirname(__DIR__) . '/includes/Auth.php';
+                        }
+                        if (!isset($auth) || !($auth instanceof Auth)) {
+                            $auth = new Auth();
+                        }
                         echo $auth->getCSRFInput();
                         ?>
                         <input type="email" name="email" placeholder="Email của bạn" required class="newsletter-input" id="newsletter-email">
