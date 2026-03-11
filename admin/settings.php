@@ -121,7 +121,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 
                 <input type="hidden" name="hero_slides" id="hero_slides_input" value='<?= htmlspecialchars($settingsMap['hero_slides']['setting_value'] ?? '[]') ?>'>
                 
-                <div id="slides_preview" class="dashboard-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div id="slides_preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
                     <!-- JS will populate this -->
                 </div>
                 
@@ -229,18 +229,19 @@ require_once __DIR__ . '/../includes/admin-header.php';
     </form>
 </div>
 <style>
-    .slide-item {
-        position: relative;
-        border-radius: 12px;
-        overflow: hidden;
-        aspect-ratio: 16/9;
-        border: 2px solid var(--border-color);
-        background: var(--bg-card);
-    }
     .slide-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+    .slide-item {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+        border: 2px solid var(--border-color);
+        background: var(--bg-card);
+        max-height: 120px;
     }
     .slide-remove {
         position: absolute;

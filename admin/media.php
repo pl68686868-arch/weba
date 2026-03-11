@@ -169,7 +169,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
     .media-filename { font-size: 0.875rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
     .media-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 500; }
 </style>
-<?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>
+<script>
 document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
