@@ -327,4 +327,45 @@ HTML;
             $html
         );
     }
+
+    /**
+     * Send newsletter email to a subscriber
+     */
+    public function sendNewsletter(string $toEmail, string $subject, string $content): bool
+    {
+        $siteUrl = defined('SITE_URL') ? SITE_URL : 'https://duongtranminhdoan.com';
+
+        // Convert plain text content to HTML paragraphs
+        $htmlContent = '';
+        $paragraphs = explode("\n\n", $content);
+        foreach ($paragraphs as $p) {
+            $p = trim($p);
+            if (!empty($p)) {
+                $p = nl2br(htmlspecialchars($p));
+                $htmlContent .= "<p>{$p}</p>\n";
+            }
+        }
+
+        $body = <<<HTML
+<h2 style="margin:0 0 24px; font-size:22px; color:#1C1F1D; font-weight:500;">{$subject}</h2>
+{$htmlContent}
+<table width="100%" cellpadding="0" cellspacing="0" style="margin: 32px 0;">
+    <tr>
+        <td align="center">
+            <a href="{$siteUrl}" style="display:inline-block; padding: 12px 32px; background:#ECB613; color:#1C1F1D; text-decoration:none; border-radius:50px; font-weight:600; font-family: -apple-system, sans-serif; font-size:15px;">
+                Ghé thăm website
+            </a>
+        </td>
+    </tr>
+</table>
+HTML;
+
+        $html = $this->buildTemplate($subject, $body, "Bạn nhận email này vì đã đăng ký nhận bản tin.");
+
+        return $this->send(
+            $toEmail,
+            $subject . " - " . (defined('SITE_NAME') ? SITE_NAME : ''),
+            $html
+        );
+    }
 }
