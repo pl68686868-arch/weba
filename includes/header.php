@@ -49,7 +49,7 @@ global $seo;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Lora:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/style.css?v=<?= filemtime(__DIR__ . '/../assets/css/style.css') ?>">

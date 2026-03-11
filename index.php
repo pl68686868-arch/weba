@@ -89,6 +89,11 @@ include __DIR__ . '/includes/header.php';
                 Tôi là giảng viên và người thực hành tâm lý, thực hành và giảng dạy dựa trên nền tảng chánh niệm. 
                 Công việc của tôi gắn liền với việc quan sát, lắng nghe và đồng hành cùng đời sống nội tâm.
             </p>
+            <div style="margin-top: 2rem;">
+                <a href="/about.php" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: var(--color-gold); color: #1C1F1D; text-decoration: none; border-radius: 8px; font-weight: 600; letter-spacing: 0.05em; transition: transform 0.3s, background 0.3s;">
+                    Tìm hiểu thêm
+                </a>
+            </div>
         </div>
         
         <!-- Hero Visual (Right) - Auto-fading Gallery -->

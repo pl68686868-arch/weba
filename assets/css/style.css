@@ -77,28 +77,28 @@ h6 {
    ============================================================================ */
 
 :root {
-    /* Premium V3 Palette - "Washi Paper & Deep Spruce" */
-    --color-bg-primary: #F9F7F2;
-    /* Washi Paper (Warm Off-white) */
-    --color-bg-secondary: #EBE8E0;
-    /* Darker Paper */
-    --color-bg-tertiary: #FFFFFF;
+    /* Premium V4 Palette - "Midnight Forest & Gold" */
+    --color-bg-primary: #1C1F1D;
+    /* Deep Slate/Forest Dark */
+    --color-bg-secondary: #262B28;
+    /* Slightly lighter panel */
+    --color-bg-tertiary: #2D3330;
 
-    --color-text-primary: #1A2622;
-    /* Deep Spruce (Darker for contrast) */
-    --color-text-secondary: #4A524E;
-    /* Muted Spruce */
-    --color-text-tertiary: #7D8582;
-    --color-text-light: #F0F2F1;
-    /* Text on dark/images */
+    --color-text-primary: #F0F4F2;
+    /* Soft Off-white */
+    --color-text-secondary: #B5C2BC;
+    /* Muted Sage */
+    --color-text-tertiary: #84948D;
+    --color-text-light: #FFFFFF;
+    /* Pure white for emphasis */
 
-    --color-accent-dark: #1E3A2F;
-    /* Dark Forest */
-    --color-accent-medium: #3A6351;
-    /* Balanced Green */
-    --color-gold: #C5A065;
-    /* Antique Bronze */
-    --color-border: rgba(0, 0, 0, 0.08);
+    --color-accent-dark: #ECB613;
+    /* Warm Gold (from Stitch) */
+    --color-accent-medium: #D4A311;
+    /* Darker Gold */
+    --color-gold: #ECB613;
+    /* Golden accent */
+    --color-border: rgba(255, 255, 255, 0.08);
 
     /* Spacing - Condensed for Density */
     --space-xs: 0.5rem;
@@ -120,8 +120,14 @@ h6 {
     --space-5xl: 10rem;
     /* 160px */
 
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 32px;
+
     /* Typography */
-    --font-heading: 'Lora', Georgia, serif;
+    --font-heading: 'Newsreader', 'Lora', Georgia, serif;
     --font-body: 'Crimson Text', Georgia, serif;
     --font-ui: 'Inter', -apple-system, sans-serif;
 
@@ -628,12 +634,12 @@ a {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.9) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.9) 100%);
     transition: background 0.4s ease;
 }
 
 .pillar-card--poster:hover .pillar-card__overlay {
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.6) 40%, rgba(0, 0, 0, 0.95) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.6) 40%, rgba(255, 255, 255, 0.95) 100%);
 }
 
 .pillar-card__content {
@@ -658,7 +664,7 @@ a {
     font-size: 1.75rem;
     margin-bottom: 0.5rem;
     color: white;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
     transition: margin-bottom 0.4s ease;
 }
 
@@ -714,7 +720,7 @@ a {
 
 .featured-articles {
     padding: var(--space-2xl) 0;
-    background: white;
+    background: var(--color-bg-secondary);
 }
 
 .articles-grid {
@@ -990,7 +996,7 @@ body.page-subpage {
     gap: var(--space-sm);
     margin-bottom: var(--space-3xl);
     padding-bottom: var(--space-xl);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .filter-btn {
@@ -999,7 +1005,7 @@ body.page-subpage {
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 2rem;
     /* Pill Shape */
     font-family: var(--font-ui);
@@ -1011,10 +1017,10 @@ body.page-subpage {
 }
 
 .filter-btn:hover {
-    background: white;
+    background: var(--color-bg-secondary);
     border-color: var(--color-text-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
 }
 
 .filter-btn.active {
@@ -1027,7 +1033,7 @@ body.page-subpage {
 .filter-count {
     display: inline-block;
     font-size: 0.75rem;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.05);
     padding: 2px 6px;
     border-radius: 1rem;
     transition: background 0.3s;
@@ -1101,7 +1107,7 @@ body.page-subpage {
     overflow: hidden;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.06);
     /* Soft premium shadow instead of hard offset */
 }
 
@@ -1169,9 +1175,9 @@ body.page-subpage {
 
 .pillar-card-minimal {
     padding: var(--space-xl);
-    background: #F9F7F2;
+    background: var(--color-bg-primary);
     /* Subtle background difference */
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     /* Visible border */
     border-radius: var(--radius-md);
     transition: all 0.3s ease;
@@ -1179,7 +1185,7 @@ body.page-subpage {
 
 .pillar-card-minimal:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.08);
     border-color: transparent;
     /* Clean look */
 }
@@ -1223,7 +1229,7 @@ body.page-subpage {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.08);
 }
 
 .teaching-hero__visual img {
@@ -1261,9 +1267,9 @@ body.page-subpage {
 .method-card {
     text-align: center;
     padding: var(--space-2xl);
-    background: white;
+    background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03);
     transition: transform 0.3s ease;
     height: 100%;
     /* Ensure equal height */
@@ -1320,7 +1326,7 @@ body.page-subpage {
 }
 
 .podcast-card {
-    background: white;
+    background: var(--color-bg-secondary);
     /* fallback */
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -1331,7 +1337,7 @@ body.page-subpage {
 
 .podcast-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
 }
 
 .podcast-card__cover {
@@ -1436,14 +1442,14 @@ body.page-subpage {
     gap: var(--space-md);
     margin-top: var(--space-3xl);
     padding-top: var(--space-xl);
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .pagination__btn {
     padding: 0.75rem 1.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 2rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .method-item {
@@ -1478,10 +1484,10 @@ body.page-subpage {
 
 /* Right Column: Form */
 .premium-form {
-    background: white;
+    background: var(--color-bg-secondary);
     padding: var(--space-3xl);
     border-radius: var(--radius-lg);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.03);
 }
 
 .form-group {
@@ -1495,7 +1501,7 @@ body.page-subpage {
     width: 100%;
     padding: 1rem 0;
     border: none;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     background: transparent;
     font-family: var(--font-body);
     font-size: 1.125rem;
@@ -1641,7 +1647,7 @@ body.page-subpage {
     margin: 0 auto var(--space-3xl);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
 }
 
 /* Article Content - "Sửa sửa" cho nó nằm giữa */
@@ -1671,7 +1677,7 @@ body.page-subpage {
     max-width: 100%;
     height: auto;
     border-radius: var(--radius-md);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.05);
 }
 
 .article-content blockquote {
@@ -1704,7 +1710,7 @@ body.page-subpage {
 
 .table-of-contents {
     padding: var(--space-lg);
-    background: white;
+    background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
 }
@@ -1735,10 +1741,10 @@ body.page-subpage {
 }
 
 .testimonial-card {
-    background: white;
+    background: var(--color-bg-secondary);
     padding: 2.5rem;
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -1783,10 +1789,10 @@ body.page-subpage {
     top: 24px;
     right: 24px;
     padding: 16px 24px;
-    background: white;
+    background: var(--color-bg-secondary);
     color: var(--color-text-primary);
     border-radius: var(--radius-md);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 40px rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
     gap: 12px;
