@@ -70,51 +70,7 @@
         });
     });
 
-    // ========================================================================
-    // NEWSLETTER FORM HANDLING
-    // ========================================================================
-
-    const newsletterForm = document.getElementById('newsletter-form');
-
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const emailInput = this.querySelector('input[name="email"]');
-            const button = this.querySelector('button[type="submit"]');
-            const email = emailInput.value.trim();
-
-            if (!email) return;
-
-            // Disable button during submission
-            button.disabled = true;
-            button.textContent = 'Đang xử lý...';
-
-            try {
-                const response = await fetch('/api/newsletter.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showMessage('Cảm ơn! Vui lòng kiểm tra email để xác nhận đăng ký.', 'success');
-                    emailInput.value = '';
-                } else {
-                    showMessage(data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.', 'error');
-                }
-            } catch (error) {
-                showMessage('Không thể kết nối. Vui lòng thử lại sau.', 'error');
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Đăng ký';
-            }
-        });
-    }
+    // Newsletter form handling moved to subscribe-handler.js
 
     // ========================================================================
     // READING PROGRESS INDICATOR (for article pages)
