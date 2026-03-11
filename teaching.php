@@ -101,7 +101,7 @@ include __DIR__ . '/includes/header.php';
 <!-- Section 3: Areas Grid (Polished) -->
 <section id="areas" class="teaching-areas-section section-spacing" style="background: var(--color-bg-secondary);">
     <div class="container">
-        <div class="section-header text-center" style="margin-bottom: 4rem;">
+        <div class="section-header text-center">
             <span class="eyebrow" style="color: var(--color-gold); font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem;">Chuyên môn</span>
             <h2 class="section-title" style="margin-top: 0.5rem;">Lĩnh vực giảng dạy</h2>
         </div>
@@ -139,7 +139,7 @@ include __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Section 4: CTA (Minimal) -->
-<section class="teaching-cta section-spacing text-center" style="padding-bottom: 8rem;">
+<section class="teaching-cta section-spacing text-center">
     <div class="container container--narrow">
         <h2 class="section-title"><?= escape(get_setting('teaching_cta_title', 'Hợp tác Đào tạo')) ?></h2>
         <p class="section-desc" style="margin-bottom: 2rem;">

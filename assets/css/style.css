@@ -1272,7 +1272,7 @@ body.page-subpage {
 }
 
 .section-spacing {
-    padding: var(--space-5xl) 0;
+    padding: var(--space-3xl) 0; /* Reduced from 5xl (160px) to 3xl (96px) */
 }
 
 .teaching-methodology {
