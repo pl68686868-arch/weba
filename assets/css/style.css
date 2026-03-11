@@ -1125,12 +1125,8 @@ body.page-subpage {
 .about-hero__image-wrapper {
     position: relative;
     border-radius: var(--radius-lg);
-    /* Square/Rectangle shape */
-    overflow: hidden;
-    border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(255, 255, 255, 0.06);
-    /* Soft premium shadow instead of hard offset */
 }
 
 /* Section 2: Philosophy (Dark) */
@@ -1289,16 +1285,15 @@ body.page-subpage {
 .method-card {
     text-align: center;
     padding: var(--space-2xl);
-    background: var(--color-bg-secondary);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03);
     transition: transform 0.3s ease;
     height: 100%;
-    /* Ensure equal height */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    /* Align top */
 }
 
 .method-card:hover {

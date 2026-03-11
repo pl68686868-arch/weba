@@ -135,7 +135,7 @@ include __DIR__ . '/includes/header.php';
         </div>
         
         <div class="about-cta text-center">
-            <a href="/contact.php" class="btn btn-primary">Cùng kết nối</a>
+            <a href="/contact.php" class="btn btn-primary" style="background: var(--color-gold); color: #1C1F1D; padding: 1rem 2.5rem; text-decoration: none; border-radius: 50px; font-weight: 600; display: inline-block; transition: all 0.3s ease;">Cùng kết nối</a>
         </div>
     </div>
 </section>

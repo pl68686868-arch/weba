@@ -46,7 +46,7 @@ include __DIR__ . '/includes/header.php';
                     </p>
                 </div>
                 <div class="hero-actions" style="margin-top: 2rem;">
-                    <a href="#areas" class="btn btn-primary" style="background: var(--color-text-primary); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                    <a href="#areas" class="btn btn-primary" style="background: var(--color-gold); color: #1C1F1D; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; display: inline-block; transition: all 0.3s ease; font-weight: 600;">
                         Khám phá lĩnh vực
                     </a>
                 </div>
