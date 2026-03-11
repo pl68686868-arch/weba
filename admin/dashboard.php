@@ -42,12 +42,12 @@ try {
          LIMIT 10"
     );
     
-    // Popular posts this month
+    // Popular posts (all time, by view count)
     $popularPosts = $db->fetchAll(
         "SELECT p.title, p.slug, p.view_count
          FROM posts p
          WHERE p.status = 'published'
-         AND p.published_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+         AND p.view_count > 0
          ORDER BY p.view_count DESC
          LIMIT 5"
     );
