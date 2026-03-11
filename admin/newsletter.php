@@ -95,13 +95,14 @@ require_once __DIR__ . '/../includes/admin-header.php';
             <h1>Bản tin Newsletter</h1>
             <p>Quản lý danh sách đăng ký và gửi thông báo email.</p>
         </div>
-        <div class="admin-page__actions">
-            <div class="header-stat">
-                <span class="stat-icon">📧</span>
-                <div class="stat-details">
-                    <span class="stat-label">Subscribers</span>
-                    <span class="stat-value"><?= (string)count($subscribers) ?></span>
-                </div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card__icon">📧</div>
+            <div class="stat-card__content">
+                <span class="stat-card__label">Subscribers</span>
+                <span class="stat-card__value"><?= (string)count($subscribers) ?></span>
             </div>
         </div>
     </div>

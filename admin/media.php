@@ -59,7 +59,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
     </div>
 
     <!-- Upload Card -->
-    <div class="card upload-drop-card" id="uploadCard">
+    <div class="card upload-drop-card" id="uploadCard" style="max-width: 800px; margin: 0 auto 40px; text-align: center;">
         <div id="dropZone" class="drop-zone">
             <div class="drop-icon">☁️</div>
             <h3 class="drop-title">Tải tệp tin mới lên</h3>
@@ -133,11 +133,11 @@ require_once __DIR__ . '/../includes/admin-header.php';
     .upload-drop-card { border: 2px dashed var(--border-color); background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); margin-bottom: 40px; transition: var(--transition); }
     .upload-drop-card.drag-over { border-color: var(--color-primary); background: rgba(44, 95, 79, 0.05); transform: scale(1.005); }
     
-    .drop-zone { text-align: center; cursor: pointer; padding: 24px; }
-    .drop-icon { font-size: 3.5rem; margin-bottom: 16px; }
-    .drop-title { margin-bottom: 8px; font-weight: 700; }
-    .drop-subtitle { color: var(--text-muted); font-size: 1rem; }
-    .drop-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 16px; opacity: 0.7; }
+    .drop-zone { text-align: center; cursor: pointer; padding: 40px 24px; }
+    .drop-icon { font-size: 3.5rem; margin-bottom: 20px; color: var(--color-primary); }
+    .drop-title { margin-bottom: 12px; font-weight: 700; justify-content: center; font-size: 1.5rem; }
+    .drop-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+    .drop-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 16px; opacity: 0.8; }
     
     .upload-progress-container { margin-top: 32px; padding: 0 40px 24px; }
     .progress-info { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.875rem; font-weight: 600; }
