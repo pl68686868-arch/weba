@@ -24,7 +24,7 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Rate limiting
     $ip = getClientIP();
-    if (!checkRateLimit($ip, 'contact_form', 3, 3600)) { // 3 messages per hour
+    if (!checkRateLimit($ip, 'contact_form', 10, 3600)) { // 10 messages per hour
         $error = 'Cảm ơn bạn đã quan tâm. Để tôi có thể phản hồi tốt nhất, xin vui lòng đợi một chút trước khi gửi tin nhắn tiếp nhé.';
     } else {
         // Validate CSRF token
