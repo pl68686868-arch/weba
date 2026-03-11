@@ -1407,11 +1407,14 @@ body.page-subpage {
 .platform-btn {
     display: inline-flex;
     align-items: center;
-    padding: var(--space-md) var(--space-xl);
+    padding: 0.8rem 2rem;
     border-radius: 50px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-width: 180px;
+    justify-content: center;
 }
 
 .platform-btn.spotify {
@@ -1421,18 +1424,19 @@ body.page-subpage {
 
 .platform-btn.apple {
     background: #872EC4;
-    /* Purple tone */
     color: white;
 }
 
 .platform-btn.rss {
-    background: var(--color-text-primary);
-    color: white;
+    background: transparent;
+    border-color: var(--color-text-primary);
+    color: var(--color-text-primary);
 }
 
 .platform-btn:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    filter: brightness(1.1);
 }
 
 /* ============================================================================
@@ -1571,27 +1575,64 @@ body.page-subpage {
     font-weight: 600;
 }
 
+/* Standardized Button System */
+.btn {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--color-gold);
+    color: #1C1F1D;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(236, 182, 19, 0.2);
+    filter: brightness(1.1);
+}
+
+.btn-outline {
+    background: transparent;
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.btn-outline:hover {
+    background: var(--color-gold);
+    color: #1C1F1D;
+    transform: translateY(-2px);
+}
+
 .btn-submit {
     display: inline-flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem 2.5rem;
-    background: var(--color-text-primary);
-    color: white;
+    padding: 1.25rem 3rem;
+    background: var(--color-gold); /* Switched to gold for better brand consistency & visibility */
+    color: #1C1F1D;
     border: none;
     font-family: var(--font-ui);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 600;
+    letter-spacing: 0.12em;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     margin-top: var(--space-lg);
 }
 
 .btn-submit:hover {
-    background: var(--color-accent-dark);
-    padding-right: 3rem;
-    /* Slide effect */
+    background: #FFD24D; /* Brighter gold */
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(236, 182, 19, 0.3);
 }
 
 .form-privacy {

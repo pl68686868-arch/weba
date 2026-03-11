@@ -48,8 +48,8 @@ include __DIR__ . '/includes/header.php';
                     </p>
                 </div>
                 <div class="hero-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
-                    <button class="btn btn-primary" style="background: var(--color-gold); color: #1C1F1D; padding: 1rem 2rem; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">Nghe trailer</button>
-                    <a href="#subscribe" class="btn btn-outline" style="padding: 1rem 2rem; border-radius: 50px; border: 1px solid var(--color-gold); color: var(--color-gold); text-decoration: none; font-weight: 600; transition: all 0.3s ease;">Đăng ký</a>
+                    <button class="btn btn-primary">Nghe trailer</button>
+                    <a href="#subscribe" class="btn btn-outline">Đăng ký</a>
                 </div>
             </div>
             <div class="about-hero__visual">
