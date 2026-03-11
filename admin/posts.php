@@ -82,12 +82,12 @@ include __DIR__ . '/../includes/admin-header.php';
 ?>
 
 <div class="admin-page">
-    <div class="admin-header">
+    <div class="admin-page__header">
         <div>
             <h1><?= isset($_GET['type']) && $_GET['type'] === 'podcast' ? 'Podcast & Dự án' : 'Bài viết' ?></h1>
             <p>Quản lý và biên tập nội dung hệ thống.</p>
         </div>
-        <div class="admin-header__actions" style="display: flex; gap: 12px;">
+        <div class="admin-page__actions" style="display: flex; gap: 12px;">
             <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">Xóa mục đã chọn (<span id="selectedCount">0</span>)</button>
             <a href="/admin/posts-new.php<?= isset($_GET['type']) ? '?type=' . $_GET['type'] : '' ?>" class="btn btn-primary">
                 <span>+</span> Tác phẩm mới

@@ -104,8 +104,12 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <div class="admin-page">
     <div class="admin-page__header">
-        <h1>Chỉnh sửa người dùng: <?= escape($user['username']) ?></h1>
-        <a href="/admin/users.php" class="btn btn-secondary">← Quản lý người dùng</a>
+        <div>
+            <h1>Chỉnh sửa người dùng: <?= escape($user['username']) ?></h1>
+        </div>
+        <div class="admin-page__actions">
+            <a href="/admin/users.php" class="btn btn-secondary">← Quản lý người dùng</a>
+        </div>
     </div>
     
     <?php if ($error): ?>

@@ -96,12 +96,12 @@ include __DIR__ . '/../includes/admin-header.php';
 ?>
 
 <div class="dashboard">
-    <div class="admin-header">
+    <div class="admin-page__header">
         <div>
             <h1>Tổng quan</h1>
             <p>Xin chào, <?= escape($auth->getUsername()) ?>! Hôm nay là <?= date('d/m/Y') ?>.</p>
         </div>
-        <div class="admin-header__actions">
+        <div class="admin-page__actions">
             <a href="/admin/posts-new.php" class="btn btn-primary">
                 <span>+</span> Viết bài mới
             </a>

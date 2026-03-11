@@ -66,7 +66,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
 <div class="admin-page">
-    <div class="admin-header">
+    <div class="admin-page__header">
         <div>
             <h1>Hình ảnh & Giao diện</h1>
             <p>Tùy chỉnh các hình ảnh đại diện cho từng chuyên trang trên website.</p>

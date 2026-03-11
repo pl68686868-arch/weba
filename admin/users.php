@@ -66,8 +66,12 @@ include __DIR__ . '/../includes/admin-header.php';
 
 <div class="admin-page">
     <div class="admin-page__header">
-        <h1>Quản lý người dùng</h1>
-        <a href="/admin/users-new.php" class="btn btn-primary">+ Thêm người dùng</a>
+        <div>
+            <h1>Quản lý người dùng</h1>
+        </div>
+        <div class="admin-page__actions">
+            <a href="/admin/users-new.php" class="btn btn-primary">+ Thêm người dùng</a>
+        </div>
     </div>
     
     <!-- Filters -->

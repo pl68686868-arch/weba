@@ -99,7 +99,7 @@ foreach ($settings as $s) {
 
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
-    <div class="admin-header">
+    <div class="admin-page__header">
         <div>
             <h1>Cài đặt hệ thống</h1>
             <p>Cấu hình thông tin cơ bản, nội dung trang chủ và các thông số khác.</p>
